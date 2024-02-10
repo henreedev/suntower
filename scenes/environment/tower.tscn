@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://dmtd1mxporvjw"]
+
+[ext_resource type="Texture2D" uid="uid://btbbntyhubx0h" path="res://icon.svg" id="1_qpb42"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_rt1d6"]
+
+[node name="Tower" type="TileMap"]
+position = Vector2(0, 64)
+format = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_qpb42")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -64)
+shape = SubResource("WorldBoundaryShape2D_rt1d6")

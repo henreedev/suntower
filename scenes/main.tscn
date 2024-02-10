@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjl7hh0kgvrb8"]
+
+[ext_resource type="PackedScene" uid="uid://ritdklsc3t1t" path="res://scenes/characters/player.tscn" id="1_w3dx8"]
+[ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Player" parent="." instance=ExtResource("1_w3dx8")]
+position = Vector2(-1, -160)
+
+[node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
