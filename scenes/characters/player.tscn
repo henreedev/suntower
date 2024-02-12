@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://ritdklsc3t1t"]
+[gd_scene load_steps=29 format=3 uid="uid://ritdklsc3t1t"]
 
 [ext_resource type="Script" path="res://scenes/characters/player.gd" id="1_x4osj"]
 [ext_resource type="Texture2D" uid="uid://dfrbet6fuea5a" path="res://assets/image/flower-spritesheet.png" id="1_xe03g"]
@@ -189,16 +189,25 @@ animations = [{
 "speed": 10.0
 }]
 
-[node name="Player" type="CharacterBody2D"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_prtb5"]
+radius = 5.0
+height = 14.0
+
+[node name="Player" type="RigidBody2D" groups=["player"]]
+inertia = 10.0
+max_contacts_reported = 4
+contact_monitor = true
+linear_damp = 1.0
 script = ExtResource("1_x4osj")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_n3yxs")
-animation = &"idle"
-frame_progress = 0.0131216
+animation = &"prep"
+offset = Vector2(0, -30)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(0, 32, 5, 32, 6, 23, 0, 11, 0, 11, -6, 23, -5, 32)
+position = Vector2(0, -30)
+polygon = PackedVector2Array(0, 32, 5, 32, 6, 23, 2, 20, 0, -15, -2, 20, -6, 23, -5, 32)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(3, 3)
@@ -206,3 +215,12 @@ limit_left = -192
 limit_top = -10000
 limit_right = 192
 limit_bottom = 16
+
+[node name="Grounded" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounded"]
+position = Vector2(0, -3)
+shape = SubResource("CapsuleShape2D_prtb5")
+
+[connection signal="body_entered" from="Grounded" to="." method="_on_grounded_body_entered"]
+[connection signal="body_exited" from="Grounded" to="." method="_on_grounded_body_exited"]

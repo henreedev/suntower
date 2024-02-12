@@ -47,7 +47,7 @@ extend={
 
 [physics]
 
-2d/default_gravity=690.0
+2d/default_gravity=500.0
 
 [rendering]
 

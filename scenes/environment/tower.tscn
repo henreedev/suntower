@@ -1,18 +1,29 @@
-[gd_scene load_steps=3 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=4 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Texture2D" uid="uid://btbbntyhubx0h" path="res://icon.svg" id="1_qpb42"]
 
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_rt1d6"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fl6my"]
+size = Vector2(1674, 128)
 
-[node name="Tower" type="TileMap"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hkdk6"]
+size = Vector2(100, 60)
+
+[node name="Tower" type="TileMap" groups=["tower"]]
 position = Vector2(0, 64)
 format = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_qpb42")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="." groups=["tower"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(0, -64)
-shape = SubResource("WorldBoundaryShape2D_rt1d6")
+position = Vector2(180, 0)
+shape = SubResource("RectangleShape2D_fl6my")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="." groups=["tower"]]
+position = Vector2(0, -100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+position = Vector2(-79, -49)
+shape = SubResource("RectangleShape2D_hkdk6")

@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dktse0vckd1qr"]
+
+[ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
+[ext_resource type="Texture2D" uid="uid://efh8hm4bmh1e" path="res://assets/image/flower-spike.png" id="1_tovvw"]
+
+[node name="FlowerHead" type="RigidBody2D"]
+script = ExtResource("1_13r3v")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_tovvw")
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(0, -6, 4, -4, 6, -1, 6, 2, 8, 5, 8, 11, 7, 11, 4, 5, 0, 6, -4, 5, -7, 11, -8, 11, -8, 5, -6, 2, -6, -1, -4, -4)
