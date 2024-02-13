@@ -209,7 +209,7 @@ offset = Vector2(0, -30)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 position = Vector2(0, -30)
-polygon = PackedVector2Array(0, 32, 5, 31, 6, 23, 2, 20, 0, -15, -2, 20, -6, 23, -5, 31)
+polygon = PackedVector2Array(0, 32, 5, 31, 6, 23, 2, 20, -2, 20, -6, 23, -5, 31)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(3, 3)
