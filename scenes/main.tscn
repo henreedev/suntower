@@ -5,8 +5,8 @@
 
 [node name="Main" type="Node2D"]
 
+[node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
+
 [node name="Player" parent="." instance=ExtResource("1_w3dx8")]
 position = Vector2(-1, -160)
 rotation = 2.15723
-
-[node name="Tower" parent="." instance=ExtResource("2_dc8uo")]

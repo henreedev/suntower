@@ -55,3 +55,7 @@ func _on_grounded_body_entered(body):
 func _on_grounded_body_exited(body):
 	if body.is_in_group("tower"):
 		_grounded = false
+
+
+func _on_bg_music_finished():
+	$Sound/BGMusic.play()
