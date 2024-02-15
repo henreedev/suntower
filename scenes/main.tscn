@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cjl7hh0kgvrb8"]
 
-[ext_resource type="PackedScene" uid="uid://ritdklsc3t1t" path="res://scenes/characters/player.tscn" id="1_w3dx8"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
+[ext_resource type="PackedScene" uid="uid://deoc0hgj85t7q" path="res://scenes/characters/Player2.tscn" id="3_k12lq"]
 
 [sub_resource type="Environment" id="Environment_4vhcu"]
 background_mode = 3
@@ -21,6 +21,4 @@ environment = SubResource("Environment_4vhcu")
 
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
-[node name="Player" parent="." instance=ExtResource("1_w3dx8")]
-position = Vector2(-1, -160)
-rotation = 2.15723
+[node name="Player2" parent="." instance=ExtResource("3_k12lq")]

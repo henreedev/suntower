@@ -1,13 +1,39 @@
-[gd_scene load_steps=3 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=5 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
-[ext_resource type="Texture2D" uid="uid://efh8hm4bmh1e" path="res://assets/image/flower-spike.png" id="1_tovvw"]
+[ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/flower-head.png" id="2_gv2se"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g3nl5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_gv2se")
+}],
+"loop": true,
+"name": &"normal",
+"speed": 0.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"spiked",
+"speed": 0.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jnh0x"]
+radius = 6.0
 
 [node name="FlowerHead" type="RigidBody2D"]
+gravity_scale = 0.1
+can_sleep = false
 script = ExtResource("1_13r3v")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_tovvw")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_g3nl5")
+animation = &"normal"
 
-[node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(0, -6, 4, -4, 6, -1, 6, 2, 8, 5, 8, 11, 7, 11, 4, 5, 0, 6, -4, 5, -7, 11, -8, 11, -8, 5, -6, 2, -6, -1, -4, -4)
+[node name="SpikedHitbox" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(0, -6, 4, -4, 6, -1, 6, 2, 8, 5, 8, 11, 7, 11, 4, 5, 0, 6, -4, 5, -7, 11, -8, 11, -8, 5, -7, 1, -6, -1, -4, -4)
+
+[node name="NormalHitbox" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_jnh0x")
