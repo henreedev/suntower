@@ -13,6 +13,18 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	_check_inputs()
+	_act_on_state(_head._state)
+
+func _act_on_state(state : FlowerHead.State):
+	match state:
+		FlowerHead.State.EXTENDING:
+			linear_damp = 10
+			angular_damp = 10
+		FlowerHead.State.RETRACTING:
+			linear_damp = 1
+			angular_damp = 1
+		FlowerHead.State.INACTIVE:
+			pass
 
 func _check_inputs():
 	if Input.is_action_just_pressed("extend"):

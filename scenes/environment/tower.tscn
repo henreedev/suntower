@@ -4,7 +4,6 @@
 [ext_resource type="Script" path="res://scenes/environment/tower.gd" id="2_bq5o6"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6pdpu"]
-friction = 0.0
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ejwgc"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)

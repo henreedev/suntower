@@ -1,9 +1,41 @@
-[gd_scene load_steps=7 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=15 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/flower-head.png" id="2_gv2se"]
 [ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/characters/vine_seg.tscn" id="2_ircd2"]
 [ext_resource type="Texture2D" uid="uid://efh8hm4bmh1e" path="res://assets/image/flower-spike.png" id="3_0yv70"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
+friction = 0.0
+rough = true
+
+[sub_resource type="Gradient" id="Gradient_7awna"]
+colors = PackedColorArray(1, 0.905882, 0, 1, 0.321569, 0.760784, 0.0431373, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2inft"]
+gradient = SubResource("Gradient_7awna")
+
+[sub_resource type="Gradient" id="Gradient_5ys7y"]
+colors = PackedColorArray(1, 0.992157, 0.847059, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_18684"]
+gradient = SubResource("Gradient_5ys7y")
+
+[sub_resource type="Curve" id="Curve_dlb3u"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.546667, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_5gt1y"]
+curve = SubResource("Curve_dlb3u")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ha0my"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(4, 4, 1)
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_5gt1y")
+color_ramp = SubResource("GradientTexture1D_18684")
+color_initial_ramp = SubResource("GradientTexture1D_2inft")
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_g3nl5"]
 animations = [{
@@ -28,12 +60,21 @@ animations = [{
 radius = 6.0
 
 [node name="FlowerHead" type="RigidBody2D" groups=["flowerhead"]]
+z_index = 1
 mass = 0.1
+physics_material_override = SubResource("PhysicsMaterial_plfvk")
 center_of_mass_mode = 1
 center_of_mass = Vector2(0, 5)
 can_sleep = false
 script = ExtResource("1_13r3v")
 vine_seg = ExtResource("2_ircd2")
+
+[node name="Sparkles" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 73
+process_material = SubResource("ParticleProcessMaterial_ha0my")
+lifetime = 2.0
+visibility_rect = Rect2(-300, -300, 600, 600)
 
 [node name="Vines" type="Node" parent="."]
 
@@ -48,5 +89,12 @@ polygon = PackedVector2Array(8, 5, 8, 11, 7, 11, 4, 6, 0, 6, -4, 6, -7, 11, -8, 
 shape = SubResource("CircleShape2D_jnh0x")
 
 [node name="RootVinePin" type="PinJoint2D" parent="."]
-position = Vector2(0, 6)
+position = Vector2(0, 4)
 node_a = NodePath("..")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(3, 3)
+limit_left = -192
+limit_top = -10000
+limit_right = 192
+limit_bottom = 16

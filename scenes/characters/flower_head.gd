@@ -4,8 +4,8 @@ class_name FlowerHead
 enum State {INACTIVE, EXTENDING, RETRACTING}
 
 const ROTATE_SPEED = PI 
-const EXTEND_SPEED = 75.0
-const GRAVITY = 0.1
+const EXTEND_SPEED = 125.0
+const GRAVITY = -0.2
 const vine_root_offset := Vector2(0, 6)
 
 var _state : State = State.INACTIVE
@@ -58,6 +58,7 @@ func _spawn_vine():
 func act_on_state():
 	if _state == State.EXTENDING:
 		$AnimatedSprite2D.animation = "spiked"
+		$Sparkles.emitting = true
 		lock_rotation = false
 		gravity_scale = 0.0
 		if Input.is_action_just_released("extend"):
@@ -69,6 +70,7 @@ func act_on_state():
 	elif _state == State.INACTIVE:
 		$SpikedHitbox.disabled = true
 		$AnimatedSprite2D.animation = "normal"
+		$Sparkles.emitting = false
 		gravity_scale = GRAVITY
 		lock_rotation = false
 
@@ -76,7 +78,6 @@ func begin_extending():
 	if _state == State.INACTIVE:
 		_state = State.EXTENDING
 		$SpikedHitbox.disabled = false
-		
 
 func _integrate_forces(state):
 	if _set_transform:

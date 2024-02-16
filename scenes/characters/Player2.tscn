@@ -8,19 +8,12 @@
 size = Vector2(12, 11)
 
 [node name="Player2" type="RigidBody2D" groups=["player2"]]
-mass = 0.1
+mass = 0.15
 script = ExtResource("1_u6jn4")
 
 [node name="Pot" type="Sprite2D" parent="."]
 texture = ExtResource("2_dk0m0")
 offset = Vector2(0, -27)
-
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(3, 3)
-limit_left = -192
-limit_top = -10000
-limit_right = 192
-limit_bottom = 16
 
 [node name="Sound" type="Node2D" parent="."]
 
