@@ -12,11 +12,13 @@ func _ready():
 
 func create(child : RigidBody2D):
 	var vine : Vine = this_scene.instantiate()
-	vine._set_child = child
+	vine.set_child(child)
 	return vine
 
 func set_child (child : RigidBody2D):
 	_set_child = child
+
+func make_self_exception():
 	get_tree().call_group("vine", "add_collision_exception_with", self)
 
 func _integrate_forces(state):

@@ -10,10 +10,10 @@ const vine_root_offset := Vector2(0, 6)
 
 var _state : State = State.INACTIVE
 var base_segments := 30
+var _segs := 30
 var extend_segments := 18
 var _set_transform 
 var _target_angle : float
-var _segs := 30
 
 @export var vine_seg : PackedScene
 
@@ -32,7 +32,6 @@ func _spawn_vine():
 	var first_vine_pos = _player.position + _player.vine_root_offset
 	var final_vine_pos = position + vine_root_offset 
 	var diff = final_vine_pos - first_vine_pos
-	print("diff = " + str(diff))
 	var curr_seg : Vine = null
 	var last_seg : Vine = null
 	 
@@ -46,6 +45,7 @@ func _spawn_vine():
 		var progress = diff * float(i) / base_segments
 		var seg_pos = first_vine_pos + progress
 		$Vines.add_child(curr_seg)
+		curr_seg.make_self_exception()
 		curr_seg.position = seg_pos
 		print(seg_pos)
 		if i == 0:
@@ -84,10 +84,6 @@ func _integrate_forces(state):
 		_set_transform = null
 	if _state == State.EXTENDING:
 		_target_angle = state.transform.get_origin().angle_to_point(get_global_mouse_position()) + PI/2
-		print("Target angle: " + str(_target_angle))
-		print("Current angle: " + str(rotation))
-		print("adjustment: " + str(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED)))
-		
 		state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED), state.transform.get_origin()) 
 		state.angular_velocity = 0
 		state.linear_velocity = Vector2(0, -EXTEND_SPEED).rotated(rotation)

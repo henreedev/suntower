@@ -9,9 +9,10 @@ height = 6.0
 
 [node name="VineSeg" type="RigidBody2D" groups=["vine"]]
 collision_layer = 2
-collision_mask = 0
+collision_mask = 2
 mass = 0.01
 gravity_scale = 0.0
+linear_damp = 1.0
 script = ExtResource("1_d58dt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
