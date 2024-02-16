@@ -1,25 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=5 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" path="res://scenes/characters/Player2.gd" id="1_u6jn4"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/pot.png" id="2_dk0m0"]
 [ext_resource type="AudioStream" uid="uid://dmb7q4tmk1afv" path="res://assets/sound/gwj-test2.mp3" id="2_stb88"]
-[ext_resource type="PackedScene" uid="uid://dktse0vckd1qr" path="res://scenes/characters/flower_head.tscn" id="4_rueqp"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1kr17"]
-radius = 5.0
-height = 12.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jnhsv"]
+size = Vector2(12, 11)
 
 [node name="Player2" type="RigidBody2D" groups=["player2"]]
-mass = 2.0
+mass = 0.1
 script = ExtResource("1_u6jn4")
 
 [node name="Pot" type="Sprite2D" parent="."]
 texture = ExtResource("2_dk0m0")
 offset = Vector2(0, -27)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-position = Vector2(0, -30)
-polygon = PackedVector2Array(0, 35, 5, 35, 6, 26, 2, 24, -2, 24, -6, 26, -5, 35)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(3, 3)
@@ -28,19 +22,14 @@ limit_top = -10000
 limit_right = 192
 limit_bottom = 16
 
-[node name="Grounded" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Grounded"]
-position = Vector2(0, 1)
-shape = SubResource("CapsuleShape2D_1kr17")
-
 [node name="Sound" type="Node2D" parent="."]
 
 [node name="BGMusic" type="AudioStreamPlayer2D" parent="Sound"]
 stream = ExtResource("2_stb88")
-autoplay = true
+volume_db = -7.924
 
-[node name="N" type="Node" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_jnhsv")
 
-[node name="FlowerHead" parent="N" instance=ExtResource("4_rueqp")]
-position = Vector2(0, -42)
+[connection signal="finished" from="Sound/BGMusic" to="." method="_on_bg_music_finished"]

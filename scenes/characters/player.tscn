@@ -229,7 +229,7 @@ shape = SubResource("CapsuleShape2D_prtb5")
 
 [node name="BGMusic" type="AudioStreamPlayer2D" parent="Sound"]
 stream = ExtResource("3_get73")
-autoplay = true
+volume_db = -9.875
 
 [node name="Node" type="Node" parent="."]
 

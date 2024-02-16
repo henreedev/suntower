@@ -28,7 +28,7 @@ animations = [{
 radius = 6.0
 
 [node name="FlowerHead" type="RigidBody2D" groups=["flowerhead"]]
-mass = 0.1
+gravity_scale = 0.0
 center_of_mass_mode = 1
 center_of_mass = Vector2(0, 5)
 can_sleep = false
@@ -45,6 +45,7 @@ animation = &"spiked"
 polygon = PackedVector2Array(8, 5, 8, 11, 7, 11, 4, 6, 0, 6, -4, 6, -7, 11, -8, 11, -8, 5, -6, 3, 6, 3)
 
 [node name="NormalHitbox" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CircleShape2D_jnh0x")
 
 [node name="RootVinePin" type="PinJoint2D" parent="."]

@@ -50,8 +50,6 @@ func _on_grounded_body_entered(body):
 		_grounded = true
 
 
-
-
 func _on_grounded_body_exited(body):
 	if body.is_in_group("tower"):
 		_grounded = false
