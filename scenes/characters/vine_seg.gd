@@ -3,6 +3,7 @@ class_name Vine
 
 var _set_pos
 var _set_child
+var detached_child : Vine
 
 var this_scene : PackedScene = preload("res://scenes/characters/vine_seg.tscn")
 var _rotation_match_node
@@ -17,8 +18,14 @@ func create(child : RigidBody2D):
 
 func set_child (child : RigidBody2D):
 	_set_child = child
-	
+
+func set_grav(grav : float):
+	gravity_scale = grav
+
+
+
 func get_child_seg():
+	if detached_child: return detached_child
 	return get_node($PinJoint2D.node_b) if not _set_child else _set_child
 
 func make_self_exception():

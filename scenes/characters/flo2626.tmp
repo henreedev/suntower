@@ -122,8 +122,4 @@ max_distance = 10000.0
 attenuation = 0.000164636
 panning_strength = 0.0
 
-[node name="StuckTimer" type="Timer" parent="."]
-wait_time = 0.5
-
 [connection signal="finished" from="Sound/BGMusic" to="." method="_on_bg_music_finished"]
-[connection signal="timeout" from="StuckTimer" to="." method="_on_stuck_timer_timeout"]

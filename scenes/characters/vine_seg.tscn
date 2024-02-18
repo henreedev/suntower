@@ -1,24 +1,29 @@
-[gd_scene load_steps=4 format=3 uid="uid://jfxpur7d1w8n"]
+[gd_scene load_steps=5 format=3 uid="uid://jfxpur7d1w8n"]
 
 [ext_resource type="Script" path="res://scenes/characters/vine_seg.gd" id="1_d58dt"]
 [ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/stem-rope.png" id="1_fkaj8"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_owbri"]
+friction = 0.0
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
-radius = 1.0
-height = 4.0
+radius = 3.0
+height = 8.0
 
 [node name="VineSeg" type="RigidBody2D" groups=["vine"]]
 collision_layer = 2
 collision_mask = 2
-mass = 0.01
-gravity_scale = 0.01
+mass = 0.03
+physics_material_override = SubResource("PhysicsMaterial_owbri")
+gravity_scale = 0.02
 linear_damp = 1.0
 angular_damp = 20.0
 script = ExtResource("1_d58dt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
-scale = Vector2(1, 2)
+position = Vector2(1.19209e-07, 1.19209e-07)
+scale = Vector2(2, 3)
 texture = ExtResource("1_fkaj8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
