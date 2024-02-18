@@ -5,16 +5,20 @@
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
 radius = 1.0
-height = 6.0
+height = 4.0
 
 [node name="VineSeg" type="RigidBody2D" groups=["vine"]]
 collision_layer = 2
 collision_mask = 2
 mass = 0.01
-gravity_scale = 0.0
+gravity_scale = 0.01
+linear_damp = 1.0
+angular_damp = 20.0
 script = ExtResource("1_d58dt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(1, 2)
 texture = ExtResource("1_fkaj8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -24,5 +28,3 @@ shape = SubResource("CapsuleShape2D_nmj1a")
 visible = false
 position = Vector2(0, 1)
 node_a = NodePath("..")
-bias = 0.1
-softness = 0.1

@@ -1,10 +1,9 @@
-[gd_scene load_steps=17 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=15 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/flower-head.png" id="2_gv2se"]
 [ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/characters/vine_seg.tscn" id="2_ircd2"]
 [ext_resource type="Texture2D" uid="uid://efh8hm4bmh1e" path="res://assets/image/flower-spike.png" id="3_0yv70"]
-[ext_resource type="AudioStream" uid="uid://w63udg01mjfc" path="res://assets/image/Output_1-2.mp3" id="5_cxtyd"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0
@@ -37,10 +36,6 @@ gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_5gt1y")
 color_ramp = SubResource("GradientTexture1D_18684")
 color_initial_ramp = SubResource("GradientTexture1D_2inft")
-
-[sub_resource type="Gradient" id="Gradient_q1ijr"]
-offsets = PackedFloat32Array(0, 0.993333)
-colors = PackedColorArray(0.20014, 0.451195, 0.0228207, 1, 0.243137, 0.537255, 0.0313726, 1)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_g3nl5"]
 animations = [{
@@ -83,13 +78,6 @@ visibility_rect = Rect2(-300, -300, 600, 600)
 
 [node name="Vines" type="Node" parent="."]
 
-[node name="Line2D" type="Line2D" parent="Vines"]
-points = PackedVector2Array(0, 6)
-width = 2.0
-default_color = Color(0.243137, 0.537255, 0.0313726, 1)
-gradient = SubResource("Gradient_q1ijr")
-joint_mode = 2
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_g3nl5")
 animation = &"spiked"
@@ -101,7 +89,7 @@ polygon = PackedVector2Array(8, 5, 8, 11, 7, 11, 4, 6, 0, 6, -4, 6, -7, 11, -8, 
 shape = SubResource("CircleShape2D_jnh0x")
 
 [node name="RootVinePin" type="PinJoint2D" parent="."]
-position = Vector2(0, 5)
+position = Vector2(0, 6)
 node_a = NodePath("..")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -110,15 +98,3 @@ limit_left = -192
 limit_top = -10000
 limit_right = 192
 limit_bottom = 16
-
-[node name="Sound" type="Node2D" parent="."]
-
-[node name="BGMusic" type="AudioStreamPlayer2D" parent="Sound"]
-stream = ExtResource("5_cxtyd")
-volume_db = -10.895
-autoplay = true
-max_distance = 10000.0
-attenuation = 0.000164636
-panning_strength = 0.0
-
-[connection signal="finished" from="Sound/BGMusic" to="." method="_on_bg_music_finished"]

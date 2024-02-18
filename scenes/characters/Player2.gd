@@ -29,6 +29,3 @@ func _act_on_state(state : FlowerHead.State):
 func _check_inputs():
 	if Input.is_action_just_pressed("extend"):
 		_head.begin_extending()
-
-func _on_bg_music_finished():
-	$Sound/BGMusic.play()

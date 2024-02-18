@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=4 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" path="res://scenes/characters/Player2.gd" id="1_u6jn4"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/pot.png" id="2_dk0m0"]
-[ext_resource type="AudioStream" uid="uid://dmb7q4tmk1afv" path="res://assets/sound/gwj-test2.mp3" id="2_stb88"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jnhsv"]
 size = Vector2(12, 11)
@@ -15,14 +14,6 @@ script = ExtResource("1_u6jn4")
 texture = ExtResource("2_dk0m0")
 offset = Vector2(0, -27)
 
-[node name="Sound" type="Node2D" parent="."]
-
-[node name="BGMusic" type="AudioStreamPlayer2D" parent="Sound"]
-stream = ExtResource("2_stb88")
-volume_db = -7.924
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_jnhsv")
-
-[connection signal="finished" from="Sound/BGMusic" to="." method="_on_bg_music_finished"]
