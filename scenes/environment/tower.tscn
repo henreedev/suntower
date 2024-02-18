@@ -1,7 +1,8 @@
-[gd_scene load_steps=22 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=23 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Texture2D" uid="uid://dilbk4ep56fnp" path="res://assets/image/gwj-tilemap.png" id="1_3cc1m"]
 [ext_resource type="Script" path="res://scenes/environment/tower.gd" id="2_bq5o6"]
+[ext_resource type="PackedScene" uid="uid://bdaadwkyt65ag" path="res://scenes/environment/sun_rays.tscn" id="3_075b6"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6pdpu"]
 
@@ -124,7 +125,7 @@ texture = ExtResource("1_3cc1m")
 3:4/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_xlwgf")
 3:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 3:4/0/physics_layer_0/angular_velocity = 0.0
-3:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+3:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, -8, -8, 2)
 0:5/0 = 0
 0:5/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_rs3bm")
 0:5/0/physics_layer_0/linear_velocity = Vector2(0, 0)
@@ -139,7 +140,7 @@ texture = ExtResource("1_3cc1m")
 3:5/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_7rb1k")
 3:5/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 3:5/0/physics_layer_0/angular_velocity = 0.0
-3:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+3:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -2, 8, 8, 8, 8, -8, 8)
 0:6/0 = 0
 0:6/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_5gvuk")
 0:6/0/physics_layer_0/linear_velocity = Vector2(0, 0)
@@ -169,12 +170,12 @@ texture = ExtResource("1_3cc1m")
 4:4/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_fwonw")
 4:4/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 4:4/0/physics_layer_0/angular_velocity = 0.0
-4:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+4:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 2, -8, -8)
 4:5/0 = 0
 4:5/0/occlusion_layer_0/polygon = SubResource("OccluderPolygon2D_ief16")
 4:5/0/physics_layer_0/linear_velocity = Vector2(0, 0)
 4:5/0/physics_layer_0/angular_velocity = 0.0
-4:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+4:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, 8, 8, -2, 8, 8, -8, 8)
 
 [sub_resource type="TileSet" id="TileSet_vy84d"]
 occlusion_layer_0/light_mask = 1
@@ -184,7 +185,7 @@ physics_layer_0/collision_mask = 3
 physics_layer_0/physics_material = SubResource("PhysicsMaterial_6pdpu")
 sources/0 = SubResource("TileSetAtlasSource_5fd25")
 
-[node name="Tower" type="TileMap" groups=["tower"]]
+[node name="TileMap" type="TileMap" groups=["tower"]]
 tile_set = SubResource("TileSet_vy84d")
 format = 2
 layer_0/name = "OutsideBG"
@@ -218,3 +219,9 @@ rotation = -0.0349066
 color = Color(0, 0, 1, 1)
 energy = 0.15
 shadow_enabled = true
+
+[node name="SunRays" parent="." instance=ExtResource("3_075b6")]
+position = Vector2(-180, 0)
+
+[node name="SunRays2" parent="." instance=ExtResource("3_075b6")]
+position = Vector2(180, 0)

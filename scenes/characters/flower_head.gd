@@ -12,6 +12,7 @@ const vine_root_offset := Vector2(0, 5)
 @export var max_extended_len := 10000.0
 const BASE_MAX_EXTENDED_LEN := 10000.0
 
+var _has_sun_buff := false
 var _state : State = State.INACTIVE
 var base_segments := 15
 var _segs := 15
@@ -34,11 +35,16 @@ var _retracting_seg : Vine
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_spawn_vine()
+	add_collision_exception_with(_player)
 
 func _process(delta):
 	act_on_state()
 	_draw_line()
 	_root_seg.make_self_exception()
+
+func _connect_sunrays():
+	for sunrays in get_tree().get_nodes_in_group("sunrays"):
+		sunrays.connect("sun_hit", _on_sunrays_hit)
 
 func _draw_line():
 	vine_line.clear_points()
@@ -103,6 +109,9 @@ func begin_extending():
 		$SpikedHitbox.disabled = false
 		get_tree().call_group("vine", "set_grav", 0.1)
 		stuck_timer.stop()
+		_player.gravity_scale = 1.0
+		_player.linear_damp = 0.0
+		_has_sun_buff = false
 
 func begin_inactive():
 	_state = State.INACTIVE
@@ -115,6 +124,8 @@ func begin_inactive():
 	#create_tween().tween_property(self, "rotation", 0, 0.2).set_ease(Tween.EASE_IN_OUT)
 	get_tree().call_group("vine", "set_grav", 0.03)
 	stuck_timer.stop()
+	_player.gravity_scale = 1.0
+	_player.linear_damp = 0.0
 
 func begin_retracting():
 	_state = State.RETRACTING
@@ -129,6 +140,8 @@ func begin_retracting():
 	max_extended_len = BASE_MAX_EXTENDED_LEN # Remove sunlight bonuses
 	physics_material_override.friction = 1.0
 	stuck_timer.start()
+	_player.gravity_scale = 0.3
+	_player.linear_damp = 50.0
 
 func _integrate_forces(state):
 	var pos = state.transform.get_origin()
@@ -156,10 +169,19 @@ func _integrate_forces(state):
 		_player.apply_central_force(dir.rotated(_player.position.angle_to_point(position) + PI / 2) * MOVE_STRENGTH) 
 	_fix_gap(state)
 
+func _display_sun_buff():
+	var tween = create_tween()
+	tween.tween_property(self, "modulate", Color(1.2, 1.2, 1.2), 0.5)
+	tween.tween_property(self, "modulate", Color(1., 1., 1.), 0.5)
+
 func _physics_process(delta):
 	var pos = position
 	match _state:
 		State.EXTENDING:
+			if _has_sun_buff and max_extended_len != BASE_MAX_EXTENDED_LEN:
+				const buff = 50.0
+				max_extended_len += buff
+				_display_sun_buff()
 			_extending_dist_travelled += _last_pos.distance_to(pos)
 			if _extending_dist_travelled > _len_per_seg:
 				_add_seg()
@@ -175,7 +197,7 @@ func _physics_process(delta):
 				_root_seg.get_node("PinJoint2D").node_b = ""
 				_root_seg.detached_child = _retracting_seg
 			var retract_dir = _retracting_seg.position.direction_to(_root_seg.position)
-			const FORCE_STRENGTH = 75.0
+			const FORCE_STRENGTH = 125.0
 			var force = retract_dir * FORCE_STRENGTH
 			_retracting_seg.apply_central_force(force)
 			_retracting_seg.get_child_seg().apply_central_force(force)
@@ -204,8 +226,6 @@ func _fix_gap(state):
 			child.position += gap / 0.75
 			child._set_pos = child.position
 			_root_seg.set_child(child)
-			
-
 
 func _add_seg():
 	var child : Vine = _root_seg.get_child_seg()
@@ -227,9 +247,13 @@ func _add_seg():
 func _on_bg_music_finished():
 	$Sound/BGMusic.play()
 
-
+func _on_sunrays_hit():
+	_has_sun_buff = true
+	print("received sun_hit")
 
 func _on_stuck_timer_timeout():
-	var unstuck_vec = Vector2(randf_range(-5, 5), randf_range(-5, 5))
-	if _retracting_seg:
-		_retracting_seg._set_pos = _retracting_seg.position + unstuck_vec
+	#var unstuck_vec = Vector2(randf_range(-5, 5), randf_range(-5, 5))
+	#if _retracting_seg:
+		#_retracting_seg._set_pos = _retracting_seg.position + unstuck_vec
+	pass
+

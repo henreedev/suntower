@@ -111,6 +111,10 @@ limit_left = -192
 limit_top = -10000
 limit_right = 192
 limit_bottom = 16
+limit_smoothed = true
+drag_vertical_enabled = true
+drag_top_margin = 0.1
+drag_bottom_margin = 0.1
 
 [node name="Sound" type="Node2D" parent="."]
 

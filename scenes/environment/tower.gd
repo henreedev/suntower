@@ -8,6 +8,6 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	#$Lights.rotation = rotate_toward($Lights.rotation, fmod($Lights.rotation + PI / 2, PI), delta * 0.1)
-	#print($Lights.rotation)
+	$SunRays.set_rotate($Lights.rotation)
 	pass
+

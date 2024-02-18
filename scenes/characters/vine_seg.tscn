@@ -7,15 +7,15 @@
 friction = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
-radius = 3.0
+radius = 2.0
 height = 8.0
 
 [node name="VineSeg" type="RigidBody2D" groups=["vine"]]
 collision_layer = 2
 collision_mask = 2
-mass = 0.03
+mass = 0.01
 physics_material_override = SubResource("PhysicsMaterial_owbri")
-gravity_scale = 0.02
+gravity_scale = 0.0
 linear_damp = 1.0
 angular_damp = 20.0
 script = ExtResource("1_d58dt")
