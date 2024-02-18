@@ -1,10 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=19 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/flower-head.png" id="2_gv2se"]
 [ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/characters/vine_seg.tscn" id="2_ircd2"]
 [ext_resource type="Texture2D" uid="uid://efh8hm4bmh1e" path="res://assets/image/flower-spike.png" id="3_0yv70"]
-[ext_resource type="AudioStream" uid="uid://w63udg01mjfc" path="res://assets/image/Output_1-2.mp3" id="5_cxtyd"]
+[ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/flower.mp3" id="5_1ssef"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0
@@ -17,10 +17,17 @@ colors = PackedColorArray(1, 0.905882, 0, 1, 0.321569, 0.760784, 0.0431373, 1)
 gradient = SubResource("Gradient_7awna")
 
 [sub_resource type="Gradient" id="Gradient_5ys7y"]
-colors = PackedColorArray(1, 0.992157, 0.847059, 1, 1, 1, 1, 1)
+colors = PackedColorArray(2, 2, 1.7, 1, 10, 10, 10, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_18684"]
 gradient = SubResource("Gradient_5ys7y")
+
+[sub_resource type="Curve" id="Curve_8gqrt"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_0bqkg"]
+curve = SubResource("Curve_8gqrt")
 
 [sub_resource type="Curve" id="Curve_dlb3u"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.546667, 0), 0.0, 0.0, 0, 0]
@@ -37,6 +44,7 @@ gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_5gt1y")
 color_ramp = SubResource("GradientTexture1D_18684")
 color_initial_ramp = SubResource("GradientTexture1D_2inft")
+emission_curve = SubResource("CurveTexture_0bqkg")
 
 [sub_resource type="Gradient" id="Gradient_q1ijr"]
 colors = PackedColorArray(0.20014, 0.451195, 0.0228207, 1, 0.262616, 0.576407, 0.0353309, 1)
@@ -119,8 +127,8 @@ drag_bottom_margin = 0.1
 [node name="Sound" type="Node2D" parent="."]
 
 [node name="BGMusic" type="AudioStreamPlayer2D" parent="Sound"]
-stream = ExtResource("5_cxtyd")
-volume_db = -10.0
+stream = ExtResource("5_1ssef")
+volume_db = -14.0
 autoplay = true
 max_distance = 10000.0
 attenuation = 0.000164636

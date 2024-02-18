@@ -2,6 +2,7 @@ extends RigidBody2D
 class_name Vine
 
 var _set_pos
+var _set_rot
 var _set_child
 var detached_child : Vine
 
@@ -38,6 +39,9 @@ func _integrate_forces(state):
 	if _set_pos:
 		state.transform = Transform2D(state.transform.get_rotation(), _set_pos)
 		_set_pos = null
+	if _set_rot:
+		state.transform = Transform2D(_set_rot, state.transform.get_origin())
+		_set_rot = null
 	if _set_child:
 		$PinJoint2D.node_b = _set_child.get_path()
 		_set_child = null

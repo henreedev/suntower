@@ -9,8 +9,8 @@ const GRAVITY = -0.2
 const vine_root_offset := Vector2(0, 5)
 
 @export var vine_seg : PackedScene
-@export var max_extended_len := 10000.0
-const BASE_MAX_EXTENDED_LEN := 10000.0
+@export var max_extended_len := 125.0
+const BASE_MAX_EXTENDED_LEN := 125.0
 
 var _has_sun_buff := false
 var _state : State = State.INACTIVE
@@ -24,6 +24,7 @@ var _extended_len := 0.0
 var _root_seg : Vine
 var _first_seg : Vine
 var _retracting_seg : Vine
+var can_extend := true
 
 @onready var _last_pos : Vector2 = position
 
@@ -36,6 +37,7 @@ var _retracting_seg : Vine
 func _ready():
 	_spawn_vine()
 	add_collision_exception_with(_player)
+	begin_inactive()
 
 func _process(delta):
 	act_on_state()
@@ -99,49 +101,50 @@ func act_on_state():
 	elif _state == State.RETRACTING:
 		lock_rotation = true
 		if _segs <= base_segments:
+			can_extend = false if not _player.touching else true 
 			begin_inactive()
 	elif _state == State.INACTIVE:
-		begin_inactive()
+		pass
 
 func begin_extending():
-	if _state == State.INACTIVE:
+	if _state == State.INACTIVE and can_extend:
 		_state = State.EXTENDING
 		$SpikedHitbox.disabled = false
 		get_tree().call_group("vine", "set_grav", 0.1)
 		stuck_timer.stop()
 		_player.gravity_scale = 1.0
 		_player.linear_damp = 0.0
+		linear_damp = 0.0
 		_has_sun_buff = false
+		_player.mass = 0.25
 
 func begin_inactive():
 	_state = State.INACTIVE
+	max_extended_len = BASE_MAX_EXTENDED_LEN # Remove sunlight bonuses
+	_extended_len = 0.0
 	physics_material_override.friction = 0.0
 	$SpikedHitbox.disabled = true
 	$AnimatedSprite2D.animation = "normal"
 	$Sparkles.emitting = false
+	$Sparkles.amount = 5
 	gravity_scale = GRAVITY
 	lock_rotation = false
-	#create_tween().tween_property(self, "rotation", 0, 0.2).set_ease(Tween.EASE_IN_OUT)
 	get_tree().call_group("vine", "set_grav", 0.03)
 	stuck_timer.stop()
 	_player.gravity_scale = 1.0
 	_player.linear_damp = 0.0
+	_player.mass = 1.0
+	linear_damp = 1.0
 
 func begin_retracting():
 	_state = State.RETRACTING
-	#var child : Vine = _root_seg.get_child_seg()
-	#_root_seg.get_node("PinJoint2D").node_b = ""
-	#var new_pos = _root_seg.position + Vector2(0, _len_per_seg / 2).rotated(global_rotation)
-	#child.position = new_pos
-	#child._set_pos = new_pos
-	#_root_seg.get_node("PinJoint2D").node_b = child.get_path()
 	get_tree().call_group("vine", "set_grav", 0.5)
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
-	max_extended_len = BASE_MAX_EXTENDED_LEN # Remove sunlight bonuses
 	physics_material_override.friction = 1.0
 	stuck_timer.start()
 	_player.gravity_scale = 0.3
-	_player.linear_damp = 50.0
+	#_player.linear_damp = 500.0
+	linear_damp = 1.0
 
 func _integrate_forces(state):
 	var pos = state.transform.get_origin()
@@ -160,26 +163,32 @@ func _integrate_forces(state):
 			dir += Vector2(-1.0, 0.0)
 		if Input.is_action_pressed("move_right"):
 			dir += Vector2(1.0, 0.0)
-		if Input.is_action_pressed("move_up"):
-			dir += Vector2(0.0, -1.0)
-		if Input.is_action_pressed("move_down"):
-			dir += Vector2(0.0, 1.0)
+		#if Input.is_action_pressed("move_up"):
+			#dir += Vector2(0.0, -1.0)
+		#if Input.is_action_pressed("move_down"):
+			#dir += Vector2(0.0, 1.0)
 		dir = dir.normalized()
-		const MOVE_STRENGTH = 115.0
-		_player.apply_central_force(dir.rotated(_player.position.angle_to_point(position) + PI / 2) * MOVE_STRENGTH) 
+		const MOVE_STRENGTH = 105.0
+		_player.apply_central_force(dir.rotated(_player.position.angle_to_point(position) + PI / 2) * MOVE_STRENGTH)
+		if Input.is_action_just_pressed("extend") and _last_pos == position:
+			var angle = pos.angle_to_point(get_global_mouse_position()) - PI / 2
+			var nudge = 10.0 * Vector2(0, 1).rotated(angle)
+			apply_central_impulse(nudge)
 	_fix_gap(state)
 
 func _display_sun_buff():
 	var tween = create_tween()
-	tween.tween_property(self, "modulate", Color(1.2, 1.2, 1.2), 0.5)
+	tween.tween_property(self, "modulate", Color(10, 10, 10), 0.5)
 	tween.tween_property(self, "modulate", Color(1., 1., 1.), 0.5)
+	$Sparkles.emitting = true
+	$Sparkles.amount = 125
 
 func _physics_process(delta):
 	var pos = position
 	match _state:
 		State.EXTENDING:
-			if _has_sun_buff and max_extended_len != BASE_MAX_EXTENDED_LEN:
-				const buff = 50.0
+			if _has_sun_buff and max_extended_len == BASE_MAX_EXTENDED_LEN:
+				const buff = 125.0
 				max_extended_len += buff
 				_display_sun_buff()
 			_extending_dist_travelled += _last_pos.distance_to(pos)
@@ -218,6 +227,7 @@ func _physics_process(delta):
 
 func _fix_gap(state):
 	if _state == State.INACTIVE or _state == State.EXTENDING:
+		#await get_tree().create_timer(0).timeout
 		const MAX_GAP = 3.0
 		var child : Vine = _root_seg.get_child_seg()
 		var gap : Vector2 = _root_seg.position - child.position
@@ -237,9 +247,10 @@ func _add_seg():
 	new_child.position = child.position
 	new_child.rotation = child.rotation
 	
-	child.position = child.position + Vector2(0, _len_per_seg / 3).rotated(global_rotation)
+	child.position = child.position + Vector2(0, _len_per_seg / 5).rotated(global_rotation)
 	child._set_pos = child.position
 	child.rotation = global_rotation
+	child._set_rot = global_rotation
 
 	_root_seg.get_node("PinJoint2D").node_b = new_child.get_path()
 	_segs += 1
@@ -249,7 +260,6 @@ func _on_bg_music_finished():
 
 func _on_sunrays_hit():
 	_has_sun_buff = true
-	print("received sun_hit")
 
 func _on_stuck_timer_timeout():
 	#var unstuck_vec = Vector2(randf_range(-5, 5), randf_range(-5, 5))

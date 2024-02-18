@@ -7,10 +7,12 @@
 size = Vector2(12, 11)
 
 [node name="Player2" type="RigidBody2D" groups=["player2"]]
-mass = 0.2
+mass = 0.25
 gravity_scale = 1.1
 center_of_mass_mode = 1
 center_of_mass = Vector2(0, 4)
+max_contacts_reported = 2
+contact_monitor = true
 script = ExtResource("1_u6jn4")
 
 [node name="Pot" type="Sprite2D" parent="."]
@@ -20,3 +22,6 @@ offset = Vector2(0, -27)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_jnhsv")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
