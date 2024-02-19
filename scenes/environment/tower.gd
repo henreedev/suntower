@@ -5,7 +5,7 @@ enum Weather {SUNNY, STORMY, WINDY, PEACEFUL}
 var _weather : Weather = Weather.SUNNY
 var _progress = 0.0
 const MAX_PROG = 3.5
-const MAX_PROG_HEIGHT = -2240.0
+const MAX_PROG_HEIGHT = -2268.0 # 3 screens of height 216 for the 3.5 sections
 const INITIAL_DAY_OFFSET = 0.1
 var _day_cycle_dur = 0.5
 var _half_day_cycle_dur = _day_cycle_dur / 2.0
