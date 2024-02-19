@@ -32,8 +32,6 @@ func _check_inputs():
 	if Input.is_action_just_pressed("extend"):
 		_head.begin_extending()
 
-
-
 func _on_body_entered(body):
 	if body.is_in_group("tower"):
 		_head.can_extend = true 

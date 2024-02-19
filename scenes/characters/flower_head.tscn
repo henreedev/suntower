@@ -73,6 +73,8 @@ radius = 6.0
 
 [node name="FlowerHead" type="RigidBody2D" groups=["flowerhead"]]
 z_index = 1
+collision_layer = 5
+collision_mask = 5
 mass = 0.1
 physics_material_override = SubResource("PhysicsMaterial_plfvk")
 center_of_mass_mode = 1
@@ -99,7 +101,7 @@ joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 1
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_g3nl5")
 animation = &"spiked"
 

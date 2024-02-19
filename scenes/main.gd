@@ -9,5 +9,6 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	_hud.max_value = _head.max_extended_len
-	_hud.value = _hud.max_value - _head._extended_len if _head.can_extend else 0
+	_hud.step = 0.01
+	_hud.max_value = _head.BASE_MAX_EXTENDED_LEN * 2
+	_hud.value = _head.max_extended_len - _head._extended_len if _head._state == FlowerHead.State.EXTENDING or _head.can_extend else 0

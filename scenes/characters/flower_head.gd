@@ -10,7 +10,9 @@ const vine_root_offset := Vector2(0, 5)
 
 @export var vine_seg : PackedScene
 @export var max_extended_len := 125.0
+#@export var max_extended_len := 1250.0
 const BASE_MAX_EXTENDED_LEN := 125.0
+#const BASE_MAX_EXTENDED_LEN := 1250.0
 
 var _has_sun_buff := false
 var _state : State = State.INACTIVE
@@ -32,6 +34,7 @@ var can_extend := true
 @onready var vine_creator : Vine = vine_seg.instantiate()
 @onready var stuck_timer : Timer = $StuckTimer
 @onready var _player : Player2 = get_tree().get_first_node_in_group("player2")
+@onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -92,16 +95,16 @@ func _spawn_vine():
 
 func act_on_state():
 	if _state == State.EXTENDING:
-		$AnimatedSprite2D.animation = "spiked"
+		$Sprite2D.animation = "spiked"
 		$Sparkles.emitting = true
 		lock_rotation = false
 		gravity_scale = 0.0
+		collision_mask = 5
 		if Input.is_action_just_released("extend"):
 			begin_retracting()
 	elif _state == State.RETRACTING:
 		lock_rotation = true
 		if _segs <= base_segments:
-			can_extend = false if not _player.touching else true 
 			begin_inactive()
 	elif _state == State.INACTIVE:
 		pass
@@ -119,12 +122,13 @@ func begin_extending():
 		_player.mass = 0.25
 
 func begin_inactive():
+	collision_mask = 1
 	_state = State.INACTIVE
 	max_extended_len = BASE_MAX_EXTENDED_LEN # Remove sunlight bonuses
 	_extended_len = 0.0
 	physics_material_override.friction = 0.0
 	$SpikedHitbox.disabled = true
-	$AnimatedSprite2D.animation = "normal"
+	$Sprite2D.animation = "normal"
 	$Sparkles.emitting = false
 	$Sparkles.amount = 5
 	gravity_scale = GRAVITY
@@ -169,21 +173,27 @@ func _integrate_forces(state):
 			#dir += Vector2(0.0, 1.0)
 		dir = dir.normalized()
 		const MOVE_STRENGTH = 105.0
-		_player.apply_central_force(dir.rotated(_player.position.angle_to_point(position) + PI / 2) * MOVE_STRENGTH)
-		if Input.is_action_just_pressed("extend") and _last_pos == position:
-			var angle = pos.angle_to_point(get_global_mouse_position()) - PI / 2
-			var nudge = 10.0 * Vector2(0, 1).rotated(angle)
-			apply_central_impulse(nudge)
+		#_player.apply_central_force(dir.rotated(_player.position.angle_to_point(position) + PI / 2) * MOVE_STRENGTH)
+		#_player.apply_central_force(dir.rotated(_player.rotation) * MOVE_STRENGTH)
+		_player.apply_central_force(dir * MOVE_STRENGTH)
+	elif _state == State.INACTIVE:
+		var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
+		const STR = 4.0
+		state.transform = Transform2D(lerp_angle(rotation, mouse_angle, STR * state.step), state.transform.get_origin())
 	_fix_gap(state)
 
 func _display_sun_buff():
 	var tween = create_tween()
+	var tween_2 = create_tween()
 	tween.tween_property(self, "modulate", Color(10, 10, 10), 0.5)
+	tween_2.tween_property(_bar, "tint_progress", Color(2, 2, 2), 0.5)
 	tween.tween_property(self, "modulate", Color(1., 1., 1.), 0.5)
+	tween_2.tween_property(_bar, "tint_progress", Color(1., 1., 1.), 0.5)
 	$Sparkles.emitting = true
 	$Sparkles.amount = 125
 
 func _physics_process(delta):
+	can_extend = _player.touching and _player.linear_velocity.length_squared() < 2.0
 	var pos = position
 	match _state:
 		State.EXTENDING:
@@ -221,6 +231,10 @@ func _physics_process(delta):
 				_retracting_seg = null
 				_root_seg.detached_child = null
 				stuck_timer.start()
+			if Input.is_action_just_pressed("extend") and _last_pos == position:
+				var angle = pos.angle_to_point(get_global_mouse_position()) - PI / 2
+				var nudge = 10.0 * Vector2(0, 1).rotated(angle)
+				apply_central_impulse(nudge)
 		State.INACTIVE:
 			pass
 	_last_pos = pos

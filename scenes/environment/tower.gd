@@ -5,9 +5,9 @@ enum Weather {SUNNY, STORMY, WINDY, PEACEFUL}
 var _weather : Weather = Weather.SUNNY
 var _progress = 0.0
 const MAX_PROG = 3.5
-const MAX_PROG_HEIGHT = -2250.0
-const INITIAL_DAY_OFFSET = 0.057
-var _day_cycle_dur = 0.33
+const MAX_PROG_HEIGHT = -2240.0
+const INITIAL_DAY_OFFSET = 0.1
+var _day_cycle_dur = 0.5
 var _half_day_cycle_dur = _day_cycle_dur / 2.0
 var _day_cycle = 0.0
 var _right_day_start_angle = deg_to_rad(115.0)
@@ -45,13 +45,13 @@ func _change_weather_on_progress():
 	if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
 		if not _right:
 			var tween := create_tween()
-			tween.tween_property($Lights, "rotation", _right_day_start_angle, 0.25)
+			tween.tween_property($Lights, "rotation", _right_day_start_angle, 2.0)
 			_right = true
 		else:
 			$Lights.rotation = lerp(_right_day_start_angle, _right_day_end_angle, _day_cycle / _half_day_cycle_dur)
 	else:
 		if _right:
-			create_tween().tween_property($Lights, "rotation", _left_day_start_angle, 0.25)
+			create_tween().tween_property($Lights, "rotation", _left_day_start_angle, 2.0)
 			_right = false
 		else:
 			$Lights.rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
