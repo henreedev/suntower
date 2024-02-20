@@ -8,12 +8,12 @@ const GRAVITY = -0.2
 const vine_root_offset := Vector2(0, 5)
 
 @export var vine_seg : PackedScene
-#@export var max_extended_len := 125.0
-#const BASE_MAX_EXTENDED_LEN := 125.0
-#const EXTEND_SPEED = 90.0
-const EXTEND_SPEED = 200.0
-@export var max_extended_len := 5000.0
-const BASE_MAX_EXTENDED_LEN := 5000.0
+@export var max_extended_len := 125.0
+const BASE_MAX_EXTENDED_LEN := 125.0
+const EXTEND_SPEED = 90.0
+#const EXTEND_SPEED = 200.0
+#@export var max_extended_len := 5000.0
+#const BASE_MAX_EXTENDED_LEN := 5000.0
 
 var _has_sun_buff := false
 var _state : State = State.INACTIVE
