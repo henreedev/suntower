@@ -304,7 +304,7 @@ script = ExtResource("3_6s52w")
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="Lights"]
 color = Color(1, 0.662745, 0.611765, 1)
-energy = 1.46
+energy = 4.5
 shadow_enabled = true
 shadow_color = Color(0, 0, 0, 1)
 
