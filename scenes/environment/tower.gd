@@ -14,6 +14,7 @@ var _right_day_start_angle = deg_to_rad(115.0)
 var _right_day_end_angle = deg_to_rad(35.0)
 var _left_day_start_angle = -_right_day_end_angle
 var _left_day_end_angle = -_right_day_start_angle
+var _goal_rotation
 var _right = true
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
 @onready var _lights : Lights = $Lights
@@ -26,6 +27,7 @@ func _ready():
 func _process(delta):
 	_change_weather_on_progress()
 	_act_on_weather_state()
+	_lerp_lights_towards_goal(delta)
 	$SunRays.set_rotate($Lights.rotation)
 	pass
 
@@ -45,16 +47,16 @@ func _change_weather_on_progress():
 	if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
 		if not _right:
 			var tween := create_tween()
-			tween.tween_property($Lights, "rotation", _right_day_start_angle, 2.0)
+			tween.tween_property(self, "_goal_rotation", _right_day_start_angle, 2.0)
 			_right = true
 		else:
-			$Lights.rotation = lerp(_right_day_start_angle, _right_day_end_angle, _day_cycle / _half_day_cycle_dur)
+			_goal_rotation = lerp(_right_day_start_angle, _right_day_end_angle, _day_cycle / _half_day_cycle_dur)
 	else:
 		if _right:
-			create_tween().tween_property($Lights, "rotation", _left_day_start_angle, 2.0)
+			create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle, 2.0)
 			_right = false
 		else:
-			$Lights.rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
+			_goal_rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 
 func _act_on_weather_state():
 	match _weather:
@@ -67,3 +69,7 @@ func _act_on_weather_state():
 			pass # Wind hitboxes in level activate
 		Weather.PEACEFUL:
 			pass # Full sun, but hard platforming
+
+func _lerp_lights_towards_goal(delta):
+	const rotation_strength = 1.5
+	$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)

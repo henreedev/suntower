@@ -100,7 +100,7 @@ func act_on_state():
 		$Sparkles.emitting = true
 		lock_rotation = false
 		gravity_scale = 0.0
-		collision_mask = 5
+		collision_mask = 13
 		if Input.is_action_just_released("extend"):
 			begin_retracting()
 	elif _state == State.RETRACTING:
@@ -123,7 +123,7 @@ func begin_extending():
 		_player.mass = 0.25
 
 func begin_inactive():
-	collision_mask = 1
+	collision_mask = 9
 	_state = State.INACTIVE
 	max_extended_len = BASE_MAX_EXTENDED_LEN # Remove sunlight bonuses
 	_extended_len = 0.0

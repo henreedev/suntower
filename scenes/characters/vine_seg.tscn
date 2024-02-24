@@ -8,7 +8,7 @@ friction = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
 radius = 3.0
-height = 8.0
+height = 12.0
 
 [node name="VineSeg" type="RigidBody2D" groups=["vine"]]
 collision_layer = 2
