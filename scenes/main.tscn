@@ -1,17 +1,20 @@
-[gd_scene load_steps=8 format=3 uid="uid://cjl7hh0kgvrb8"]
+[gd_scene load_steps=11 format=3 uid="uid://cjl7hh0kgvrb8"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_7xsfy"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
 [ext_resource type="PackedScene" uid="uid://dktse0vckd1qr" path="res://scenes/characters/flower_head.tscn" id="3_84kx1"]
 [ext_resource type="PackedScene" uid="uid://deoc0hgj85t7q" path="res://scenes/characters/Player2.tscn" id="3_k12lq"]
+[ext_resource type="Texture2D" uid="uid://m60luhdi0m00" path="res://assets/image/resource-bar.png" id="5_12pxl"]
+[ext_resource type="Shader" path="res://shaders/main.gdshader" id="5_ty0ha"]
 
 [sub_resource type="Environment" id="Environment_4vhcu"]
 background_mode = 3
 ambient_light_energy = 0.0
 reflected_light_source = 1
 glow_enabled = true
-glow_intensity = 5.15
-glow_strength = 1.15
+glow_intensity = 8.0
+glow_strength = 1.12
+glow_bloom = 0.16
 glow_hdr_threshold = 0.76
 glow_hdr_luminance_cap = 13.85
 adjustment_enabled = true
@@ -24,6 +27,13 @@ gradient = SubResource("Gradient_mmmhc")
 fill = 1
 fill_from = Vector2(0, 0.566265)
 fill_to = Vector2(1, 0.548193)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5bg1h"]
+shader = ExtResource("5_ty0ha")
+shader_parameter/VINE_COLOR = Color(0.160784, 0, 0.0980392, 1)
+shader_parameter/sun_color = Color(1, 1, 0, 1)
+shader_parameter/sun_multiplier = 1.597
+shader_parameter/delta = 0.216
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_7xsfy")
@@ -39,17 +49,39 @@ position = Vector2(0, -5)
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
 position = Vector2(0, -55)
 
-[node name="HUD" type="CanvasLayer" parent="."]
-
-[node name="TextureProgressBar" type="TextureProgressBar" parent="HUD" groups=["hud"]]
+[node name="HUD" type="Control" parent="."]
+visible = false
+layout_mode = 3
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 40.0
+offset_top = -55.0
+offset_bottom = -55.0
 grow_horizontal = 2
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="HUD" groups=["hud"]]
+layout_mode = 1
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
 step = 0.1
 value = 100.0
 fill_mode = 4
 texture_progress = SubResource("GradientTexture2D_p0kux")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_5bg1h")
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -71.0
+offset_top = 1.0
+offset_right = -23.0
+offset_bottom = 17.0
+grow_horizontal = 2
+scale = Vector2(3, 3)
+value = 100.0
+texture_progress = ExtResource("5_12pxl")

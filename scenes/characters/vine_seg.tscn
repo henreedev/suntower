@@ -7,8 +7,8 @@
 friction = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
-radius = 3.0
-height = 12.0
+radius = 5.0
+height = 16.0
 
 [node name="VineSeg" type="RigidBody2D" groups=["vine"]]
 collision_layer = 2
@@ -21,14 +21,14 @@ angular_damp = 20.0
 script = ExtResource("1_d58dt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-5.96046e-08, 0.5)
+position = Vector2(0, 0.5)
 scale = Vector2(1, 0.5)
 texture = ExtResource("1_fkaj8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
 shape = SubResource("CapsuleShape2D_nmj1a")
 
 [node name="PinJoint2D" type="PinJoint2D" parent="."]
-visible = false
 position = Vector2(0, 1)
 node_a = NodePath("..")

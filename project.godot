@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 window/stretch/mode="canvas_items"
 
+[gui]
+
+theme/custom="res://scenes/menus/themes/menu_theme.tres"
+theme/custom_font="res://assets/font/m5x7.ttf"
+
 [input]
 
 move_left={

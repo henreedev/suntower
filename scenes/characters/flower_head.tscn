@@ -1,9 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=23 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/flower-head.png" id="2_gv2se"]
 [ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/characters/vine_seg.tscn" id="2_ircd2"]
-[ext_resource type="Texture2D" uid="uid://efh8hm4bmh1e" path="res://assets/image/flower-spike.png" id="3_0yv70"]
+[ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/flower-extend.png" id="4_ski6y"]
 [ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/flower.mp3" id="5_1ssef"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
@@ -49,6 +49,22 @@ emission_curve = SubResource("CurveTexture_0bqkg")
 [sub_resource type="Gradient" id="Gradient_q1ijr"]
 colors = PackedColorArray(0.20014, 0.451195, 0.0228207, 1, 0.262616, 0.576407, 0.0353309, 1)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_v0jr7"]
+atlas = ExtResource("4_ski6y")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_badjk"]
+atlas = ExtResource("4_ski6y")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c00s3"]
+atlas = ExtResource("4_ski6y")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_larte"]
+atlas = ExtResource("4_ski6y")
+region = Rect2(192, 0, 64, 64)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_g3nl5"]
 animations = [{
 "frames": [{
@@ -61,11 +77,20 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_0yv70")
+"texture": SubResource("AtlasTexture_v0jr7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_badjk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c00s3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_larte")
 }],
 "loop": true,
 "name": &"spiked",
-"speed": 0.0
+"speed": 10.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jnh0x"]
@@ -139,5 +164,7 @@ panning_strength = 0.0
 [node name="StuckTimer" type="Timer" parent="."]
 wait_time = 0.5
 
+[connection signal="animation_finished" from="Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
+[connection signal="animation_looped" from="Sprite2D" to="." method="_on_sprite_2d_animation_looped"]
 [connection signal="finished" from="Sound/BGMusic" to="." method="_on_bg_music_finished"]
 [connection signal="timeout" from="StuckTimer" to="." method="_on_stuck_timer_timeout"]

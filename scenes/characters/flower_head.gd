@@ -11,6 +11,7 @@ const vine_root_offset := Vector2(0, 5)
 @export var max_extended_len := 125.0
 const BASE_MAX_EXTENDED_LEN := 125.0
 const EXTEND_SPEED = 90.0
+var extend_speed_mod = 1.0
 #const EXTEND_SPEED = 200.0
 #@export var max_extended_len := 5000.0
 #const BASE_MAX_EXTENDED_LEN := 5000.0
@@ -28,6 +29,7 @@ var _root_seg : Vine
 var _first_seg : Vine
 var _retracting_seg : Vine
 var can_extend := true
+var _can_nudge = false
 
 @onready var _last_pos : Vector2 = position
 
@@ -36,7 +38,7 @@ var can_extend := true
 @onready var stuck_timer : Timer = $StuckTimer
 @onready var _player : Player2 = get_tree().get_first_node_in_group("player2")
 @onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
-
+@onready var _sprite : AnimatedSprite2D = $Sprite2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_spawn_vine()
@@ -65,6 +67,7 @@ func _spawn_vine():
 	var first_vine_pos = _player.position + _player.vine_root_offset
 	var final_vine_pos = position + vine_root_offset 
 	var diff = final_vine_pos - first_vine_pos
+	print("Starting length: " + str(diff.length()))
 	var adj := 1.5
 	_len_per_seg = diff.length() / base_segments * adj
 	var curr_seg : Vine = null
@@ -96,11 +99,6 @@ func _spawn_vine():
 
 func act_on_state():
 	if _state == State.EXTENDING:
-		$Sprite2D.animation = "spiked"
-		$Sparkles.emitting = true
-		lock_rotation = false
-		gravity_scale = 0.0
-		collision_mask = 13
 		if Input.is_action_just_released("extend"):
 			begin_retracting()
 	elif _state == State.RETRACTING:
@@ -113,6 +111,11 @@ func act_on_state():
 func begin_extending():
 	if _state == State.INACTIVE and can_extend:
 		_state = State.EXTENDING
+		_sprite.animation = "spiked"
+		_sprite.play()
+		$Sparkles.emitting = true
+		lock_rotation = false
+		collision_mask = 13
 		$SpikedHitbox.disabled = false
 		get_tree().call_group("vine", "set_grav", 0.1)
 		stuck_timer.stop()
@@ -121,6 +124,10 @@ func begin_extending():
 		linear_damp = 0.0
 		_has_sun_buff = false
 		_player.mass = 0.25
+		extend_speed_mod = 0.3
+		create_tween().tween_property(self, "extend_speed_mod", 1.0, 0.3)
+		#await get_tree().create_timer(0.3).timeout
+		#extend_speed_mod = 1.0
 
 func begin_inactive():
 	collision_mask = 9
@@ -129,7 +136,7 @@ func begin_inactive():
 	_extended_len = 0.0
 	physics_material_override.friction = 0.0
 	$SpikedHitbox.disabled = true
-	$Sprite2D.animation = "normal"
+	_sprite.animation = "normal"
 	$Sparkles.emitting = false
 	$Sparkles.amount = 5
 	gravity_scale = GRAVITY
@@ -149,7 +156,8 @@ func begin_retracting():
 	stuck_timer.start()
 	_player.gravity_scale = 0.3
 	#_player.linear_damp = 500.0
-	linear_damp = 1.0
+	linear_damp = 10.0
+	gravity_scale = 0.2
 
 func _integrate_forces(state):
 	var pos = state.transform.get_origin()
@@ -161,21 +169,15 @@ func _integrate_forces(state):
 		_target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
 		state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED), state.transform.get_origin()) 
 		state.angular_velocity = 0
-		state.linear_velocity = Vector2(0, -EXTEND_SPEED).rotated(rotation)
+		state.linear_velocity = Vector2(0, -EXTEND_SPEED * extend_speed_mod).rotated(rotation)
 	elif _state == State.RETRACTING:
 		var dir = Vector2(0.0, 0.0)
 		if Input.is_action_pressed("move_left"):
 			dir += Vector2(-1.0, 0.0)
 		if Input.is_action_pressed("move_right"):
 			dir += Vector2(1.0, 0.0)
-		#if Input.is_action_pressed("move_up"):
-			#dir += Vector2(0.0, -1.0)
-		#if Input.is_action_pressed("move_down"):
-			#dir += Vector2(0.0, 1.0)
 		dir = dir.normalized()
 		const MOVE_STRENGTH = 105.0
-		#_player.apply_central_force(dir.rotated(_player.position.angle_to_point(position) + PI / 2) * MOVE_STRENGTH)
-		#_player.apply_central_force(dir.rotated(_player.rotation) * MOVE_STRENGTH)
 		_player.apply_central_force(dir * MOVE_STRENGTH)
 	elif _state == State.INACTIVE:
 		var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
@@ -186,9 +188,9 @@ func _integrate_forces(state):
 func _display_sun_buff():
 	var tween = create_tween()
 	var tween_2 = create_tween()
-	tween.tween_property(self, "modulate", Color(10, 10, 10), 0.5)
+	tween.tween_property(self, "modulate", Color(4, 4, 4), 0.5)
 	tween_2.tween_property(_bar, "tint_progress", Color(2, 2, 2), 0.5)
-	tween.tween_property(self, "modulate", Color(1., 1., 1.), 0.5)
+	tween.tween_property(self, "modulate", Color(2.0, 2.0, 2.0), 1.5)
 	tween_2.tween_property(_bar, "tint_progress", Color(1., 1., 1.), 0.5)
 	$Sparkles.emitting = true
 	$Sparkles.amount = 125
@@ -217,13 +219,15 @@ func _physics_process(delta):
 				_root_seg.get_node("PinJoint2D").node_b = ""
 				_root_seg.detached_child = _retracting_seg
 			var retract_dir = _retracting_seg.position.direction_to(_root_seg.position)
-			const FORCE_STRENGTH = 125.0
+			var retract_dir_2 = _root_seg.position.direction_to(_retracting_seg.get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().position)
+			const FORCE_STRENGTH = 135.0
 			var force = retract_dir * FORCE_STRENGTH
+			var force_2 = retract_dir_2 * FORCE_STRENGTH
 			_retracting_seg.apply_central_force(force)
-			_retracting_seg.get_child_seg().apply_central_force(force)
-			_retracting_seg.get_child_seg().get_child_seg().apply_central_force(force)
-			_root_seg.apply_central_force(retract_dir.rotated(PI) * FORCE_STRENGTH)
-			const MIN_DIST = 6
+			_retracting_seg.get_child_seg().apply_central_force(force / 2)
+			_retracting_seg.get_child_seg().get_child_seg().apply_central_force(force / 2)
+			_root_seg.apply_central_force(force.rotated(PI) * 0.3 + force_2 * 0.35)
+			const MIN_DIST = 4
 			if _retracting_seg.position.distance_to(_root_seg.position) < MIN_DIST:
 				_retracting_seg.queue_free()
 				_root_seg.get_node("PinJoint2D").node_b = _retracting_seg.get_child_seg().get_path()
@@ -231,25 +235,29 @@ func _physics_process(delta):
 				_segs -= 1
 				_retracting_seg = null
 				_root_seg.detached_child = null
+			if not _last_pos == position:
 				stuck_timer.start()
-			if Input.is_action_just_pressed("extend") and _last_pos == position:
+				_can_nudge = false
+			if Input.is_action_just_pressed("extend") and _can_nudge:
 				var angle = pos.angle_to_point(get_global_mouse_position()) - PI / 2
-				var nudge = 10.0 * Vector2(0, 1).rotated(angle)
+				var nudge = 15.0 * Vector2(0, 1).rotated(angle)
 				apply_central_impulse(nudge)
+				_can_nudge = false
 		State.INACTIVE:
 			pass
 	_last_pos = pos
 
 func _fix_gap(state):
 	if _state == State.INACTIVE or _state == State.EXTENDING:
-		#await get_tree().create_timer(0).timeout
 		const MAX_GAP = 3.0
 		var child : Vine = _root_seg.get_child_seg()
 		var gap : Vector2 = _root_seg.position - child.position
 		if gap.length() > MAX_GAP:
 			_root_seg.get_node("PinJoint2D").node_b = ""
-			child.position += gap / 0.75
+			child.position += gap # / 0.75
 			child._set_pos = child.position
+			child.rotation = global_rotation
+			child._set_rot = global_rotation
 			_root_seg.set_child(child)
 
 func _add_seg():
@@ -262,13 +270,20 @@ func _add_seg():
 	new_child.position = child.position
 	new_child.rotation = child.rotation
 	
-	child.position = child.position + Vector2(0, _len_per_seg / 5).rotated(global_rotation)
+	child.position = child.position + Vector2(0, _len_per_seg / 1.5).rotated(global_rotation)
 	child._set_pos = child.position
 	child.rotation = global_rotation
 	child._set_rot = global_rotation
 
 	_root_seg.get_node("PinJoint2D").node_b = new_child.get_path()
 	_segs += 1
+	
+	#print("new child:")
+	#print("new child: rotation = " + str(new_child.rotation_degrees))
+	#print("new child: position = " + str(new_child.position))
+	#print("old child:  ")
+	#print("old child: rotation = " + str(child.rotation_degrees))
+	#print("old child: position = " + str(child.position))
 
 func _on_bg_music_finished():
 	$Sound/BGMusic.play()
@@ -277,8 +292,11 @@ func _on_sunrays_hit():
 	_has_sun_buff = true
 
 func _on_stuck_timer_timeout():
-	#var unstuck_vec = Vector2(randf_range(-5, 5), randf_range(-5, 5))
-	#if _retracting_seg:
-		#_retracting_seg._set_pos = _retracting_seg.position + unstuck_vec
+	_can_nudge = true
 	pass
 
+
+
+func _on_sprite_2d_animation_looped():
+	_sprite.frame = 3
+	_sprite.pause()
