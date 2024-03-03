@@ -2,3 +2,6 @@
 .godot/
 # Export folder
 export/
+
+# Export presets
+export_presets.cfg
