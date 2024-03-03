@@ -5,12 +5,17 @@ var _set_pos
 var _set_rot
 var _set_child
 var detached_child : Vine
+@onready var sprite_scale = $Sprite2D.scale
 
 var this_scene : PackedScene = preload("res://scenes/characters/vine_seg.tscn")
 var _rotation_match_node
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
+	
+
+func _process(delta):
+	$Sprite2D.scale = sprite_scale
 
 func create(child : RigidBody2D):
 	var vine : Vine = this_scene.instantiate()
@@ -22,8 +27,6 @@ func set_child (child : RigidBody2D):
 
 func set_grav(grav : float):
 	gravity_scale = grav
-
-
 
 func get_child_seg():
 	if detached_child: return detached_child
@@ -48,6 +51,3 @@ func _integrate_forces(state):
 	if _rotation_match_node:
 		state.transform = Transform2D(_rotation_match_node.rotation, state.transform.get_origin())
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

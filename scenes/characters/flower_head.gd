@@ -16,6 +16,9 @@ var extend_speed_mod = 1.0
 #@export var max_extended_len := 5000.0
 #const BASE_MAX_EXTENDED_LEN := 5000.0
 
+
+var _animating = false
+
 var _has_sun_buff := false
 var _state : State = State.INACTIVE
 var base_segments := 15
@@ -30,6 +33,7 @@ var _first_seg : Vine
 var _retracting_seg : Vine
 var can_extend := true
 var _can_nudge = false
+var sun_buff_tween : Tween
 
 @onready var _last_pos : Vector2 = position
 
@@ -43,12 +47,53 @@ var _can_nudge = false
 func _ready():
 	_spawn_vine()
 	add_collision_exception_with(_player)
+	_animating = true
 	begin_inactive()
+	play_spawn_animation()
 
 func _process(delta):
-	act_on_state()
 	_draw_line()
 	_root_seg.make_self_exception()
+	if not _animating:
+		act_on_state()
+
+func play_spawn_animation():
+	# Make vines and line invisible, tween fade them in
+	get_tree().set_group("vine", "modulate", Color(1.0, 1.0, 1.0, 0.0))
+	get_tree().set_group("vine", "linear_damp", 100.0)
+	$Vines/Line2D.modulate = Color(1.0,1.0,1.0,0.0)
+	$Sprite2D.modulate = Color(1.0,1.0,1.0,0.0)
+	$Camera2D.zoom = Vector2(5.95, 5.95)
+	$Camera2D.offset = Vector2(0, 6)
+	#create_tween().tween_property($Camera2D, "zoom", Vector2(6.0, 6.0), 2.0).set_trans(Tween.TRANS_SINE) 
+	var offset_tween = create_tween()
+	offset_tween.tween_property($Camera2D, "offset", Vector2(-80, 6), 1.5).from(Vector2(0, 6)).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
+	offset_tween.tween_property($Camera2D, "offset", Vector2(80, 6), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
+	offset_tween.tween_property($Camera2D, "offset", Vector2(0, 6), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
+	# 7 seconds of camera panning 
+	await get_tree().create_timer(6.7).timeout
+	var delay = 1.95
+	var i = -1
+	for vine in get_tree().get_nodes_in_group("vine"):
+		i = i + 1
+		await get_tree().create_timer(delay * 1.0 / (i+3)).timeout
+		var tween = create_tween().set_parallel(true)
+		tween.tween_property(vine, "modulate", Color(1.0,1.0,1.0,1.0), 0.5)
+		var sprite_scale = Vector2(1.0, 1.4)
+		tween.tween_property(vine, "sprite_scale", sprite_scale, 0.5).from(Vector2(1.0, 0.0)).set_ease(Tween.EASE_IN_OUT)
+	for vine in get_tree().get_nodes_in_group("vine"):
+		create_tween().tween_property(vine, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
+	create_tween().tween_property($Vines/Line2D, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
+	create_tween().tween_property($Sprite2D, "scale", Vector2(1.0, 1.0), 0.4).from(Vector2(0.5, 0.5)).set_trans(Tween.TRANS_SINE)
+	create_tween().tween_property($Sprite2D, "offset", Vector2(0.0, 0.0), 0.4).from(Vector2(0, 5)).set_trans(Tween.TRANS_SINE)
+	create_tween().tween_property($Sprite2D, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
+	get_tree().set_group("vine", "sprite_scale", Vector2(1.0, 0.5))
+	# Finish animation
+	create_tween().tween_property($Camera2D,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+	create_tween().tween_property($Camera2D, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
+	await get_tree().create_timer(0.5).timeout
+	_animating = false
+	get_tree().set_group("vine", "linear_damp", 1.0)
 
 func _connect_sunrays():
 	for sunrays in get_tree().get_nodes_in_group("sunrays"):
@@ -99,7 +144,7 @@ func _spawn_vine():
 
 func act_on_state():
 	if _state == State.EXTENDING:
-		if Input.is_action_just_released("extend"):
+		if Input.is_action_just_released("extend") and not _animating:
 			begin_retracting()
 	elif _state == State.RETRACTING:
 		lock_rotation = true
@@ -109,7 +154,7 @@ func act_on_state():
 		pass
 
 func begin_extending():
-	if _state == State.INACTIVE and can_extend:
+	if _state == State.INACTIVE and can_extend and not _animating:
 		_state = State.EXTENDING
 		_sprite.animation = "spiked"
 		_sprite.play()
@@ -122,21 +167,26 @@ func begin_extending():
 		_player.gravity_scale = 1.0
 		_player.linear_damp = 0.0
 		linear_damp = 0.0
-		_has_sun_buff = false
 		_player.mass = 0.25
 		extend_speed_mod = 0.3
 		create_tween().tween_property(self, "extend_speed_mod", 1.0, 0.3)
-		#await get_tree().create_timer(0.3).timeout
-		#extend_speed_mod = 1.0
 
 func begin_inactive():
+	_sprite.animation = "retract"
+	_sprite.frame = 0
+	_sprite.play()
+	_has_sun_buff = false
+	if sun_buff_tween:
+		sun_buff_tween.kill()
+		print("killed tween")
+	sun_buff_tween = create_tween()
+	sun_buff_tween.tween_property(self, "modulate", Color(1.0, 1.0, 1.0), 0.6)
 	collision_mask = 9
 	_state = State.INACTIVE
 	max_extended_len = BASE_MAX_EXTENDED_LEN # Remove sunlight bonuses
 	_extended_len = 0.0
 	physics_material_override.friction = 0.0
 	$SpikedHitbox.disabled = true
-	_sprite.animation = "normal"
 	$Sparkles.emitting = false
 	$Sparkles.amount = 5
 	gravity_scale = GRAVITY
@@ -160,92 +210,96 @@ func begin_retracting():
 	gravity_scale = 0.2
 
 func _integrate_forces(state):
-	var pos = state.transform.get_origin()
-	var rot = state.transform.get_rotation()
-	if _set_transform:
-		state.transform = _set_transform
-		_set_transform = null
-	if _state == State.EXTENDING:
-		_target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
-		state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED), state.transform.get_origin()) 
-		state.angular_velocity = 0
-		state.linear_velocity = Vector2(0, -EXTEND_SPEED * extend_speed_mod).rotated(rotation)
-	elif _state == State.RETRACTING:
-		var dir = Vector2(0.0, 0.0)
-		if Input.is_action_pressed("move_left"):
-			dir += Vector2(-1.0, 0.0)
-		if Input.is_action_pressed("move_right"):
-			dir += Vector2(1.0, 0.0)
-		dir = dir.normalized()
-		const MOVE_STRENGTH = 105.0
-		_player.apply_central_force(dir * MOVE_STRENGTH)
-	elif _state == State.INACTIVE:
-		var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
-		const STR = 4.0
-		state.transform = Transform2D(lerp_angle(rotation, mouse_angle, STR * state.step), state.transform.get_origin())
-	_fix_gap(state)
+	if not _animating:
+		var pos = state.transform.get_origin()
+		var rot = state.transform.get_rotation()
+		if _set_transform:
+			state.transform = _set_transform
+			_set_transform = null
+		if _state == State.EXTENDING:
+			_target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
+			state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED), state.transform.get_origin()) 
+			state.angular_velocity = 0
+			state.linear_velocity = Vector2(0, -EXTEND_SPEED * extend_speed_mod).rotated(rotation)
+		elif _state == State.RETRACTING:
+			var dir = Vector2(0.0, 0.0)
+			if Input.is_action_pressed("move_left") and not _animating:
+				dir += Vector2(-1.0, 0.0)
+			if Input.is_action_pressed("move_right") and not _animating:
+				dir += Vector2(1.0, 0.0)
+			dir = dir.normalized()
+			const MOVE_STRENGTH = 105.0
+			_player.apply_central_force(dir * MOVE_STRENGTH)
+		elif _state == State.INACTIVE:
+			var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
+			const STR = 4.0
+			state.transform = Transform2D(lerp_angle(rotation, mouse_angle, STR * state.step), state.transform.get_origin())
+		_fix_gap(state)
 
 func _display_sun_buff():
-	var tween = create_tween()
+	if sun_buff_tween:
+		sun_buff_tween.kill()
+	sun_buff_tween = create_tween()
 	var tween_2 = create_tween()
-	tween.tween_property(self, "modulate", Color(4, 4, 4), 0.5)
+	sun_buff_tween.tween_property(self, "modulate", Color(4, 4, 4), 0.5)
 	tween_2.tween_property(_bar, "tint_progress", Color(2, 2, 2), 0.5)
-	tween.tween_property(self, "modulate", Color(2.0, 2.0, 2.0), 1.5)
+	sun_buff_tween.tween_property(self, "modulate", Color(2.0, 2.0, 2.0), 1.5)
 	tween_2.tween_property(_bar, "tint_progress", Color(1., 1., 1.), 0.5)
 	$Sparkles.emitting = true
 	$Sparkles.amount = 125
 
 func _physics_process(delta):
-	can_extend = _player.touching and _player.linear_velocity.length_squared() < 2.0
-	var pos = position
-	match _state:
-		State.EXTENDING:
-			if _has_sun_buff and max_extended_len == BASE_MAX_EXTENDED_LEN:
-				const buff = 125.0
-				max_extended_len += buff
-				_display_sun_buff()
-			_extending_dist_travelled += _last_pos.distance_to(pos)
-			if _extending_dist_travelled > _len_per_seg:
-				_add_seg()
-				_extended_len += _len_per_seg
-				_extending_dist_travelled -= _len_per_seg
-			if _extended_len > max_extended_len:
-				begin_retracting()
-		State.RETRACTING:
-			if not _retracting_seg:
-				# Detach node near root, and propel it towards root
-				_retracting_seg = _root_seg.get_child_seg()
-				_root_seg.get_node("PinJoint2D").softness = 0.0
-				_root_seg.get_node("PinJoint2D").node_b = ""
-				_root_seg.detached_child = _retracting_seg
-			var retract_dir = _retracting_seg.position.direction_to(_root_seg.position)
-			var retract_dir_2 = _root_seg.position.direction_to(_retracting_seg.get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().position)
-			const FORCE_STRENGTH = 135.0
-			var force = retract_dir * FORCE_STRENGTH
-			var force_2 = retract_dir_2 * FORCE_STRENGTH
-			_retracting_seg.apply_central_force(force)
-			_retracting_seg.get_child_seg().apply_central_force(force / 2)
-			_retracting_seg.get_child_seg().get_child_seg().apply_central_force(force / 2)
-			_root_seg.apply_central_force(force.rotated(PI) * 0.3 + force_2 * 0.35)
-			const MIN_DIST = 4
-			if _retracting_seg.position.distance_to(_root_seg.position) < MIN_DIST:
-				_retracting_seg.queue_free()
-				_root_seg.get_node("PinJoint2D").node_b = _retracting_seg.get_child_seg().get_path()
-				_root_seg.get_node("PinJoint2D").softness = 0.0
-				_segs -= 1
-				_retracting_seg = null
-				_root_seg.detached_child = null
-			if not _last_pos == position:
-				stuck_timer.start()
-				_can_nudge = false
-			if Input.is_action_just_pressed("extend") and _can_nudge:
-				var angle = pos.angle_to_point(get_global_mouse_position()) - PI / 2
-				var nudge = 15.0 * Vector2(0, 1).rotated(angle)
-				apply_central_impulse(nudge)
-				_can_nudge = false
-		State.INACTIVE:
-			pass
-	_last_pos = pos
+	if not _animating:
+		can_extend = _player.touching and _player.linear_velocity.length_squared() < 2.0
+		var pos = position
+		match _state:
+			State.EXTENDING:
+				if _has_sun_buff and max_extended_len == BASE_MAX_EXTENDED_LEN:
+					const buff = 125.0
+					max_extended_len += buff
+					_display_sun_buff()
+				_extending_dist_travelled += _last_pos.distance_to(pos)
+				if _extending_dist_travelled > _len_per_seg:
+					_add_seg()
+					_extended_len += _len_per_seg
+					_extending_dist_travelled -= _len_per_seg
+				if _extended_len > max_extended_len:
+					begin_retracting()
+			State.RETRACTING:
+				if not _retracting_seg:
+					# Detach node near root, and propel it towards root
+					_retracting_seg = _root_seg.get_child_seg()
+					_root_seg.get_node("PinJoint2D").softness = 0.0
+					_root_seg.get_node("PinJoint2D").node_b = ""
+					_root_seg.detached_child = _retracting_seg
+				var retract_dir = _retracting_seg.position.direction_to(_root_seg.position)
+				var retract_dir_2 = _root_seg.position.direction_to(_retracting_seg.get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().position)
+				const FORCE_STRENGTH = 135.0
+				var force = retract_dir * FORCE_STRENGTH
+				var force_2 = retract_dir_2 * FORCE_STRENGTH
+				_retracting_seg.apply_central_force(force)
+				_retracting_seg.get_child_seg().apply_central_force(force / 2)
+				_retracting_seg.get_child_seg().get_child_seg().apply_central_force(force / 2)
+				_root_seg.apply_central_force(force.rotated(PI) * 0.3 + force_2 * 0.35)
+				const MIN_DIST = 4
+				if _retracting_seg.position.distance_to(_root_seg.position) < MIN_DIST:
+					_retracting_seg.queue_free()
+					_root_seg.get_node("PinJoint2D").node_b = _retracting_seg.get_child_seg().get_path()
+					_root_seg.get_node("PinJoint2D").softness = 0.0
+					_segs -= 1
+					_retracting_seg = null
+					_root_seg.detached_child = null
+				if not _last_pos == position:
+					stuck_timer.start()
+					_can_nudge = false
+				if Input.is_action_just_pressed("extend") and _can_nudge and not _animating:
+					var angle = pos.angle_to_point(get_global_mouse_position()) - PI / 2
+					var nudge = 15.0 * Vector2(0, 1).rotated(angle)
+					apply_central_impulse(nudge)
+					_can_nudge = false
+			State.INACTIVE:
+				pass
+		_last_pos = pos
 
 func _fix_gap(state):
 	if _state == State.INACTIVE or _state == State.EXTENDING:
@@ -254,7 +308,7 @@ func _fix_gap(state):
 		var gap : Vector2 = _root_seg.position - child.position
 		if gap.length() > MAX_GAP:
 			_root_seg.get_node("PinJoint2D").node_b = ""
-			child.position += gap # / 0.75
+			child.position += gap 
 			child._set_pos = child.position
 			child.rotation = global_rotation
 			child._set_rot = global_rotation
@@ -277,19 +331,13 @@ func _add_seg():
 
 	_root_seg.get_node("PinJoint2D").node_b = new_child.get_path()
 	_segs += 1
-	
-	#print("new child:")
-	#print("new child: rotation = " + str(new_child.rotation_degrees))
-	#print("new child: position = " + str(new_child.position))
-	#print("old child:  ")
-	#print("old child: rotation = " + str(child.rotation_degrees))
-	#print("old child: position = " + str(child.position))
 
 func _on_bg_music_finished():
 	$Sound/BGMusic.play()
 
 func _on_sunrays_hit():
-	_has_sun_buff = true
+	if _state == State.EXTENDING:
+		_has_sun_buff = true
 
 func _on_stuck_timer_timeout():
 	_can_nudge = true
@@ -298,5 +346,8 @@ func _on_stuck_timer_timeout():
 
 
 func _on_sprite_2d_animation_looped():
-	_sprite.frame = 3
-	_sprite.pause()
+	if _sprite.animation == "spiked":
+		_sprite.frame = 3
+		_sprite.pause()
+	elif _sprite.animation == "retract":
+		_sprite.animation = "normal"

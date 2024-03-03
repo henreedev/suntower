@@ -44,10 +44,10 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-position = Vector2(0, -5)
+position = Vector2(0, 2)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-position = Vector2(0, -55)
+position = Vector2(0, -48)
 
 [node name="HUD" type="Control" parent="."]
 visible = false
@@ -71,6 +71,7 @@ fill_mode = 4
 texture_progress = SubResource("GradientTexture2D_p0kux")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="TextureProgressBar" type="TextureProgressBar" parent="CanvasLayer"]
 material = SubResource("ShaderMaterial_5bg1h")

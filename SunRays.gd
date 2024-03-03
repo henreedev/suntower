@@ -40,9 +40,10 @@ func _physics_process(delta):
 func _check_player_hit():
 	for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
 		var hit = ray.get_collider()
-		if hit is FlowerHead or hit is Vine or hit.is_in_group("flowerhead") if hit else false:
-			var tween : Tween = create_tween()
-			tween.tween_property(hit.get_node("Sprite2D"), "modulate", Color(1.0, 5.0, 1.0), 0.25)
-			tween.tween_property(hit.get_node("Sprite2D"), "modulate", Color(1.0, 1.0, 1.0), 0.25)
+		if hit is FlowerHead or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
+			if not _player._animating:
+				var tween : Tween = create_tween()
+				tween.tween_property(hit.get_node("Sprite2D"), "modulate", Color(1.0, 5.0, 1.0), 0.25)
+				tween.tween_property(hit.get_node("Sprite2D"), "modulate", Color(1.0, 1.0, 1.0), 0.25)
 			return true
 	return false
