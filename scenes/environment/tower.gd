@@ -14,7 +14,7 @@ var _right_day_start_angle = deg_to_rad(115.0)
 var _right_day_end_angle = deg_to_rad(35.0)
 var _left_day_start_angle = -_right_day_end_angle
 var _left_day_end_angle = -_right_day_start_angle
-var _goal_rotation
+var _goal_rotation = _right_day_start_angle
 var _right = true
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
 @onready var _lights : Lights = $Lights

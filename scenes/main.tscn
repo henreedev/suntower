@@ -14,9 +14,9 @@ reflected_light_source = 1
 glow_enabled = true
 glow_intensity = 8.0
 glow_strength = 1.12
-glow_bloom = 0.16
-glow_hdr_threshold = 0.76
-glow_hdr_luminance_cap = 13.85
+glow_bloom = 0.25
+glow_hdr_threshold = 0.75
+glow_hdr_luminance_cap = 21.94
 adjustment_enabled = true
 
 [sub_resource type="Gradient" id="Gradient_mmmhc"]
@@ -44,10 +44,10 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-position = Vector2(0, 2)
+position = Vector2(-71, -295)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-position = Vector2(0, -48)
+position = Vector2(-71, -345)
 
 [node name="HUD" type="Control" parent="."]
 visible = false

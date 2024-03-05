@@ -9,6 +9,7 @@ const vine_root_offset := Vector2(0, 5)
 
 @export var vine_seg : PackedScene
 @export var max_extended_len := 125.0
+@export var play_animation_on_start := false
 const BASE_MAX_EXTENDED_LEN := 125.0
 const EXTEND_SPEED = 90.0
 var extend_speed_mod = 1.0
@@ -47,9 +48,11 @@ var sun_buff_tween : Tween
 func _ready():
 	_spawn_vine()
 	add_collision_exception_with(_player)
-	_animating = true
+	if play_animation_on_start:
+		_animating = true
 	begin_inactive()
-	play_spawn_animation()
+	if play_animation_on_start:
+		play_spawn_animation()
 
 func _process(delta):
 	_draw_line()
@@ -178,7 +181,6 @@ func begin_inactive():
 	_has_sun_buff = false
 	if sun_buff_tween:
 		sun_buff_tween.kill()
-		print("killed tween")
 	sun_buff_tween = create_tween()
 	sun_buff_tween.tween_property(self, "modulate", Color(1.0, 1.0, 1.0), 0.6)
 	collision_mask = 9
@@ -234,6 +236,9 @@ func _integrate_forces(state):
 			var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
 			const STR = 4.0
 			state.transform = Transform2D(lerp_angle(rotation, mouse_angle, STR * state.step), state.transform.get_origin())
+			const STR2 = 20.0
+			var force_toward_mouse = Vector2(0, -1).rotated(mouse_angle) * STR2
+			apply_central_force(force_toward_mouse)
 		_fix_gap(state)
 
 func _display_sun_buff():
@@ -289,14 +294,14 @@ func _physics_process(delta):
 					_segs -= 1
 					_retracting_seg = null
 					_root_seg.detached_child = null
-				if not _last_pos == position:
-					stuck_timer.start()
-					_can_nudge = false
-				if Input.is_action_just_pressed("extend") and _can_nudge and not _animating:
-					var angle = pos.angle_to_point(get_global_mouse_position()) - PI / 2
-					var nudge = 15.0 * Vector2(0, 1).rotated(angle)
-					apply_central_impulse(nudge)
-					_can_nudge = false
+				#if not _last_pos == position:
+					#stuck_timer.start()
+					#_can_nudge = false
+				#if Input.is_action_just_pressed("extend") and _can_nudge and not _animating:
+					#var angle = pos.angle_to_point(get_global_mouse_position()) - PI / 2
+					#var nudge = 15.0 * Vector2(0, 1).rotated(angle)
+					#apply_central_impulse(nudge)
+					#_can_nudge = false
 			State.INACTIVE:
 				pass
 		_last_pos = pos
