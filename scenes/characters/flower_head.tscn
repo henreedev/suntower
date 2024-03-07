@@ -188,7 +188,7 @@ drag_bottom_margin = 0.1
 
 [node name="BGMusic" type="AudioStreamPlayer2D" parent="Sound"]
 stream = ExtResource("5_1ssef")
-volume_db = -14.0
+volume_db = -16.0
 autoplay = true
 max_distance = 10000.0
 attenuation = 0.000164636
