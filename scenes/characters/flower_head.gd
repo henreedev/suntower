@@ -50,6 +50,7 @@ var sun_buff_tween : Tween
 @onready var _sprite : AnimatedSprite2D = $Sprite2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	set_volume()
 	_spawn_vine()
 	add_collision_exception_with(_player)
 	if play_animation_on_start:
@@ -70,13 +71,20 @@ func play_spawn_animation():
 	get_tree().set_group("vine", "linear_damp", 100.0)
 	$Vines/Line2D.modulate = Color(1.0,1.0,1.0,0.0)
 	$Sprite2D.modulate = Color(1.0,1.0,1.0,0.0)
-	$Camera2D.zoom = Vector2(5.95, 5.95)
 	$Camera2D.offset = Vector2(0, 6)
+	$Camera2D.zoom = Vector2(15, 15)
+	create_tween().tween_property($Camera2D,"zoom", Vector2(5.95, 5.95), 2.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	create_tween().tween_property($Camera2D,"offset", Vector2(0, 4), 2.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+	
+	await get_tree().create_timer(2.0).timeout
+	$Sound/BGMusic.play()
+	
+	
 	#create_tween().tween_property($Camera2D, "zoom", Vector2(6.0, 6.0), 2.0).set_trans(Tween.TRANS_SINE) 
 	var offset_tween = create_tween()
-	offset_tween.tween_property($Camera2D, "offset", Vector2(-80, 6), 1.5).from(Vector2(0, 6)).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
-	offset_tween.tween_property($Camera2D, "offset", Vector2(80, 6), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
-	offset_tween.tween_property($Camera2D, "offset", Vector2(0, 6), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
+	offset_tween.tween_property($Camera2D, "offset", Vector2(-80, 4), 1.5).from(Vector2(0, 4)).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
+	offset_tween.tween_property($Camera2D, "offset", Vector2(80, 4), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
+	offset_tween.tween_property($Camera2D, "offset", Vector2(0, 4), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
 	# 7 seconds of camera panning 
 	await get_tree().create_timer(6.7).timeout
 	var delay = 1.95
@@ -99,6 +107,7 @@ func play_spawn_animation():
 	create_tween().tween_property($Camera2D,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property($Camera2D, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
 	await get_tree().create_timer(0.5).timeout
+	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC)
 	_animating = false
 	get_tree().set_group("vine", "linear_damp", 1.0)
 
@@ -369,3 +378,7 @@ func _on_sprite_2d_animation_looped():
 		_sprite.pause()
 	elif _sprite.animation == "retract":
 		_sprite.animation = "normal"
+
+func set_volume():
+	var scene_manager = get_tree().get_first_node_in_group("scenemanager")
+	$Sound/BGMusic.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset

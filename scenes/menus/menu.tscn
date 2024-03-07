@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://c7w06rdclh4r0"]
+[gd_scene load_steps=6 format=3 uid="uid://c7w06rdclh4r0"]
 
 [ext_resource type="Script" path="res://scenes/menus/menu.gd" id="1_5r3os"]
 [ext_resource type="Theme" uid="uid://cn83a0xrk33ty" path="res://scenes/menus/themes/menu_theme.tres" id="1_lakh0"]
-[ext_resource type="Texture2D" uid="uid://c37h8c7cd0huu" path="res://assets/image/gwj-bg.png" id="4_lutei"]
+[ext_resource type="Texture2D" uid="uid://bl7me8ad14jm0" path="res://assets/image/gwj66-title-screen.png" id="2_d4uli"]
+[ext_resource type="AudioStream" uid="uid://bfw5tgtp7tefi" path="res://assets/sound/flower_light_ver.mp3" id="4_q06le"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_lvt62"]
+font_size = 108
+font_color = Color(1, 1, 0.8, 1)
+shadow_size = 5
 
 [node name="Menu" type="Control"]
 layout_mode = 3
@@ -18,22 +24,16 @@ script = ExtResource("1_5r3os")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -324)
 scale = Vector2(3, 3)
-texture = ExtResource("4_lutei")
+texture = ExtResource("2_d4uli")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -45.5
-offset_top = -73.0
-offset_right = 45.5
-offset_bottom = 73.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 0
+offset_left = -181.0
+offset_top = -103.0
+offset_right = 184.0
+offset_bottom = 101.0
 theme = ExtResource("1_lakh0")
+theme_override_constants/separation = 30
 alignment = 1
 
 [node name="StartButton" type="Button" parent="VBoxContainer"]
@@ -41,14 +41,39 @@ layout_mode = 2
 text = "Start"
 expand_icon = true
 
-[node name="OptionsButton" type="Button" parent="VBoxContainer"]
+[node name="VolumeSlider" type="HSlider" parent="VBoxContainer"]
 layout_mode = 2
-text = "Options"
+value = 33.0
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Quit"
 
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -163.5
+offset_top = -250.0
+offset_right = 163.5
+offset_bottom = -164.0
+grow_horizontal = 2
+grow_vertical = 0
+rotation = 0.00349066
+pivot_offset = Vector2(163, 43)
+text = "Suntower"
+label_settings = SubResource("LabelSettings_lvt62")
+
+[node name="BGMusic" type="AudioStreamPlayer2D" parent="." groups=["bgm"]]
+stream = ExtResource("4_q06le")
+volume_db = -16.0
+autoplay = true
+attenuation = 1e-05
+panning_strength = 0.0
+
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="finished" from="BGMusic" to="." method="_on_bg_music_finished"]
