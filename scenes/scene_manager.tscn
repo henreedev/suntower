@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://jvuqketuhc3e"]
+
+[ext_resource type="PackedScene" uid="uid://bml36duxahxnm" path="res://scenes/menus/TransitionOverlay.tscn" id="1_56eja"]
+[ext_resource type="Script" path="res://scenes/scene_manager.gd" id="1_du78n"]
+[ext_resource type="PackedScene" uid="uid://cjl7hh0kgvrb8" path="res://scenes/main.tscn" id="2_axfdj"]
+[ext_resource type="PackedScene" uid="uid://c7w06rdclh4r0" path="res://scenes/menus/menu.tscn" id="2_sf0c0"]
+
+[node name="SceneManager" type="Node2D"]
+script = ExtResource("1_du78n")
+game_scene = ExtResource("2_axfdj")
+
+[node name="CurrentScene" type="Node2D" parent="."]
+
+[node name="Menu" parent="CurrentScene" instance=ExtResource("2_sf0c0")]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 576.0
+offset_top = 384.0
+offset_right = 576.0
+offset_bottom = 384.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="TransitionOverlay" parent="." instance=ExtResource("1_56eja")]
+visible = false
+
+[connection signal="game_started" from="CurrentScene/Menu" to="." method="_on_menu_game_started"]
+[connection signal="transitioned" from="TransitionOverlay" to="." method="_on_transition_overlay_transitioned"]
