@@ -13,6 +13,9 @@ const vine_root_offset := Vector2(0, 5)
 const BASE_MAX_EXTENDED_LEN := 125.0
 const EXTEND_SPEED = 90.0
 var extend_speed_mod = 1.0
+var extra_len = 0.0
+var extra_len_display = 0.0
+var vine_len_display = BASE_MAX_EXTENDED_LEN
 #const EXTEND_SPEED = 200.0
 #@export var max_extended_len := 5000.0
 #const BASE_MAX_EXTENDED_LEN := 5000.0
@@ -21,6 +24,7 @@ var extend_speed_mod = 1.0
 var _animating = false
 
 var _has_sun_buff := false
+var _sun_buff_applied := false
 var _state : State = State.INACTIVE
 var base_segments := 15
 var _segs := 15
@@ -179,6 +183,7 @@ func begin_inactive():
 	_sprite.frame = 0
 	_sprite.play()
 	_has_sun_buff = false
+	_sun_buff_applied = false
 	if sun_buff_tween:
 		sun_buff_tween.kill()
 	sun_buff_tween = create_tween()
@@ -187,6 +192,9 @@ func begin_inactive():
 	_state = State.INACTIVE
 	max_extended_len = BASE_MAX_EXTENDED_LEN # Remove sunlight bonuses
 	_extended_len = 0.0
+	extra_len = 0.0
+	extra_len_display = 0.0
+	vine_len_display = BASE_MAX_EXTENDED_LEN
 	physics_material_override.friction = 0.0
 	$SpikedHitbox.disabled = true
 	$Sparkles.emitting = false
@@ -259,16 +267,21 @@ func _physics_process(delta):
 		var pos = position
 		match _state:
 			State.EXTENDING:
-				if _has_sun_buff and max_extended_len == BASE_MAX_EXTENDED_LEN:
-					const buff = 125.0
-					max_extended_len += buff
+				if _has_sun_buff and not _sun_buff_applied:
+					extra_len = BASE_MAX_EXTENDED_LEN
+					extra_len_display = BASE_MAX_EXTENDED_LEN
+					_sun_buff_applied = true
 					_display_sun_buff()
 				_extending_dist_travelled += _last_pos.distance_to(pos)
 				if _extending_dist_travelled > _len_per_seg:
 					_add_seg()
 					_extended_len += _len_per_seg
 					_extending_dist_travelled -= _len_per_seg
-				if _extended_len > max_extended_len:
+					if extra_len and extra_len_display:
+						extra_len_display -= _len_per_seg
+						if extra_len_display < 0.0: extra_len_display = 0.0
+					else: vine_len_display -= _len_per_seg
+				if _extended_len > max_extended_len + extra_len:
 					begin_retracting()
 			State.RETRACTING:
 				if not _retracting_seg:

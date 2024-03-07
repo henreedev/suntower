@@ -13,10 +13,10 @@ void vertex() {
 
 void fragment() {
 	vec4 color = texture(TEXTURE, UV);
-	if (abs(color.r - VINE_COLOR.r) < delta && abs(color.g - VINE_COLOR.g) < delta && abs(color.b - VINE_COLOR.b) < delta) {
-		COLOR = sun_color;
-		
-	}
+	//if (abs(color.r - VINE_COLOR.r) < delta && abs(color.g - VINE_COLOR.g) < delta && abs(color.b - VINE_COLOR.b) < delta) {
+		//COLOR = sun_color;
+		//
+	//}
 	
 	if (texture(TEXTURE, UV) == VINE_COLOR) {
 		COLOR = sun_color;

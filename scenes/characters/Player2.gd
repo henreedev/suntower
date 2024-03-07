@@ -20,13 +20,11 @@ func _process(delta):
 
 func _display_shadow():
 	const delta = 0.02
-	print(touching)
 	if touching and abs(global_rotation) < delta and linear_velocity.length_squared() < 2.0:
 		create_tween().tween_property($Pot/Shadow, "modulate", Color(1, 1, 1, 1), 0.05)
-		#$Pot/Shadow.visible = true
 	else:
 		create_tween().tween_property($Pot/Shadow, "modulate", Color(1, 1, 1, 0), 0.1)
-		#$Pot/Shadow.visible = false
+
 
 func _act_on_state(state : FlowerHead.State):
 	match state:
