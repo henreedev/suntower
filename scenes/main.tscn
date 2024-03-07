@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cjl7hh0kgvrb8"]
+[gd_scene load_steps=13 format=3 uid="uid://cjl7hh0kgvrb8"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_7xsfy"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://85qfkjlne24r" path="res://assets/image/growbar-under.png" id="7_8lc2f"]
 [ext_resource type="Texture2D" uid="uid://bmwo3c2dceiga" path="res://assets/image/growbar-bar.png" id="8_al0vm"]
 [ext_resource type="Texture2D" uid="uid://dr8bxndhr0tm5" path="res://assets/image/growbar-sun.png" id="9_xggyo"]
+[ext_resource type="Script" path="res://scenes/Stopwatch.gd" id="10_v3nai"]
 
 [sub_resource type="Environment" id="Environment_4vhcu"]
 background_mode = 3
@@ -73,3 +74,6 @@ grow_horizontal = 2
 scale = Vector2(3, 3)
 value = 100.0
 texture_progress = ExtResource("6_vlg86")
+
+[node name="Stopwatch" type="Node" parent="."]
+script = ExtResource("10_v3nai")
