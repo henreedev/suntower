@@ -38,7 +38,7 @@ func animate_title2():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	scene_manager.sound_volume = linear_to_db(_vol_slider.value * 1.5 / _vol_slider.max_value)
-	$BGMusic.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset 
+	$BGMusic.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset1
 
 func _on_start_button_pressed():
 	game_started.emit()

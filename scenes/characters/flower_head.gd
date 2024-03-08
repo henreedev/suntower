@@ -8,8 +8,8 @@ const GRAVITY = -0.2
 const vine_root_offset := Vector2(0, 5)
 
 @export var vine_seg : PackedScene
-@export var max_extended_len := 125.0
 @export var play_animation_on_start := false
+@export var max_extended_len := 125.0
 const BASE_MAX_EXTENDED_LEN := 125.0
 const EXTEND_SPEED = 90.0
 var extend_speed_mod = 1.0
@@ -381,4 +381,4 @@ func _on_sprite_2d_animation_looped():
 
 func set_volume():
 	var scene_manager = get_tree().get_first_node_in_group("scenemanager")
-	$Sound/BGMusic.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset
+	$Sound/BGMusic.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset2

@@ -1,7 +1,8 @@
 extends Node2D
 
 @export var game_scene : PackedScene
-@export var sound_volume_offset = -12.0
+@export var sound_volume_offset1 = -12.0
+@export var sound_volume_offset2 = -10.0
 @onready var bgmusic = $CurrentScene/Menu/BGMusic
 var sound_volume = 0.0
 

@@ -1,11 +1,15 @@
-[gd_scene load_steps=59 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=65 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Texture2D" uid="uid://dilbk4ep56fnp" path="res://assets/image/gwj-tilemap.png" id="1_3cc1m"]
 [ext_resource type="Script" path="res://scenes/environment/tower.gd" id="2_bq5o6"]
 [ext_resource type="Script" path="res://scenes/environment/Lights.gd" id="3_6s52w"]
 [ext_resource type="PackedScene" uid="uid://bdaadwkyt65ag" path="res://scenes/environment/sun_rays.tscn" id="3_075b6"]
 [ext_resource type="Texture2D" uid="uid://c37h8c7cd0huu" path="res://assets/image/gwj-bg.png" id="3_pswtk"]
+[ext_resource type="Texture2D" uid="uid://cm88pnpk4lv5y" path="res://assets/image/gwj66-trees.png" id="4_2s5cd"]
+[ext_resource type="Shader" path="res://scenes/environment/bigclouds.gdshader" id="5_lbjnr"]
+[ext_resource type="Texture2D" uid="uid://ckx0bck6rq1od" path="res://assets/image/gwj66-big-clouds.png" id="5_vxu1j"]
 [ext_resource type="PackedScene" uid="uid://dnbyf1fjmx5if" path="res://scenes/environment/pot.tscn" id="6_43tb6"]
+[ext_resource type="Texture2D" uid="uid://dr33adajhwsi0" path="res://assets/image/gwj66-small-clouds.png" id="6_pkgui"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_1d451"]
 tile_data = PackedInt32Array(0, 262144, 7, 65536, 262144, 7)
@@ -687,6 +691,14 @@ pattern_3 = SubResource("TileMapPattern_3jw8l")
 pattern_4 = SubResource("TileMapPattern_4ejkq")
 pattern_5 = SubResource("TileMapPattern_6xwwy")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xdns3"]
+shader = ExtResource("5_lbjnr")
+shader_parameter/hoz_offset = -0.05
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m5nt1"]
+shader = ExtResource("5_lbjnr")
+shader_parameter/hoz_offset = -0.025
+
 [sub_resource type="Gradient" id="Gradient_7o25k"]
 offsets = PackedFloat32Array(0, 0.0822785)
 colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1)
@@ -727,16 +739,43 @@ color = Color(0.635294, 0.462745, 0.509804, 1)
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
-[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="Background" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.095)
 motion_offset = Vector2(-192, 204)
 motion_mirroring = Vector2(384, 432)
 metadata/_edit_group_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Background"]
 show_behind_parent = true
 texture = ExtResource("3_pswtk")
 centered = false
+
+[node name="Forest" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(1, 0.25)
+motion_offset = Vector2(-192, -299.625)
+motion_mirroring = Vector2(384, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Forest"]
+texture = ExtResource("4_2s5cd")
+centered = false
+
+[node name="BigClouds" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(1, 0.35)
+motion_offset = Vector2(-192, -140)
+motion_mirroring = Vector2(384, 432)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/BigClouds"]
+material = SubResource("ShaderMaterial_xdns3")
+texture = ExtResource("5_vxu1j")
+
+[node name="SmallClouds" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(1, 0.11)
+motion_offset = Vector2(-192, -22.64)
+motion_mirroring = Vector2(384, 432)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/SmallClouds"]
+material = SubResource("ShaderMaterial_m5nt1")
+texture = ExtResource("6_pkgui")
 
 [node name="Lights" type="Node2D" parent="." groups=["lights"]]
 rotation = 1.18682
