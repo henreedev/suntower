@@ -10,13 +10,19 @@ config_version=5
 
 [application]
 
-config/name="Godot Wild Jam 66"
-run/main_scene="res://scenes/main.tscn"
+config/name="Suntower"
+run/main_scene="res://scenes/scene_manager.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
-config/icon="res://icon.svg"
+boot_splash/bg_color=Color(0.0588235, 0.0588235, 0.0588235, 1)
+boot_splash/image="res://assets/image/suntower-splash.png"
+boot_splash/fullsize=false
+boot_splash/use_filter=false
+config/icon="res://assets/image/suntower-icon.png"
 
 [display]
 
+window/size/mode=3
+window/size/borderless=true
 window/stretch/mode="canvas_items"
 
 [gui]
