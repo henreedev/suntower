@@ -69,6 +69,11 @@ func _process(delta):
 	if not _animating:
 		act_on_state()
 
+func reset():
+	_animating = true
+	await get_tree().create_timer(0.2).timeout
+	
+
 func play_spawn_animation():
 	# Make vines and line invisible, tween fade them in
 	get_tree().set_group("vine", "modulate", Color(1.0, 1.0, 1.0, 0.0))
@@ -144,8 +149,6 @@ func _spawn_vine():
 		if i == 0:
 			curr_seg = vine_creator.create(_player)
 			_first_seg = curr_seg
-			#curr_seg.lock_rotation = true
-			#curr_seg.set_rotation_match(_player)
 		else:
 			curr_seg = vine_creator.create(last_seg)
 		var progress = diff * float(i) / base_segments
@@ -158,8 +161,6 @@ func _spawn_vine():
 		if i == base_segments - 1:
 			$RootVinePin.node_b = curr_seg.get_path()
 			_root_seg = curr_seg
-			#curr_seg.lock_rotation = true
-			#curr_seg.set_rotation_match(self)
 		last_seg = curr_seg
 
 func act_on_state():
@@ -231,6 +232,8 @@ func begin_retracting():
 	#_player.linear_damp = 500.0
 	linear_damp = 10.0
 	gravity_scale = 0.2
+	_extending_dist_travelled = 0
+	_extended_len = 0
 
 func _integrate_forces(state):
 	if not _animating:
@@ -297,29 +300,32 @@ func _physics_process(delta):
 				if _extended_len > max_extended_len + extra_len:
 					begin_retracting()
 			State.RETRACTING:
-				if not _retracting_seg:
-					# Detach node near root, and propel it towards root
-					_retracting_seg = _root_seg.get_child_seg()
-					_root_seg.get_node("PinJoint2D").softness = 0.0
-					_root_seg.get_node("PinJoint2D").node_b = ""
-					_root_seg.detached_child = _retracting_seg
-				var retract_dir = _retracting_seg.position.direction_to(_root_seg.position)
-				var retract_dir_2 = _root_seg.position.direction_to(_retracting_seg.get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().position)
-				const FORCE_STRENGTH = 135.0
-				var force = retract_dir * FORCE_STRENGTH
-				var force_2 = retract_dir_2 * FORCE_STRENGTH
-				_retracting_seg.apply_central_force(force)
-				_retracting_seg.get_child_seg().apply_central_force(force / 2)
-				_retracting_seg.get_child_seg().get_child_seg().apply_central_force(force / 2)
-				_root_seg.apply_central_force(force.rotated(PI) * 0.3 + force_2 * 0.35)
-				const MIN_DIST = 4
-				if _retracting_seg.position.distance_to(_root_seg.position) < MIN_DIST:
-					_retracting_seg.queue_free()
-					_root_seg.get_node("PinJoint2D").node_b = _retracting_seg.get_child_seg().get_path()
-					_root_seg.get_node("PinJoint2D").softness = 0.0
-					_segs -= 1
-					_retracting_seg = null
-					_root_seg.detached_child = null
+				if _segs <= base_segments:
+					begin_inactive()
+				else:
+					if not _retracting_seg:
+						# Detach node near root, and propel it towards root
+						_retracting_seg = _root_seg.get_child_seg()
+						_root_seg.get_node("PinJoint2D").softness = 0.0
+						_root_seg.get_node("PinJoint2D").node_b = ""
+						_root_seg.detached_child = _retracting_seg
+					var retract_dir = _retracting_seg.position.direction_to(_root_seg.position)
+					var retract_dir_2 = _root_seg.position.direction_to(_retracting_seg.get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().position)
+					const FORCE_STRENGTH = 135.0
+					var force = retract_dir * FORCE_STRENGTH
+					var force_2 = retract_dir_2 * FORCE_STRENGTH
+					_retracting_seg.apply_central_force(force)
+					_retracting_seg.get_child_seg().apply_central_force(force / 2)
+					_retracting_seg.get_child_seg().get_child_seg().apply_central_force(force / 2)
+					_root_seg.apply_central_force(force.rotated(PI) * 0.3 + force_2 * 0.35)
+					const MIN_DIST = 4
+					if _retracting_seg.position.distance_to(_root_seg.position) < MIN_DIST:
+						_retracting_seg.queue_free()
+						_root_seg.get_node("PinJoint2D").node_b = _retracting_seg.get_child_seg().get_path()
+						_root_seg.get_node("PinJoint2D").softness = 0.0
+						_segs -= 1
+						_retracting_seg = null
+						_root_seg.detached_child = null
 			State.INACTIVE:
 				pass
 		_last_pos = pos
@@ -354,12 +360,13 @@ func _add_seg():
 
 	_root_seg.get_node("PinJoint2D").node_b = new_child.get_path()
 	_segs += 1
+	
 
 func _on_bg_music_finished():
 	$Sound/BGMusic.play()
 
 func _on_sunrays_hit():
-	match tower._weather:
+	match tower.weather:
 		Tower.Weather.SUNNY:
 			if _state == State.EXTENDING:
 				_has_sun_buff = true
