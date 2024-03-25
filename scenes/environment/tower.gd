@@ -83,7 +83,9 @@ func _lerp_lights_towards_goal(delta):
 
 func _on_storm_area_body_entered(body):
 	in_storm = true
+	print("storm area entered")
 
 
 func _on_storm_area_body_exited(body):
 	in_storm = false
+	print("storm area exitged")

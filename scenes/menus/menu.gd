@@ -12,10 +12,11 @@ var rate2 = rate * 0.5
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var tween = create_tween().set_loops()
+	animate_title()
 	tween.tween_callback(animate_title).set_delay(rate)
 	var tween2 = create_tween().set_loops()
+	animate_title2()
 	tween2.tween_callback(animate_title2).set_delay(rate2)
-	
 
 func animate_title():
 	if alternate:
@@ -48,7 +49,6 @@ func _on_options_button_pressed():
 
 func _on_quit_button_pressed():
 	get_tree().quit()
-
 
 func _on_bg_music_finished():
 	$BGMusic.play()

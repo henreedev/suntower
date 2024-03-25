@@ -17,9 +17,21 @@ func _ready():
 	_vines_bar.max_value = _head.BASE_MAX_EXTENDED_LEN
 	_sun_bar.max_value = _head.BASE_MAX_EXTENDED_LEN
 
+func reset():
+	get_tree().reload_current_scene()
+
+func pause_game():
+	await get_tree().create_timer(0.05).timeout
+	get_tree().paused = true
+	$PauseMenu.show()
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	shake_strength = lerp(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
+	if Input.is_action_just_pressed("pause"):
+		pause_game()
+
+	if shake_strength:
+		shake_strength = lerp(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
 	# Set hud progress bar values
 	if not (_head._state == FlowerHead.State.INACTIVE and not _head.can_extend):
 		if _head.extra_len_display == 125.0:
@@ -52,3 +64,4 @@ func get_random_offset():
 		randf_range(-shake_strength, shake_strength),
 		randf_range(-shake_strength, shake_strength)
 	)
+

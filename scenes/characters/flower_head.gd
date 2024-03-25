@@ -20,6 +20,9 @@ var vine_len_display = BASE_MAX_EXTENDED_LEN
 #@export var max_extended_len := 5000.0
 #const BASE_MAX_EXTENDED_LEN := 5000.0
 
+var initial_flower_pos := Vector2(0, -44)
+var initial_pot_pos := Vector2(0, 6)
+
 
 var _animating = false
 
@@ -62,6 +65,17 @@ func _ready():
 	begin_inactive()
 	if play_animation_on_start:
 		play_spawn_animation()
+	else:
+		no_cutscene_setup()
+
+func no_cutscene_setup():
+	$Sound/BGMusic.play()
+	get_tree().get_first_node_in_group("stopwatch").start()
+	create_tween().tween_property($Camera2D,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+	create_tween().tween_property($Camera2D, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
+	await get_tree().create_timer(0.5).timeout
+	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC)
+	
 
 func _process(delta):
 	_draw_line()
@@ -69,10 +83,7 @@ func _process(delta):
 	if not _animating:
 		act_on_state()
 
-func reset():
-	_animating = true
-	await get_tree().create_timer(0.2).timeout
-	
+
 
 func play_spawn_animation():
 	# Make vines and line invisible, tween fade them in
@@ -118,6 +129,7 @@ func play_spawn_animation():
 	await get_tree().create_timer(0.5).timeout
 	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC)
 	_animating = false
+	get_tree().get_first_node_in_group("stopwatch").start()
 	get_tree().set_group("vine", "linear_damp", 1.0)
 
 func _connect_sunrays():
@@ -137,7 +149,6 @@ func _spawn_vine():
 	var first_vine_pos = _player.position + _player.vine_root_offset
 	var final_vine_pos = position + vine_root_offset 
 	var diff = final_vine_pos - first_vine_pos
-	print("Starting length: " + str(diff.length()))
 	var adj := 1.5
 	_len_per_seg = diff.length() / base_segments * adj
 	var curr_seg : Vine = null
@@ -372,7 +383,7 @@ func _on_sunrays_hit():
 				_has_sun_buff = true
 		Tower.Weather.STORMY:
 			_has_lightning_buff = true
-			print("lightning hit")
+			#print("lightning hit")
 
 func _on_stuck_timer_timeout():
 	_can_nudge = true

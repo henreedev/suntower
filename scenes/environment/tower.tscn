@@ -1157,6 +1157,7 @@ width_curve = SubResource("Curve_sm8ge")
 default_color = Color(1, 0, 0.223529, 1)
 
 [node name="StormArea" type="Area2D" parent="."]
+monitorable = false
 metadata/_edit_lock_ = true
 metadata/_edit_group_ = true
 

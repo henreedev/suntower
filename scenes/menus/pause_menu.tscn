@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=3 uid="uid://b574p0trbhj2o"]
+
+[ext_resource type="Script" path="res://scenes/menus/pause_menu.gd" id="1_nm5fg"]
+[ext_resource type="Theme" uid="uid://cn83a0xrk33ty" path="res://scenes/menus/themes/menu_theme.tres" id="2_2rwhk"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 2
+visible = false
+script = ExtResource("1_nm5fg")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.172549, 0.14902, 0.0235294, 0.384314)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -182.5
+offset_top = -102.0
+offset_right = 182.5
+offset_bottom = 102.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_2rwhk")
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="ResumeButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Resume"
+expand_icon = true
+
+[node name="VolumeSlider" type="HSlider" parent="VBoxContainer"]
+layout_mode = 2
+value = 33.0
+
+[node name="ResetButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Reset"
+expand_icon = true
+
+[node name="QuitButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="value_changed" from="VBoxContainer/VolumeSlider" to="." method="_on_volume_slider_value_changed"]
+[connection signal="pressed" from="VBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

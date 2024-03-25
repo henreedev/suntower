@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cjl7hh0kgvrb8"]
+[gd_scene load_steps=15 format=3 uid="uid://cjl7hh0kgvrb8"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_7xsfy"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://bmwo3c2dceiga" path="res://assets/image/growbar-bar.png" id="8_al0vm"]
 [ext_resource type="Texture2D" uid="uid://dr8bxndhr0tm5" path="res://assets/image/growbar-sun.png" id="9_xggyo"]
 [ext_resource type="Script" path="res://scenes/Stopwatch.gd" id="10_v3nai"]
+[ext_resource type="PackedScene" uid="uid://b574p0trbhj2o" path="res://scenes/menus/pause_menu.tscn" id="11_swgty"]
 
 [sub_resource type="Environment" id="Environment_4vhcu"]
 background_mode = 3
@@ -43,10 +44,11 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-position = Vector2(45, -1344)
+position = Vector2(0, 6)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-position = Vector2(45, -1394)
+position = Vector2(0, -44)
+play_animation_on_start = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 offset = Vector2(0, -100)
@@ -95,5 +97,7 @@ grow_horizontal = 2
 grow_vertical = 2
 label_settings = SubResource("LabelSettings_ul41i")
 
-[node name="Stopwatch" type="Node" parent="."]
+[node name="Stopwatch" type="Node" parent="." groups=["stopwatch"]]
 script = ExtResource("10_v3nai")
+
+[node name="PauseMenu" parent="." instance=ExtResource("11_swgty")]
