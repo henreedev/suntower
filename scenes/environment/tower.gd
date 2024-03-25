@@ -1,8 +1,13 @@
 extends TileMap
 
+class_name Tower
+
 enum Weather {SUNNY, STORMY, WINDY, PEACEFUL}
 
-var _weather : Weather = Weather.SUNNY
+var weather : Weather = Weather.SUNNY
+var in_storm = false
+var in_wind = false
+
 var _progress = 0.0
 const MAX_PROG = 3.5
 const MAX_PROG_HEIGHT = -2268.0 # 3 screens of height 216 for the 3.5 sections
@@ -18,6 +23,7 @@ var _goal_rotation = _right_day_start_angle
 var _right = true
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
 @onready var _lights : Lights = $Lights
+@onready var _sunrays : SunRays = $SunRays
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
@@ -28,19 +34,17 @@ func _process(delta):
 	_change_weather_on_progress()
 	_act_on_weather_state()
 	_lerp_lights_towards_goal(delta)
-	$SunRays.set_rotate($Lights.rotation)
+	_sunrays.set_rotate($Lights.rotation)
 	pass
 
 func _change_weather_on_progress():
 	_progress = _player.position.y / MAX_PROG_HEIGHT
-	if 0.0 <= _progress and _progress < 1.0:
-		_weather = Weather.SUNNY
-	elif 1.0 <= _progress and _progress < 2.0:
-		_weather = Weather.STORMY
-	elif 2.0 <= _progress and _progress < 3.0:
-		_weather = Weather.WINDY
-	elif 3.0 <= _progress:
-		_weather = Weather.PEACEFUL
+	if in_wind:
+		weather = Weather.WINDY
+	elif in_storm:
+		weather = Weather.STORMY
+	else: 
+		weather = Weather.SUNNY
 	
 	# calc light rotation
 	_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur)
@@ -59,7 +63,7 @@ func _change_weather_on_progress():
 			_goal_rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 
 func _act_on_weather_state():
-	match _weather:
+	match weather:
 		Weather.SUNNY:
 			var triangle = (-abs(_day_cycle - _half_day_cycle_dur) / _half_day_cycle_dur + 1)
 			_lights.set_energy_mult(triangle * 2.5)
@@ -73,3 +77,13 @@ func _act_on_weather_state():
 func _lerp_lights_towards_goal(delta):
 	const rotation_strength = 1.5
 	$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
+
+
+
+
+func _on_storm_area_body_entered(body):
+	in_storm = true
+
+
+func _on_storm_area_body_exited(body):
+	in_storm = false

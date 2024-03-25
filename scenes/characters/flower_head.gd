@@ -25,6 +25,8 @@ var _animating = false
 
 var _has_sun_buff := false
 var _sun_buff_applied := false
+var _has_lightning_buff := false
+
 var _state : State = State.INACTIVE
 var base_segments := 15
 var _segs := 15
@@ -48,6 +50,8 @@ var sun_buff_tween : Tween
 @onready var _player : Player2 = get_tree().get_first_node_in_group("player2")
 @onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
 @onready var _sprite : AnimatedSprite2D = $Sprite2D
+@onready var tower : Tower = get_tree().get_first_node_in_group("tower")
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	set_volume()
@@ -316,14 +320,6 @@ func _physics_process(delta):
 					_segs -= 1
 					_retracting_seg = null
 					_root_seg.detached_child = null
-				#if not _last_pos == position:
-					#stuck_timer.start()
-					#_can_nudge = false
-				#if Input.is_action_just_pressed("extend") and _can_nudge and not _animating:
-					#var angle = pos.angle_to_point(get_global_mouse_position()) - PI / 2
-					#var nudge = 15.0 * Vector2(0, 1).rotated(angle)
-					#apply_central_impulse(nudge)
-					#_can_nudge = false
 			State.INACTIVE:
 				pass
 		_last_pos = pos
@@ -363,8 +359,13 @@ func _on_bg_music_finished():
 	$Sound/BGMusic.play()
 
 func _on_sunrays_hit():
-	if _state == State.EXTENDING:
-		_has_sun_buff = true
+	match tower._weather:
+		Tower.Weather.SUNNY:
+			if _state == State.EXTENDING:
+				_has_sun_buff = true
+		Tower.Weather.STORMY:
+			_has_lightning_buff = true
+			print("lightning hit")
 
 func _on_stuck_timer_timeout():
 	_can_nudge = true

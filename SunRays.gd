@@ -1,11 +1,14 @@
 extends Node2D
 
+class_name SunRays
+
 signal sun_hit
 
 var num_rays = 500
 var offset_height = -num_rays / 2 - 50
 var leader = false
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
+@onready var _tower : Tower = get_tree().get_first_node_in_group("tower")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_make_rays(num_rays)
