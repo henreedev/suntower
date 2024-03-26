@@ -49,7 +49,7 @@ func _process(delta):
 	if shake_strength:
 		$CanvasLayer.offset = get_random_offset()
 	# Check for win
-	if _head.position.y <= -1344.0:
+	if _head.position.y <= -2000.0:
 		win = true
 	if win:
 		$CanvasLayer/Label.visible = true
@@ -58,7 +58,7 @@ func _process(delta):
 
 func shake():
 	shake_strength = RANDOM_SHAKE_STRENGTH
-	
+
 func get_random_offset():
 	return Vector2(
 		randf_range(-shake_strength, shake_strength),

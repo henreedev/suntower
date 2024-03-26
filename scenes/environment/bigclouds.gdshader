@@ -1,16 +1,10 @@
 shader_type canvas_item;
 
 uniform float hoz_offset = -0.05;
-
-void vertex() {
-	// Called for every vertex the material is visible on.
-}
+uniform float speed_mult = 1.0;
+uniform float darken = 0.0;
 
 void fragment() {
-	COLOR = texture(TEXTURE, UV + vec2(TIME * hoz_offset, 0.0f));
+	COLOR = texture(TEXTURE, UV + vec2(TIME * hoz_offset * speed_mult, 0.0f));
+	COLOR = COLOR - vec4(darken, darken, darken, 0.0);
 }
-
-//void light() {
-	// Called for every pixel for every light affecting the CanvasItem.
-	// Uncomment to replace the default light processing function with this one.
-//}

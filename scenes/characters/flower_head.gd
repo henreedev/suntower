@@ -383,6 +383,8 @@ func _on_sunrays_hit():
 				_has_sun_buff = true
 		Tower.Weather.STORMY:
 			_has_lightning_buff = true
+			if _state == State.EXTENDING:
+				_has_sun_buff = true # TODO remove
 			#print("lightning hit")
 
 func _on_stuck_timer_timeout():

@@ -44,10 +44,10 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-position = Vector2(0, 6)
+position = Vector2(-41, -1398)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-position = Vector2(0, -44)
+position = Vector2(-41, -1448)
 play_animation_on_start = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
@@ -59,9 +59,9 @@ material = SubResource("ShaderMaterial_5bg1h")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -71.0
+offset_left = -119.575
 offset_top = 1.0
-offset_right = -23.0
+offset_right = -39.575
 offset_bottom = 17.0
 grow_horizontal = 2
 scale = Vector2(3, 3)
@@ -74,9 +74,9 @@ material = SubResource("ShaderMaterial_5bg1h")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -87.0
+offset_left = -120.04
 offset_top = 1.0
-offset_right = -7.0
+offset_right = -40.04
 offset_bottom = 17.0
 grow_horizontal = 2
 scale = Vector2(3, 3)
