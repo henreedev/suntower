@@ -32,8 +32,8 @@ func _act_on_state(state : FlowerHead.State):
 			linear_damp = 250.0
 			angular_damp = 10
 		FlowerHead.State.RETRACTING:
-			linear_damp = 4.0
-			angular_damp = 1
+			linear_damp = 1.0
+			angular_damp = 2
 		FlowerHead.State.INACTIVE:
 			pass
 

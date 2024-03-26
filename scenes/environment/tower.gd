@@ -31,6 +31,7 @@ var lock_lights = false
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
 @onready var _lights : Lights = $Lights
 @onready var _sunrays : SunRays = $SunRays
+@onready var main : Main = get_tree().get_first_node_in_group("main")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	create_tween().set_loops().tween_callback(do_lightning).set_delay(5.0)
@@ -52,6 +53,7 @@ func start_stormy():
 		modulate_tween = create_tween().set_parallel()
 		_bg.enter_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", storm_modulate, 1.0).set_trans(Tween.TRANS_CUBIC)
+		main.switch_to_lightning_bar()
 
 func start_sunny():
 	if not weather == Weather.SUNNY:
@@ -61,6 +63,7 @@ func start_sunny():
 		modulate_tween = create_tween().set_parallel()
 		_bg.exit_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", sunny_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
+		main.switch_to_sun_bar()
 
 func _change_weather_on_progress():
 	_progress = _player.position.y / MAX_PROG_HEIGHT
@@ -105,7 +108,7 @@ func do_lightning():
 	if weather == Weather.STORMY:
 		lock_lights = true
 		const cloud_brighten = 0.4
-		const windup_duration = 0.5
+		const windup_duration = 1.0
 		create_tween().tween_method(_lights.set_energy_mult, 0.015, 1.0, windup_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_IN)
 		create_tween().tween_method(_bg.set_cloud_brightness, _bg.dark, _bg.dark - cloud_brighten, windup_duration).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_IN)
 		await get_tree().create_timer(windup_duration + 0.05).timeout
@@ -127,9 +130,6 @@ func _lerp_lights_towards_goal(delta):
 	if not lock_lights: 
 		const rotation_strength = 1.5
 		$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
-
-
-
 
 func _on_storm_area_body_entered(body):
 	if body is FlowerHead:

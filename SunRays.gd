@@ -21,7 +21,7 @@ func _make_rays(count):
 		add_child(ray)
 		ray.position = Vector2(0, i)
 		ray.add_to_group("rays")
-		ray.collision_mask = 2
+		ray.collision_mask = 3
 		# Visualization line
 		#var line = Line2D.new()
 		#ray.add_child(line)
@@ -37,16 +37,24 @@ func _process(_delta):
 	position = Vector2(position.x, _player.position.y + offset_height)
 
 func _physics_process(delta):
-	if leader and _check_player_hit() and get_tree().get_first_node_in_group("lights").energy_mult != 0.0:
+	if leader and _check_player_hit():
 		_player._on_sunrays_hit()
 
 func _check_player_hit():
-	for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
-		var hit = ray.get_collider()
-		if hit is FlowerHead or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
-			if not _player._animating:
-				var tween : Tween = create_tween()
-				tween.tween_property(hit.get_node("Sprite2D"), "modulate", Color(1.0, 5.0, 1.0), 0.25)
-				tween.tween_property(hit.get_node("Sprite2D"), "modulate", Color(1.0, 1.0, 1.0), 0.25)
-			return true
-	return false
+	if _tower.weather == Tower.Weather.STORMY and _tower.lightning_striking:
+		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
+			var hit = ray.get_collider()
+			if hit is FlowerHead or (hit.is_in_group("flowerhead") if hit else false):
+				return true
+		return false
+	elif _tower.weather == Tower.Weather.SUNNY:
+		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
+			var hit = ray.get_collider()
+			if hit is FlowerHead or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
+				if not _player._animating and hit is Vine:
+					var tween : Tween = create_tween()
+					tween.tween_property(hit.get_node("Sprite2D"), "modulate", Color(1.0, 5.0, 1.0), 0.25)
+					tween.tween_property(hit.get_node("Sprite2D"), "modulate", Color(1.0, 1.0, 1.0), 0.25)
+				return true
+		return false
+	else: return false

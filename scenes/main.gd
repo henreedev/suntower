@@ -1,7 +1,10 @@
 extends Node2D
 
+class_name Main
+
 @onready var _vines_bar : TextureProgressBar = $CanvasLayer/VinesBar
 @onready var _sun_bar : TextureProgressBar = $CanvasLayer/SunBar
+@onready var _lightning_bar : TextureProgressBar = $CanvasLayer/LightningBar
 @onready var _head : FlowerHead = $FlowerHead
 @onready var _cam : Camera2D = $FlowerHead/Camera2D
 var hud_offset := Vector2(0,-50)
@@ -9,6 +12,7 @@ var win = false
 var shake_strength = 0.0
 const SHAKE_DECAY_RATE = 20.0
 const RANDOM_SHAKE_STRENGTH = 10.0
+var switch_bars_tween : Tween
 # Called when the node enters the scene tree for the first time.
 
 func _ready():
@@ -24,6 +28,26 @@ func pause_game():
 	await get_tree().create_timer(0.05).timeout
 	get_tree().paused = true
 	$PauseMenu.show()
+
+func switch_to_lightning_bar():
+	if switch_bars_tween:
+		switch_bars_tween.kill()
+	switch_bars_tween = create_tween()
+	switch_bars_tween.tween_interval(1.5)
+	switch_bars_tween.set_parallel()
+	switch_bars_tween.tween_property(_sun_bar, "position:y", -50.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	switch_bars_tween.tween_property(_lightning_bar, "position:y", 0.0, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+func switch_to_sun_bar():
+	if switch_bars_tween:
+		switch_bars_tween.kill()
+	switch_bars_tween = create_tween()
+	switch_bars_tween.tween_interval(1.5)
+	switch_bars_tween.set_parallel()
+	switch_bars_tween.tween_property(_sun_bar, "position:y", 0.0, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	switch_bars_tween.tween_property(_lightning_bar, "position:y", -50.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -52,8 +76,8 @@ func _process(delta):
 	if _head.position.y <= -2000.0:
 		win = true
 	if win:
-		$CanvasLayer/Label.visible = true
 		$CanvasLayer/Label.text = str($Stopwatch.time).pad_decimals(2)
+		$CanvasLayer/Label.visible = true
 		$Stopwatch.stop()
 
 func shake():

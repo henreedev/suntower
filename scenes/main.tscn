@@ -35,7 +35,7 @@ shader_parameter/delta = 0.216
 font_size = 64
 font_color = Color(1, 1, 0.380392, 1)
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" groups=["main"]]
 script = ExtResource("1_7xsfy")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -65,6 +65,22 @@ offset_right = -39.575
 offset_bottom = 17.0
 grow_horizontal = 2
 scale = Vector2(3, 3)
+texture_under = ExtResource("7_8lc2f")
+texture_over = ExtResource("8_al0vm")
+texture_progress = ExtResource("9_xggyo")
+
+[node name="LightningBar" type="TextureProgressBar" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_5bg1h")
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -119.575
+offset_top = 1.0
+offset_right = -39.575
+offset_bottom = 17.0
+grow_horizontal = 2
+scale = Vector2(3, 3)
+value = 50.0
 texture_under = ExtResource("7_8lc2f")
 texture_over = ExtResource("8_al0vm")
 texture_progress = ExtResource("9_xggyo")

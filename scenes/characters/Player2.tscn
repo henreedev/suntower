@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=10 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" path="res://scenes/characters/Player2.gd" id="1_u6jn4"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/pot.png" id="2_dk0m0"]
@@ -21,6 +21,18 @@ size = Vector2(10, 11)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r87u0"]
 radius = 5.09902
+
+[sub_resource type="Gradient" id="Gradient_g1t54"]
+offsets = PackedFloat32Array(0, 0.67)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xvpsk"]
+gradient = SubResource("Gradient_g1t54")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
 
 [node name="Player2" type="RigidBody2D" groups=["player2"]]
 collision_layer = 9
@@ -51,6 +63,14 @@ shape = SubResource("RectangleShape2D_jnhsv")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 position = Vector2(0, -2)
 shape = SubResource("CircleShape2D_r87u0")
+
+[node name="StormLight" type="PointLight2D" parent="."]
+scale = Vector2(2.72, 2.72)
+energy = 0.15
+shadow_enabled = true
+shadow_item_cull_mask = 2
+texture = SubResource("GradientTexture2D_xvpsk")
+texture_scale = 0.1
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

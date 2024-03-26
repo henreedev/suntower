@@ -24,13 +24,25 @@ var initial_flower_pos := Vector2(0, -44)
 var initial_pot_pos := Vector2(0, 6)
 
 
-var _animating = false
 
+# Sun buff
 var _has_sun_buff := false
 var _sun_buff_applied := false
-var _has_lightning_buff := false
+var sun_buff_tween : Tween
 
+# Lightning buff
+var _has_lightning_buff := false
+var lightning_buff_tween : Tween
+const MAX_LIGHTNING_BUFF = BASE_MAX_EXTENDED_LEN / 2.0
+var lightning_buff_amount = 0.0
+var lightning_buff_display = 0.0
+const LIGHTNING_SPEED = 2.5
+var lightning_speed_mod = 1.0
+const base := Color(0.5, 1.0, 1.0, 1.0)
+
+# Flower state
 var _state : State = State.INACTIVE
+var _animating = false
 var base_segments := 15
 var _segs := 15
 var _set_transform 
@@ -43,10 +55,9 @@ var _first_seg : Vine
 var _retracting_seg : Vine
 var can_extend := true
 var _can_nudge = false
-var sun_buff_tween : Tween
 
+# Onready references to other nodes
 @onready var _last_pos : Vector2 = position
-
 @onready var vine_line : Line2D = $Vines/Line2D
 @onready var vine_creator : Vine = vine_seg.instantiate()
 @onready var stuck_timer : Timer = $StuckTimer
@@ -54,6 +65,7 @@ var sun_buff_tween : Tween
 @onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
 @onready var _sprite : AnimatedSprite2D = $Sprite2D
 @onready var tower : Tower = get_tree().get_first_node_in_group("tower")
+@onready var storm_light : PointLight2D = $StormLight
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -82,6 +94,7 @@ func _process(delta):
 	_root_seg.make_self_exception()
 	if not _animating:
 		act_on_state()
+		_update_lightning_buff(delta)
 
 
 
@@ -99,8 +112,6 @@ func play_spawn_animation():
 	await get_tree().create_timer(2.0).timeout
 	$Sound/BGMusic.play()
 	
-	
-	#create_tween().tween_property($Camera2D, "zoom", Vector2(6.0, 6.0), 2.0).set_trans(Tween.TRANS_SINE) 
 	var offset_tween = create_tween()
 	offset_tween.tween_property($Camera2D, "offset", Vector2(-80, 4), 1.5).from(Vector2(0, 4)).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
 	offset_tween.tween_property($Camera2D, "offset", Vector2(80, 4), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
@@ -149,7 +160,7 @@ func _spawn_vine():
 	var first_vine_pos = _player.position + _player.vine_root_offset
 	var final_vine_pos = position + vine_root_offset 
 	var diff = final_vine_pos - first_vine_pos
-	var adj := 1.5
+	var adj := 2.0
 	_len_per_seg = diff.length() / base_segments * adj
 	var curr_seg : Vine = null
 	var last_seg : Vine = null
@@ -235,12 +246,11 @@ func begin_inactive():
 
 func begin_retracting():
 	_state = State.RETRACTING
-	get_tree().call_group("vine", "set_grav", 0.5)
+	get_tree().call_group("vine", "set_grav", 0.3)
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
 	physics_material_override.friction = 1.0
 	stuck_timer.start()
-	_player.gravity_scale = 0.3
-	#_player.linear_damp = 500.0
+	_player.gravity_scale = 0.4
 	linear_damp = 10.0
 	gravity_scale = 0.2
 	_extending_dist_travelled = 0
@@ -257,13 +267,19 @@ func _integrate_forces(state):
 			_target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
 			state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED), state.transform.get_origin()) 
 			state.angular_velocity = 0
-			state.linear_velocity = Vector2(0, -EXTEND_SPEED * extend_speed_mod).rotated(rotation)
+			state.linear_velocity = Vector2(0, -EXTEND_SPEED * extend_speed_mod * lightning_speed_mod).rotated(rotation)
 		elif _state == State.RETRACTING:
 			var dir = Vector2(0.0, 0.0)
 			if Input.is_action_pressed("move_left") and not _animating:
 				dir += Vector2(-1.0, 0.0)
 			if Input.is_action_pressed("move_right") and not _animating:
 				dir += Vector2(1.0, 0.0)
+			var STR = _player.linear_velocity.length() / 300.0
+			print(STR)
+			if dir.x > 0:
+				dir += Vector2.from_angle(_player.rotation) * STR
+			elif dir.x < 0:
+				dir += -Vector2.from_angle(_player.rotation) * STR
 			dir = dir.normalized()
 			const MOVE_STRENGTH = 105.0
 			_player.apply_central_force(dir * MOVE_STRENGTH)
@@ -294,20 +310,23 @@ func _physics_process(delta):
 		var pos = position
 		match _state:
 			State.EXTENDING:
-				if _has_sun_buff and not _sun_buff_applied:
+				if _has_sun_buff and not _sun_buff_applied and tower.weather == Tower.Weather.SUNNY:
 					extra_len = BASE_MAX_EXTENDED_LEN
 					extra_len_display = BASE_MAX_EXTENDED_LEN
 					_sun_buff_applied = true
 					_display_sun_buff()
 				_extending_dist_travelled += _last_pos.distance_to(pos)
 				if _extending_dist_travelled > _len_per_seg:
+					var mod = (1.0 / lightning_speed_mod)
 					_add_seg()
-					_extended_len += _len_per_seg
+					_extended_len += _len_per_seg * mod
 					_extending_dist_travelled -= _len_per_seg
 					if extra_len and extra_len_display:
-						extra_len_display -= _len_per_seg
+						extra_len_display -= _len_per_seg * mod
 						if extra_len_display < 0.0: extra_len_display = 0.0
-					else: vine_len_display -= _len_per_seg
+					else: vine_len_display -= _len_per_seg * mod
+					if lightning_buff_amount:
+						lightning_buff_amount -= _len_per_seg * mod
 				if _extended_len > max_extended_len + extra_len:
 					begin_retracting()
 			State.RETRACTING:
@@ -371,7 +390,57 @@ func _add_seg():
 
 	_root_seg.get_node("PinJoint2D").node_b = new_child.get_path()
 	_segs += 1
-	
+
+func _get_lightning_buff():
+	if not _has_lightning_buff:
+		_has_lightning_buff = true
+		lightning_buff_amount = MAX_LIGHTNING_BUFF
+		lightning_buff_display = MAX_LIGHTNING_BUFF
+		lightning_speed_mod = LIGHTNING_SPEED
+		if lightning_buff_tween:
+			lightning_buff_tween.kill()
+		lightning_buff_tween = create_tween().set_parallel()
+		lightning_buff_tween.tween_property(storm_light, "texture_scale", 0.85, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		lightning_buff_tween.tween_property(storm_light, "color", base, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		lightning_buff_tween.tween_property(storm_light, "energy", 2.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		lightning_buff_tween.tween_property(self, "modulate", Color(0.5, 1.25, 2.0, 1.0), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	else:
+		lightning_buff_amount = MAX_LIGHTNING_BUFF
+		lightning_buff_display = MAX_LIGHTNING_BUFF
+		lightning_speed_mod = LIGHTNING_SPEED
+
+func _update_lightning_buff(delta):
+	if _has_lightning_buff:
+		if lightning_buff_amount <= 0:
+			_remove_lightning_buff()
+		else:
+			var buff_ratio = lightning_buff_amount / MAX_LIGHTNING_BUFF
+			var goal_scale = 0.15 + buff_ratio * 0.15 if not _state == State.EXTENDING else 0.3 + 0.5 * buff_ratio
+			var goal_color = base * buff_ratio if not _state == State.EXTENDING else base
+			var goal_energy = 0.5 * buff_ratio + 0.25 if not _state == State.EXTENDING else 0.25 + buff_ratio
+			const STR = 1.0
+			storm_light.texture_scale = lerp(storm_light.texture_scale, goal_scale, delta * STR) 
+			storm_light.texture_scale = lerp(storm_light.texture_scale, goal_scale, delta * STR) 
+			storm_light.color = lerp(storm_light.color, goal_color, delta * STR)
+			storm_light.energy = lerp(storm_light.energy, goal_energy, delta * STR)
+			lightning_speed_mod = lerp(1.5, LIGHTNING_SPEED, buff_ratio)
+
+
+func _remove_lightning_buff():
+	if _has_lightning_buff:
+		_has_lightning_buff = false
+		lightning_buff_amount = 0.0
+		lightning_buff_display = 0.0
+		lightning_speed_mod = 1.0
+		if lightning_buff_tween:
+			lightning_buff_tween.kill()
+		lightning_buff_tween = create_tween().set_parallel()
+		lightning_buff_tween.tween_property(storm_light, "texture_scale", 0.15, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		lightning_buff_tween.tween_property(storm_light, "color", Color(1, 1, 1, 1), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		lightning_buff_tween.tween_property(storm_light, "energy", 0.15, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		lightning_buff_tween.tween_property(self, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		
+
 
 func _on_bg_music_finished():
 	$Sound/BGMusic.play()
@@ -382,16 +451,11 @@ func _on_sunrays_hit():
 			if _state == State.EXTENDING:
 				_has_sun_buff = true
 		Tower.Weather.STORMY:
-			_has_lightning_buff = true
-			if _state == State.EXTENDING:
-				_has_sun_buff = true # TODO remove
-			#print("lightning hit")
+			_get_lightning_buff()
 
 func _on_stuck_timer_timeout():
 	_can_nudge = true
 	pass
-
-
 
 func _on_sprite_2d_animation_looped():
 	if _sprite.animation == "spiked":
