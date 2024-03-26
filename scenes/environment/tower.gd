@@ -25,6 +25,7 @@ var sunny_modulate := Color(.635, .463, .51, 1.0)
 var storm_modulate := Color(0.0, 0.0, 0.0, 1.0)
 var modulate_tween : Tween 
 var lightning_striking = false
+var lock_lights = false
 
 @onready var _bg : Background = $ParallaxBackground
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
@@ -32,7 +33,7 @@ var lightning_striking = false
 @onready var _sunrays : SunRays = $SunRays
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	create_tween().set_loops().tween_callback(do_lightning).set_delay(4.0)
+	create_tween().set_loops().tween_callback(do_lightning).set_delay(5.0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -101,16 +102,31 @@ func _act_on_weather_state():
 			pass # Full sun, but hard platforming
 
 func do_lightning():
-	const lightning_duration = 0.2
-	lightning_striking = true
-	_lights.set_energy_mult(30.0)
-	await get_tree().create_timer(lightning_duration).timeout
-	create_tween().tween_method(_lights.set_energy_mult, 8.0, 0.015, 0.5).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-	lightning_striking = false
+	if weather == Weather.STORMY:
+		lock_lights = true
+		const cloud_brighten = 0.4
+		const windup_duration = 0.5
+		create_tween().tween_method(_lights.set_energy_mult, 0.015, 1.0, windup_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_IN)
+		create_tween().tween_method(_bg.set_cloud_brightness, _bg.dark, _bg.dark - cloud_brighten, windup_duration).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_IN)
+		await get_tree().create_timer(windup_duration + 0.05).timeout
+		
+		const lightning_duration = 0.2
+		_lights.set_energy_mult(20.0)
+		_bg.set_cloud_brightness(_bg.dark - cloud_brighten)
+		lightning_striking = true
+		await get_tree().create_timer(lightning_duration).timeout
+		lightning_striking = false
+		
+		const winddown_duration = 0.5
+		create_tween().tween_method(_lights.set_energy_mult, 1.0, 0.015, winddown_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+		create_tween().tween_method(_bg.set_cloud_brightness, _bg.dark - cloud_brighten, _bg.dark, winddown_duration).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+		await get_tree().create_timer(winddown_duration).timeout
+		lock_lights = false
 
 func _lerp_lights_towards_goal(delta):
-	const rotation_strength = 1.5
-	$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
+	if not lock_lights: 
+		const rotation_strength = 1.5
+		$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
 
 
 
