@@ -19,6 +19,10 @@ var _right_day_start_angle = deg_to_rad(115.0)
 var _right_day_end_angle = deg_to_rad(35.0)
 var _left_day_start_angle = -_right_day_end_angle
 var _left_day_end_angle = -_right_day_start_angle
+var _right_day_start_angle_storm = deg_to_rad(105.0)
+var _right_day_end_angle_storm = deg_to_rad(75.0)
+var _left_day_start_angle_storm = -_right_day_end_angle_storm
+var _left_day_end_angle_storm = -_right_day_start_angle_storm
 var _goal_rotation = _right_day_start_angle
 var _right = true
 var sunny_modulate := Color(.635, .463, .51, 1.0)
@@ -46,11 +50,11 @@ func _process(delta):
 
 func start_stormy():
 	if not weather == Weather.STORMY:
-		_lights.set_energy_mult(0.0)
 		weather = Weather.STORMY
 		if modulate_tween:
 			modulate_tween.kill()
 		modulate_tween = create_tween().set_parallel()
+		modulate_tween.tween_method(_lights.set_energy_mult, 1.0, 0.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		_bg.enter_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", storm_modulate, 1.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_lightning_bar()
@@ -61,6 +65,7 @@ func start_sunny():
 		if modulate_tween:
 			modulate_tween.kill()
 		modulate_tween = create_tween().set_parallel()
+		modulate_tween.tween_method(_lights.set_energy_mult, 0.0, 1.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		_bg.exit_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", sunny_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_sun_bar()
@@ -75,22 +80,40 @@ func _change_weather_on_progress():
 		start_sunny()
 	
 	# calc light rotation
-	var mult = 0.5 if weather == Weather.STORMY else 1.0
-	_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur * mult)
-	_half_day_cycle_dur = _day_cycle_dur / 2 * mult
-	if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
-		if not _right:
-			var tween := create_tween()
-			tween.tween_property(self, "_goal_rotation", _right_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-			_right = true
+	if weather == Weather.SUNNY:
+		_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur)
+		_half_day_cycle_dur = _day_cycle_dur / 2
+		if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
+			if not _right:
+				var tween := create_tween()
+				tween.tween_property(self, "_goal_rotation", _right_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+				_right = true
+			else:
+				_goal_rotation = lerp(_right_day_start_angle, _right_day_end_angle, _day_cycle / _half_day_cycle_dur)
 		else:
-			_goal_rotation = lerp(_right_day_start_angle, _right_day_end_angle, _day_cycle / _half_day_cycle_dur)
-	else:
-		if _right:
-			create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-			_right = false
+			if _right:
+				create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+				_right = false
+			else:
+				_goal_rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
+	elif weather == Weather.STORMY:
+		var mult = 1.0
+		_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur * mult)
+		_half_day_cycle_dur = _day_cycle_dur / 2 * mult
+		
+		if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
+			if not _right:
+				var tween := create_tween()
+				tween.tween_property(self, "_goal_rotation", _right_day_start_angle_storm, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+				_right = true
+			else:
+				_goal_rotation = lerp(_right_day_start_angle_storm, _right_day_end_angle_storm, _day_cycle / _half_day_cycle_dur)
 		else:
-			_goal_rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
+			if _right:
+				create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle_storm, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+				_right = false
+			else:
+				_goal_rotation = lerp(_left_day_start_angle_storm, _left_day_end_angle_storm, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 
 func _act_on_weather_state():
 	match weather:
@@ -109,11 +132,11 @@ func do_lightning():
 		lock_lights = true
 		const cloud_brighten = 0.4
 		const windup_duration = 1.0
-		create_tween().tween_method(_lights.set_energy_mult, 0.015, 1.0, windup_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_IN)
+		create_tween().tween_method(_lights.set_energy_mult, 0.04, 1.0, windup_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_IN)
 		create_tween().tween_method(_bg.set_cloud_brightness, _bg.dark, _bg.dark - cloud_brighten, windup_duration).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_IN)
 		await get_tree().create_timer(windup_duration + 0.05).timeout
 		
-		const lightning_duration = 0.2
+		const lightning_duration = 0.3
 		_lights.set_energy_mult(20.0)
 		_bg.set_cloud_brightness(_bg.dark - cloud_brighten)
 		lightning_striking = true
@@ -121,14 +144,14 @@ func do_lightning():
 		lightning_striking = false
 		
 		const winddown_duration = 0.5
-		create_tween().tween_method(_lights.set_energy_mult, 1.0, 0.015, winddown_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+		create_tween().tween_method(_lights.set_energy_mult, 1.0, 0.04, winddown_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 		create_tween().tween_method(_bg.set_cloud_brightness, _bg.dark - cloud_brighten, _bg.dark, winddown_duration).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 		await get_tree().create_timer(winddown_duration).timeout
 		lock_lights = false
 
 func _lerp_lights_towards_goal(delta):
 	if not lock_lights: 
-		const rotation_strength = 1.5
+		var rotation_strength = 1.5 if weather == Weather.SUNNY else 3.0  * abs($Lights.rotation - _goal_rotation) / $Lights.rotation
 		$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
 
 func _on_storm_area_body_entered(body):

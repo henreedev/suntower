@@ -38,6 +38,10 @@ func make_self_exception():
 func set_rotation_match(node):
 	_rotation_match_node = node
 
+func _set_electricity(val):
+	$Sprite2D.material.set_shader_parameter("electricity", val)
+
+
 func _integrate_forces(state):
 	if _set_pos:
 		state.transform = Transform2D(state.transform.get_rotation(), _set_pos)
@@ -50,4 +54,3 @@ func _integrate_forces(state):
 		_set_child = null
 	if _rotation_match_node:
 		state.transform = Transform2D(_rotation_match_node.rotation, state.transform.get_origin())
-

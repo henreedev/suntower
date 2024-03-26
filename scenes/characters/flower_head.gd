@@ -16,14 +16,13 @@ var extend_speed_mod = 1.0
 var extra_len = 0.0
 var extra_len_display = 0.0
 var vine_len_display = BASE_MAX_EXTENDED_LEN
+var time = 0.0
 #const EXTEND_SPEED = 200.0
 #@export var max_extended_len := 5000.0
 #const BASE_MAX_EXTENDED_LEN := 5000.0
 
 var initial_flower_pos := Vector2(0, -44)
 var initial_pot_pos := Vector2(0, 6)
-
-
 
 # Sun buff
 var _has_sun_buff := false
@@ -95,6 +94,7 @@ func _process(delta):
 	if not _animating:
 		act_on_state()
 		_update_lightning_buff(delta)
+		time += delta
 
 
 
@@ -160,7 +160,7 @@ func _spawn_vine():
 	var first_vine_pos = _player.position + _player.vine_root_offset
 	var final_vine_pos = position + vine_root_offset 
 	var diff = final_vine_pos - first_vine_pos
-	var adj := 2.0
+	var adj := 1.9
 	_len_per_seg = diff.length() / base_segments * adj
 	var curr_seg : Vine = null
 	var last_seg : Vine = null
@@ -211,7 +211,7 @@ func begin_extending():
 		_player.linear_damp = 0.0
 		linear_damp = 0.0
 		_player.mass = 0.25
-		extend_speed_mod = 0.3
+		extend_speed_mod = 1.0
 		create_tween().tween_property(self, "extend_speed_mod", 1.0, 0.3)
 
 func begin_inactive():
@@ -242,7 +242,7 @@ func begin_inactive():
 	_player.gravity_scale = 1.0
 	_player.linear_damp = 0.0
 	_player.mass = 1.0
-	linear_damp = 1.0
+	linear_damp = 0.0
 
 func begin_retracting():
 	_state = State.RETRACTING
@@ -274,8 +274,7 @@ func _integrate_forces(state):
 				dir += Vector2(-1.0, 0.0)
 			if Input.is_action_pressed("move_right") and not _animating:
 				dir += Vector2(1.0, 0.0)
-			var STR = _player.linear_velocity.length() / 300.0
-			print(STR)
+			var STR = _player.linear_velocity.length() / 250.0
 			if dir.x > 0:
 				dir += Vector2.from_angle(_player.rotation) * STR
 			elif dir.x < 0:
@@ -403,7 +402,7 @@ func _get_lightning_buff():
 		lightning_buff_tween.tween_property(storm_light, "texture_scale", 0.85, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		lightning_buff_tween.tween_property(storm_light, "color", base, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		lightning_buff_tween.tween_property(storm_light, "energy", 2.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		lightning_buff_tween.tween_property(self, "modulate", Color(0.5, 1.25, 2.0, 1.0), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		lightning_buff_tween.tween_method(_set_electricity, 1.5, 2.5, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	else:
 		lightning_buff_amount = MAX_LIGHTNING_BUFF
 		lightning_buff_display = MAX_LIGHTNING_BUFF
@@ -415,15 +414,15 @@ func _update_lightning_buff(delta):
 			_remove_lightning_buff()
 		else:
 			var buff_ratio = lightning_buff_amount / MAX_LIGHTNING_BUFF
-			var goal_scale = 0.15 + buff_ratio * 0.15 if not _state == State.EXTENDING else 0.3 + 0.5 * buff_ratio
-			var goal_color = base * buff_ratio if not _state == State.EXTENDING else base
-			var goal_energy = 0.5 * buff_ratio + 0.25 if not _state == State.EXTENDING else 0.25 + buff_ratio
+			var goal_scale = 0.15 + buff_ratio * 0.3 if not _state == State.EXTENDING else 0.5 + 0.5 * buff_ratio
+			var goal_color = base if not _state == State.EXTENDING else base
+			var goal_energy = 0.5 * buff_ratio + 0.25 if not _state == State.EXTENDING else 0.75 + 0.25 * buff_ratio
 			const STR = 1.0
-			storm_light.texture_scale = lerp(storm_light.texture_scale, goal_scale, delta * STR) 
 			storm_light.texture_scale = lerp(storm_light.texture_scale, goal_scale, delta * STR) 
 			storm_light.color = lerp(storm_light.color, goal_color, delta * STR)
 			storm_light.energy = lerp(storm_light.energy, goal_energy, delta * STR)
 			lightning_speed_mod = lerp(1.5, LIGHTNING_SPEED, buff_ratio)
+			_set_electricity(lerp(1.5, 2.5, buff_ratio))
 
 
 func _remove_lightning_buff():
@@ -438,8 +437,13 @@ func _remove_lightning_buff():
 		lightning_buff_tween.tween_property(storm_light, "texture_scale", 0.15, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		lightning_buff_tween.tween_property(storm_light, "color", Color(1, 1, 1, 1), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		lightning_buff_tween.tween_property(storm_light, "energy", 0.15, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		lightning_buff_tween.tween_property(self, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		lightning_buff_tween.tween_method(_set_electricity, 1.5, 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		
+
+func _set_electricity(val):
+	material.set_shader_parameter("electricity", val)
+	get_tree().call_group("vine", "_set_electricity", val)
+	vine_line.material.set_shader_parameter("electricity", val)
 
 
 func _on_bg_music_finished():

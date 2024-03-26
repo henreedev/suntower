@@ -44,7 +44,7 @@ func _check_player_hit():
 	if _tower.weather == Tower.Weather.STORMY and _tower.lightning_striking:
 		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
 			var hit = ray.get_collider()
-			if hit is FlowerHead or (hit.is_in_group("flowerhead") if hit else false):
+			if hit is FlowerHead or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
 				return true
 		return false
 	elif _tower.weather == Tower.Weather.SUNNY:

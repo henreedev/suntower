@@ -1,10 +1,25 @@
-[gd_scene load_steps=5 format=3 uid="uid://jfxpur7d1w8n"]
+[gd_scene load_steps=9 format=3 uid="uid://jfxpur7d1w8n"]
 
 [ext_resource type="Script" path="res://scenes/characters/vine_seg.gd" id="1_d58dt"]
 [ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/stem-rope.png" id="1_fkaj8"]
+[ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="2_kpskx"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_owbri"]
 friction = 0.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_04w2w"]
+frequency = 0.1089
+fractal_weighted_strength = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l4c21"]
+noise = SubResource("FastNoiseLite_04w2w")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_67x27"]
+shader = ExtResource("2_kpskx")
+shader_parameter/electricity = 0.0
+shader_parameter/scroll_speed = 0.307
+shader_parameter/electric_color = Color(0.458824, 1, 1, 1)
+shader_parameter/noise = SubResource("NoiseTexture2D_l4c21")
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
 radius = 5.0
@@ -21,6 +36,7 @@ angular_damp = 20.0
 script = ExtResource("1_d58dt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_67x27")
 position = Vector2(0, 0.5)
 scale = Vector2(1, 0.5)
 texture = ExtResource("1_fkaj8")
