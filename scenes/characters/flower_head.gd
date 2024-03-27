@@ -21,6 +21,8 @@ var time = 0.0
 #@export var max_extended_len := 5000.0
 #const BASE_MAX_EXTENDED_LEN := 5000.0
 
+var music_tween : Tween
+
 var initial_flower_pos := Vector2(0, -44)
 var initial_pot_pos := Vector2(0, 6)
 
@@ -65,6 +67,11 @@ var _can_nudge = false
 @onready var _sprite : AnimatedSprite2D = $Sprite2D
 @onready var tower : Tower = get_tree().get_first_node_in_group("tower")
 @onready var storm_light : PointLight2D = $StormLight
+@onready var lightning_particles : GPUParticles2D = $Lightning
+@onready var sun_particles : GPUParticles2D = $Sparkles
+@onready var sun_bg_music : AudioStreamPlayer2D = $Sound/BGMusic
+@onready var storm_bg_music : AudioStreamPlayer2D = $Sound/StormBGMusic
+@onready var scene_manager = get_tree().get_first_node_in_group("scenemanager")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -80,13 +87,13 @@ func _ready():
 		no_cutscene_setup()
 
 func no_cutscene_setup():
-	$Sound/BGMusic.play()
+	sun_bg_music.play()
 	get_tree().get_first_node_in_group("stopwatch").start()
 	create_tween().tween_property($Camera2D,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property($Camera2D, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
 	await get_tree().create_timer(0.5).timeout
 	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC)
-	
+	_set_electricity(0)
 
 func _process(delta):
 	_draw_line()
@@ -201,7 +208,9 @@ func begin_extending():
 		_state = State.EXTENDING
 		_sprite.animation = "spiked"
 		_sprite.play()
-		$Sparkles.emitting = true
+		if tower.weather == Tower.Weather.SUNNY:
+			sun_particles.emitting = true
+			sun_particles.amount = 5
 		lock_rotation = false
 		collision_mask = 13
 		$SpikedHitbox.disabled = false
@@ -233,8 +242,7 @@ func begin_inactive():
 	vine_len_display = BASE_MAX_EXTENDED_LEN
 	physics_material_override.friction = 0.0
 	$SpikedHitbox.disabled = true
-	$Sparkles.emitting = false
-	$Sparkles.amount = 5
+	sun_particles.emitting = false
 	gravity_scale = GRAVITY
 	lock_rotation = false
 	get_tree().call_group("vine", "set_grav", 0.03)
@@ -300,8 +308,8 @@ func _display_sun_buff():
 	tween_2.tween_property(_bar, "tint_progress", Color(2, 2, 2), 0.5)
 	sun_buff_tween.tween_property(self, "modulate", Color(2.0, 2.0, 2.0), 1.5)
 	tween_2.tween_property(_bar, "tint_progress", Color(1., 1., 1.), 0.5)
-	$Sparkles.emitting = true
-	$Sparkles.amount = 125
+	sun_particles.emitting = true
+	sun_particles.amount = 125
 
 func _physics_process(delta):
 	if not _animating:
@@ -393,6 +401,9 @@ func _add_seg():
 func _get_lightning_buff():
 	if not _has_lightning_buff:
 		_has_lightning_buff = true
+		lightning_particles.emitting = true
+		lightning_particles.amount = 20
+		sun_particles.emitting = false
 		lightning_buff_amount = MAX_LIGHTNING_BUFF
 		lightning_buff_display = MAX_LIGHTNING_BUFF
 		lightning_speed_mod = LIGHTNING_SPEED
@@ -438,16 +449,37 @@ func _remove_lightning_buff():
 		lightning_buff_tween.tween_property(storm_light, "color", Color(1, 1, 1, 1), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		lightning_buff_tween.tween_property(storm_light, "energy", 0.15, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		lightning_buff_tween.tween_method(_set_electricity, 1.5, 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		
+		await get_tree().create_timer(0.5).timeout
+		lightning_particles.emitting = false
+
 
 func _set_electricity(val):
 	material.set_shader_parameter("electricity", val)
 	get_tree().call_group("vine", "_set_electricity", val)
 	vine_line.material.set_shader_parameter("electricity", val)
 
+func switch_music(weather : Tower.Weather, duration : float):
+	if music_tween:
+		music_tween.kill()
+	music_tween = create_tween().set_parallel()
+	var old : AudioStreamPlayer2D
+	var new : AudioStreamPlayer2D
+	match weather:
+		Tower.Weather.SUNNY:
+			old = storm_bg_music
+			new = sun_bg_music
+		Tower.Weather.STORMY:
+			old = sun_bg_music
+			new = storm_bg_music
+	music_tween.tween_property(old, "pitch_scale", 0.01, duration / 2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CIRC)
+	music_tween.tween_property(old, "volume_db", -50.0, duration).set_trans(Tween.TRANS_CIRC)
+	music_tween.tween_callback(old.stop).set_delay(duration)
+	music_tween.tween_callback(new.play)
+	music_tween.tween_property(new, "pitch_scale", 1.0, duration / 2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CIRC)
+	music_tween.tween_property(new, "volume_db", scene_manager.sound_volume + scene_manager.sound_volume_offset2, duration).set_trans(Tween.TRANS_CIRC)
 
 func _on_bg_music_finished():
-	$Sound/BGMusic.play()
+	pass
 
 func _on_sunrays_hit():
 	match tower.weather:
@@ -469,5 +501,5 @@ func _on_sprite_2d_animation_looped():
 		_sprite.animation = "normal"
 
 func set_volume():
-	var scene_manager = get_tree().get_first_node_in_group("scenemanager")
-	$Sound/BGMusic.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset2
+	sun_bg_music.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset2
+	storm_bg_music.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset2

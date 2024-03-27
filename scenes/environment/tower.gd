@@ -58,6 +58,7 @@ func start_stormy():
 		_bg.enter_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", storm_modulate, 1.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_lightning_bar()
+		_player.switch_music(weather, 3.0)
 
 func start_sunny():
 	if not weather == Weather.SUNNY:
@@ -69,6 +70,7 @@ func start_sunny():
 		_bg.exit_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", sunny_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_sun_bar()
+		_player.switch_music(weather, 3.0)
 
 func _change_weather_on_progress():
 	_progress = _player.position.y / MAX_PROG_HEIGHT
@@ -78,42 +80,42 @@ func _change_weather_on_progress():
 		start_stormy()
 	else: 
 		start_sunny()
-	
-	# calc light rotation
-	if weather == Weather.SUNNY:
-		_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur)
-		_half_day_cycle_dur = _day_cycle_dur / 2
-		if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
-			if not _right:
-				var tween := create_tween()
-				tween.tween_property(self, "_goal_rotation", _right_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-				_right = true
+	if not lock_lights: 
+		# calc light rotation
+		if weather == Weather.SUNNY:
+			_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur)
+			_half_day_cycle_dur = _day_cycle_dur / 2
+			if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
+				if not _right:
+					var tween := create_tween()
+					tween.tween_property(self, "_goal_rotation", _right_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+					_right = true
+				else:
+					_goal_rotation = lerp(_right_day_start_angle, _right_day_end_angle, _day_cycle / _half_day_cycle_dur)
 			else:
-				_goal_rotation = lerp(_right_day_start_angle, _right_day_end_angle, _day_cycle / _half_day_cycle_dur)
-		else:
-			if _right:
-				create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-				_right = false
+				if _right:
+					create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+					_right = false
+				else:
+					_goal_rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
+		elif weather == Weather.STORMY:
+			var mult = 1.0
+			_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur * mult)
+			_half_day_cycle_dur = _day_cycle_dur / 2 * mult
+			
+			if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
+				if not _right:
+					var tween := create_tween()
+					tween.tween_property(self, "_goal_rotation", _right_day_start_angle_storm, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+					_right = true
+				else:
+					_goal_rotation = lerp(_right_day_start_angle_storm, _right_day_end_angle_storm, _day_cycle / _half_day_cycle_dur)
 			else:
-				_goal_rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
-	elif weather == Weather.STORMY:
-		var mult = 1.0
-		_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur * mult)
-		_half_day_cycle_dur = _day_cycle_dur / 2 * mult
-		
-		if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
-			if not _right:
-				var tween := create_tween()
-				tween.tween_property(self, "_goal_rotation", _right_day_start_angle_storm, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-				_right = true
-			else:
-				_goal_rotation = lerp(_right_day_start_angle_storm, _right_day_end_angle_storm, _day_cycle / _half_day_cycle_dur)
-		else:
-			if _right:
-				create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle_storm, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-				_right = false
-			else:
-				_goal_rotation = lerp(_left_day_start_angle_storm, _left_day_end_angle_storm, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
+				if _right:
+					create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle_storm, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+					_right = false
+				else:
+					_goal_rotation = lerp(_left_day_start_angle_storm, _left_day_end_angle_storm, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 
 func _act_on_weather_state():
 	match weather:
@@ -150,14 +152,12 @@ func do_lightning():
 		lock_lights = false
 
 func _lerp_lights_towards_goal(delta):
-	if not lock_lights: 
-		var rotation_strength = 1.5 if weather == Weather.SUNNY else 3.0  * abs($Lights.rotation - _goal_rotation) / $Lights.rotation
-		$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
+	var rotation_strength = 1.5 if weather == Weather.SUNNY else 5.0
+	$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
 
 func _on_storm_area_body_entered(body):
 	if body is FlowerHead:
 		in_storm = true
-
 
 func _on_storm_area_body_exited(body):
 	if body is FlowerHead:

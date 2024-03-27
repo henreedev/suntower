@@ -1,11 +1,13 @@
-[gd_scene load_steps=33 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=41 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="1_700xu"]
 [ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/flower-head.png" id="2_gv2se"]
 [ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/characters/vine_seg.tscn" id="2_ircd2"]
+[ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/suntower-lightning-particle.png" id="4_14gk3"]
 [ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/flower-extend.png" id="4_ski6y"]
 [ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/flower.mp3" id="5_1ssef"]
+[ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/scuffed_storms.mp3" id="7_6xq58"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_04w2w"]
 frequency = 0.1089
@@ -60,6 +62,40 @@ scale_curve = SubResource("CurveTexture_5gt1y")
 color_ramp = SubResource("GradientTexture1D_18684")
 color_initial_ramp = SubResource("GradientTexture1D_2inft")
 emission_curve = SubResource("CurveTexture_0bqkg")
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_1y40j"]
+particles_animation = true
+particles_anim_h_frames = 8
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_1e1hn"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.541667, 1), -10.1275, -10.1275, 0, 0, Vector2(1, 1), -1.81451, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_nc3yn"]
+curve = SubResource("Curve_1e1hn")
+
+[sub_resource type="Gradient" id="Gradient_mjsj2"]
+colors = PackedColorArray(1, 1, 1, 1, 2, 2, 2, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3y8qs"]
+gradient = SubResource("Gradient_mjsj2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fdm42"]
+particle_flag_align_y = true
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 30.0
+initial_velocity_max = 30.0
+gravity = Vector3(0, 0, 0)
+damping_min = 25.0
+damping_max = 25.0
+scale_min = 0.75
+color_ramp = SubResource("GradientTexture1D_3y8qs")
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+anim_speed_curve = SubResource("CurveTexture_nc3yn")
 
 [sub_resource type="Gradient" id="Gradient_q1ijr"]
 colors = PackedColorArray(0.20014, 0.451195, 0.0228207, 1, 0.262616, 0.576407, 0.0353309, 1)
@@ -174,7 +210,14 @@ emitting = false
 amount = 73
 process_material = SubResource("ParticleProcessMaterial_ha0my")
 lifetime = 2.0
-visibility_rect = Rect2(-300, -300, 600, 600)
+visibility_rect = Rect2(-4.81506, -4.91064, 9.81225, 9.78039)
+
+[node name="Lightning" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_1y40j")
+emitting = false
+amount = 20
+process_material = SubResource("ParticleProcessMaterial_fdm42")
+texture = ExtResource("4_14gk3")
 
 [node name="Vines" type="Node" parent="."]
 
@@ -226,6 +269,12 @@ volume_db = -16.0
 max_distance = 10000.0
 attenuation = 0.000164636
 panning_strength = 0.0
+
+[node name="StormBGMusic" type="AudioStreamPlayer2D" parent="Sound"]
+stream = ExtResource("7_6xq58")
+volume_db = -16.0
+pitch_scale = 0.01
+attenuation = 1e-05
 
 [node name="StuckTimer" type="Timer" parent="."]
 wait_time = 0.5

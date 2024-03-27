@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cjl7hh0kgvrb8"]
+[gd_scene load_steps=17 format=3 uid="uid://cjl7hh0kgvrb8"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_7xsfy"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
@@ -8,7 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://dnn86dvj662yj" path="res://assets/image/growbar-vines.png" id="6_vlg86"]
 [ext_resource type="Texture2D" uid="uid://85qfkjlne24r" path="res://assets/image/growbar-under.png" id="7_8lc2f"]
 [ext_resource type="Texture2D" uid="uid://bmwo3c2dceiga" path="res://assets/image/growbar-bar.png" id="8_al0vm"]
+[ext_resource type="Texture2D" uid="uid://bsy6qum2c4ub5" path="res://assets/image/growbar-lightningbar.png" id="9_kkmna"]
 [ext_resource type="Texture2D" uid="uid://dr8bxndhr0tm5" path="res://assets/image/growbar-sun.png" id="9_xggyo"]
+[ext_resource type="Texture2D" uid="uid://ca2w6exe7r1ed" path="res://assets/image/growbar-lightning.png" id="10_iut7u"]
 [ext_resource type="Script" path="res://scenes/Stopwatch.gd" id="10_v3nai"]
 [ext_resource type="PackedScene" uid="uid://b574p0trbhj2o" path="res://scenes/menus/pause_menu.tscn" id="11_swgty"]
 
@@ -80,10 +82,9 @@ offset_right = -39.575
 offset_bottom = 17.0
 grow_horizontal = 2
 scale = Vector2(3, 3)
-value = 50.0
 texture_under = ExtResource("7_8lc2f")
-texture_over = ExtResource("8_al0vm")
-texture_progress = ExtResource("9_xggyo")
+texture_over = ExtResource("9_kkmna")
+texture_progress = ExtResource("10_iut7u")
 
 [node name="VinesBar" type="TextureProgressBar" parent="CanvasLayer" groups=["hud"]]
 material = SubResource("ShaderMaterial_5bg1h")

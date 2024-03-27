@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://jfxpur7d1w8n"]
+[gd_scene load_steps=11 format=3 uid="uid://jfxpur7d1w8n"]
 
 [ext_resource type="Script" path="res://scenes/characters/vine_seg.gd" id="1_d58dt"]
 [ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/stem-rope.png" id="1_fkaj8"]
@@ -21,6 +21,18 @@ shader_parameter/scroll_speed = 0.307
 shader_parameter/electric_color = Color(0.458824, 1, 1, 1)
 shader_parameter/noise = SubResource("NoiseTexture2D_l4c21")
 
+[sub_resource type="Gradient" id="Gradient_g1t54"]
+offsets = PackedFloat32Array(0, 0.67)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_cdlsb"]
+gradient = SubResource("Gradient_g1t54")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
 radius = 5.0
 height = 16.0
@@ -40,6 +52,15 @@ material = SubResource("ShaderMaterial_67x27")
 position = Vector2(0, 0.5)
 scale = Vector2(1, 0.5)
 texture = ExtResource("1_fkaj8")
+
+[node name="StormLight" type="PointLight2D" parent="Sprite2D"]
+scale = Vector2(2.72, 2.72)
+enabled = false
+color = Color(0.639216, 1, 1, 1)
+energy = 0.0
+shadow_item_cull_mask = 2
+texture = SubResource("GradientTexture2D_cdlsb")
+texture_scale = 0.02
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -3)

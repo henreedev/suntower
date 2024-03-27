@@ -6,6 +6,8 @@ var _set_rot
 var _set_child
 var detached_child : Vine
 @onready var sprite_scale = $Sprite2D.scale
+@onready var sprite : Sprite2D = $Sprite2D
+@onready var light : PointLight2D = $Sprite2D/StormLight
 
 var this_scene : PackedScene = preload("res://scenes/characters/vine_seg.tscn")
 var _rotation_match_node
@@ -40,6 +42,10 @@ func set_rotation_match(node):
 
 func _set_electricity(val):
 	$Sprite2D.material.set_shader_parameter("electricity", val)
+	if val > 0:
+		light.enabled = true
+		light.energy = val
+	else: light.enabled = false
 
 
 func _integrate_forces(state):

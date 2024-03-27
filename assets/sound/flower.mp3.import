@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/flower.mp3-b9a91d8f8299a83efa32e877e32bf721.m
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0
