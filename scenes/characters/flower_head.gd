@@ -313,7 +313,7 @@ func _display_sun_buff():
 
 func _physics_process(delta):
 	if not _animating:
-		can_extend = _player.touching and _player.linear_velocity.length_squared() < 2.0
+		can_extend = _player.touching and _player.linear_velocity.length_squared() < 2.0 or _state == State.EXTENDING
 		var pos = position
 		match _state:
 			State.EXTENDING:
@@ -323,8 +323,8 @@ func _physics_process(delta):
 					_sun_buff_applied = true
 					_display_sun_buff()
 				_extending_dist_travelled += _last_pos.distance_to(pos)
-				if _extending_dist_travelled > _len_per_seg:
-					var mod = (1.0 / lightning_speed_mod)
+				var mod = (1.0 / lightning_speed_mod)
+				if _extending_dist_travelled > _len_per_seg * mod:
 					_add_seg()
 					_extended_len += _len_per_seg * mod
 					_extending_dist_travelled -= _len_per_seg

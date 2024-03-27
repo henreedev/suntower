@@ -19,8 +19,8 @@ var _right_day_start_angle = deg_to_rad(115.0)
 var _right_day_end_angle = deg_to_rad(35.0)
 var _left_day_start_angle = -_right_day_end_angle
 var _left_day_end_angle = -_right_day_start_angle
-var _right_day_start_angle_storm = deg_to_rad(105.0)
-var _right_day_end_angle_storm = deg_to_rad(75.0)
+var _right_day_start_angle_storm = deg_to_rad(110.0)
+var _right_day_end_angle_storm = deg_to_rad(70.0)
 var _left_day_start_angle_storm = -_right_day_end_angle_storm
 var _left_day_end_angle_storm = -_right_day_start_angle_storm
 var _goal_rotation = _right_day_start_angle
@@ -99,7 +99,7 @@ func _change_weather_on_progress():
 				else:
 					_goal_rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 		elif weather == Weather.STORMY:
-			var mult = 1.0
+			var mult = 0.5
 			_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur * mult)
 			_half_day_cycle_dur = _day_cycle_dur / 2 * mult
 			

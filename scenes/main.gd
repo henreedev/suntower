@@ -11,7 +11,7 @@ var hud_offset := Vector2(0,-50)
 var win = false
 var shake_strength = 0.0
 const SHAKE_DECAY_RATE = 20.0
-const RANDOM_SHAKE_STRENGTH = 10.0
+const RANDOM_SHAKE_STRENGTH = 30.0
 var switch_bars_tween : Tween
 # Called when the node enters the scene tree for the first time.
 
@@ -62,7 +62,7 @@ func _process(delta):
 	if shake_strength:
 		shake_strength = lerp(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
 	# Set hud progress bar values
-	if not (_head._state == FlowerHead.State.INACTIVE and not _head.can_extend):
+	if _head.can_extend:
 		if _head.extra_len_display == 125.0:
 			_sun_bar.value = 125.0
 		const STR = 10.0

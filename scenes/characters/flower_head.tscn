@@ -275,6 +275,7 @@ stream = ExtResource("7_6xq58")
 volume_db = -16.0
 pitch_scale = 0.01
 attenuation = 1e-05
+panning_strength = 0.0
 
 [node name="StuckTimer" type="Timer" parent="."]
 wait_time = 0.5
