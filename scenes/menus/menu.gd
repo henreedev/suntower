@@ -11,6 +11,7 @@ var rate2 = rate * 0.5
 @onready var scene_manager = get_tree().get_first_node_in_group("scenemanager")
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	_vol_slider.value = db_to_linear(SceneManager.sound_volume) * 100 / 1.5
 	var tween = create_tween().set_loops()
 	animate_title()
 	tween.tween_callback(animate_title).set_delay(rate)
@@ -38,8 +39,8 @@ func animate_title2():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	scene_manager.sound_volume = linear_to_db(_vol_slider.value * 1.5 / _vol_slider.max_value)
-	$BGMusic.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset1
+	SceneManager.sound_volume = linear_to_db(_vol_slider.value * 1.5 / _vol_slider.max_value)
+	$BGMusic.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_menu
 
 func _on_start_button_pressed():
 	game_started.emit()

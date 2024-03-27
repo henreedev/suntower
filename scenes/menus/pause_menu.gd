@@ -6,7 +6,7 @@ extends CanvasLayer
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	_vol_slider.value = db_to_linear(SceneManager.sound_volume) * 100 / 1.5
 
 func unpause_game():
 	get_tree().paused = false

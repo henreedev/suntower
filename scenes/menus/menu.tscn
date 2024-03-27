@@ -86,7 +86,7 @@ label_settings = SubResource("LabelSettings_lvt62")
 
 [node name="BGMusic" type="AudioStreamPlayer2D" parent="." groups=["bgm"]]
 stream = ExtResource("4_q06le")
-volume_db = -16.0
+volume_db = -24.0
 autoplay = true
 attenuation = 1e-05
 panning_strength = 0.0

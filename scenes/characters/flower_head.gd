@@ -273,7 +273,7 @@ func _integrate_forces(state):
 			_set_transform = null
 		if _state == State.EXTENDING:
 			_target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
-			state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED), state.transform.get_origin()) 
+			state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED * lightning_speed_mod), state.transform.get_origin()) 
 			state.angular_velocity = 0
 			state.linear_velocity = Vector2(0, -EXTEND_SPEED * extend_speed_mod * lightning_speed_mod).rotated(rotation)
 		elif _state == State.RETRACTING:
@@ -292,7 +292,7 @@ func _integrate_forces(state):
 			_player.apply_central_force(dir * MOVE_STRENGTH)
 		elif _state == State.INACTIVE:
 			var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
-			const STR = 4.0
+			const STR = 6.0
 			state.transform = Transform2D(lerp_angle(rotation, mouse_angle, STR * state.step), state.transform.get_origin())
 			const STR2 = 20.0
 			var force_toward_mouse = Vector2(0, -1).rotated(mouse_angle) * STR2
@@ -476,7 +476,7 @@ func switch_music(weather : Tower.Weather, duration : float):
 	music_tween.tween_callback(old.stop).set_delay(duration)
 	music_tween.tween_callback(new.play)
 	music_tween.tween_property(new, "pitch_scale", 1.0, duration / 2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CIRC)
-	music_tween.tween_property(new, "volume_db", scene_manager.sound_volume + scene_manager.sound_volume_offset2, duration).set_trans(Tween.TRANS_CIRC)
+	music_tween.tween_property(new, "volume_db", SceneManager.sound_volume + SceneManager.sound_volume_offset_sun, duration).set_trans(Tween.TRANS_CIRC)
 
 func _on_bg_music_finished():
 	pass
@@ -501,5 +501,6 @@ func _on_sprite_2d_animation_looped():
 		_sprite.animation = "normal"
 
 func set_volume():
-	sun_bg_music.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset2
-	storm_bg_music.volume_db = scene_manager.sound_volume + scene_manager.sound_volume_offset2
+	sun_bg_music.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_sun
+	storm_bg_music.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_storm
+	_player.set_volume(SceneManager.sound_volume + SceneManager.sound_volume_offset_sfx)

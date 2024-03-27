@@ -24,7 +24,6 @@ glow_strength = 1.12
 glow_bloom = 0.25
 glow_hdr_threshold = 0.75
 glow_hdr_luminance_cap = 21.94
-adjustment_enabled = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5bg1h"]
 shader = ExtResource("5_ty0ha")

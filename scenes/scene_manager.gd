@@ -3,10 +3,14 @@ extends Node2D
 class_name SceneManager
 
 @export var game_scene : PackedScene
-@export var sound_volume_offset1 = -12.0
-@export var sound_volume_offset2 = -10.0
+static var sound_volume_offset_menu = -12.0
+static var sound_volume_offset_sun = -10.0
+static var sound_volume_offset_sfx = -8.0
+static var sound_volume_offset_storm = -10.0
+static var sound_volume_offset_unnormalized = 10.0
+static var sfx_bighit_adj = 5.0
 @onready var bgmusic = $CurrentScene/Menu/BGMusic
-var sound_volume = 0.0
+static var sound_volume = -10.0
 static var skip_cutscene = false
 
 # Called when the node enters the scene tree for the first time.
@@ -23,6 +27,7 @@ func _on_menu_game_started():
 	create_tween().tween_property($CurrentScene/Menu/BGMusic, "pitch_scale", 0.1, 1.3).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN)
 
 func _on_transition_overlay_transitioned():
+	# store volume
 	$CurrentScene.get_child(0).queue_free()
 	if skip_cutscene:
 		var game = game_scene.instantiate()

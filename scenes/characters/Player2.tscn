@@ -1,7 +1,14 @@
-[gd_scene load_steps=10 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=17 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" path="res://scenes/characters/Player2.gd" id="1_u6jn4"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/pot.png" id="2_dk0m0"]
+[ext_resource type="AudioStream" uid="uid://c4uiv50jfctbm" path="res://assets/sound/sfx/pot-hit-small.wav" id="3_8bkf5"]
+[ext_resource type="AudioStream" uid="uid://4r0o4tmxx1l1" path="res://assets/sound/sfx/hit.wav" id="4_1fw06"]
+[ext_resource type="AudioStream" uid="uid://cfnrcvg2w5vo1" path="res://assets/sound/sfx/hit-2.wav" id="5_3adu4"]
+[ext_resource type="AudioStream" uid="uid://bp0dvhnvv41cp" path="res://assets/sound/sfx/hit-3.wav" id="6_1q6qq"]
+[ext_resource type="AudioStream" uid="uid://vdmxtxqn42kp" path="res://assets/sound/sfx/hit-4.wav" id="7_u03kb"]
+[ext_resource type="AudioStream" uid="uid://71eh0otxnw23" path="res://assets/sound/sfx/hit-5.wav" id="8_he4fe"]
+[ext_resource type="AudioStream" uid="uid://dexjuwtoqqhxd" path="res://assets/sound/sfx/fail.wav" id="9_y6hj8"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4ed4y"]
 friction = 12.75
@@ -71,6 +78,41 @@ shadow_enabled = true
 shadow_item_cull_mask = 2
 texture = SubResource("GradientTexture2D_xvpsk")
 texture_scale = 0.1
+
+[node name="Sound" type="Node2D" parent="."]
+
+[node name="MediumHit1" type="AudioStreamPlayer2D" parent="Sound"]
+stream = ExtResource("3_8bkf5")
+max_distance = 400.0
+attenuation = 0.297302
+panning_strength = 1.3
+
+[node name="MediumBigHit1" type="AudioStreamPlayer2D" parent="Sound"]
+stream = ExtResource("4_1fw06")
+max_distance = 400.0
+attenuation = 0.241484
+panning_strength = 1.3
+
+[node name="MediumInterHit1" type="AudioStreamPlayer2D" parent="Sound"]
+stream = ExtResource("5_3adu4")
+max_distance = 400.0
+attenuation = 0.366021
+panning_strength = 1.3
+
+[node name="BigHitWhoosh" type="AudioStreamPlayer2D" parent="Sound"]
+stream = ExtResource("6_1q6qq")
+
+[node name="WeirdHit" type="AudioStreamPlayer2D" parent="Sound"]
+stream = ExtResource("7_u03kb")
+
+[node name="SmallHit" type="AudioStreamPlayer2D" parent="Sound"]
+stream = ExtResource("8_he4fe")
+max_distance = 400.0
+attenuation = 0.258817
+
+[node name="Fail" type="AudioStreamPlayer2D" parent="Sound"]
+stream = ExtResource("9_y6hj8")
+pitch_scale = 0.85
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]
