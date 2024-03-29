@@ -17,7 +17,7 @@ var prev_avel : float
 @onready var weird_hit : AudioStreamPlayer2D = $Sound/WeirdHit
 @onready var small_hit : AudioStreamPlayer2D = $Sound/SmallHit
 @onready var fail : AudioStreamPlayer2D = $Sound/Fail
-
+@onready var shadow : Sprite2D = $Smoothing2D/Pot/Shadow
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
@@ -31,9 +31,9 @@ func _process(delta):
 func _display_shadow():
 	const delta = 0.02
 	if touching and abs(global_rotation) < delta and linear_velocity.length_squared() < 2.0:
-		create_tween().tween_property($Pot/Shadow, "modulate", Color(1, 1, 1, 1), 0.05)
+		create_tween().tween_property(shadow, "modulate", Color(1, 1, 1, 1), 0.05)
 	else:
-		create_tween().tween_property($Pot/Shadow, "modulate", Color(1, 1, 1, 0), 0.1)
+		create_tween().tween_property(shadow, "modulate", Color(1, 1, 1, 0), 0.1)
 
 func set_volume(db):
 	fail.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_unnormalized
@@ -67,19 +67,22 @@ func _physics_process(delta):
 func _play_sound():
 	var diff = abs(prev_vel_sqrd - linear_velocity.length_squared())
 	var adiff = abs(prev_avel - angular_velocity)
+	var rand_pitch = randf_range(0.9, 1.1)
 	if not _head._animating:
 		if diff > 150000.0:
 			fail.play()
+			medium_big_hit.pitch_scale = rand_pitch
 			medium_big_hit.play()
 			big_hit_whoosh.play()
-		elif diff > 100000.0:
-			medium_hit.play()
 		elif diff > 50000.0:
+			medium_hit.pitch_scale = rand_pitch
 			medium_hit.play()
 		elif diff > 10000.0:
+			medium_inter_hit.pitch_scale = rand_pitch
 			medium_inter_hit.play()
 		elif diff > 500.0 or adiff > 3.0:
 			if small_hit_can_play:
+				small_hit.pitch_scale = rand_pitch
 				small_hit.play()
 				small_hit_can_play = false
 				await get_tree().create_timer(0.5).timeout

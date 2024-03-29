@@ -57,6 +57,8 @@ var _retracting_seg : Vine
 var can_extend := true
 var _can_nudge = false
 
+var _len_per_seg_adj
+
 # Onready references to other nodes
 @onready var _last_pos : Vector2 = position
 @onready var vine_line : Line2D = $Vines/Line2D
@@ -64,7 +66,7 @@ var _can_nudge = false
 @onready var stuck_timer : Timer = $StuckTimer
 @onready var _player : Player2 = get_tree().get_first_node_in_group("player2")
 @onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
-@onready var _sprite : AnimatedSprite2D = $Sprite2D
+@onready var _sprite : AnimatedSprite2D = $Smoothing2D/Sprite2D
 @onready var tower : Tower = get_tree().get_first_node_in_group("tower")
 @onready var storm_light : PointLight2D = $StormLight
 @onready var lightning_particles : GPUParticles2D = $Lightning
@@ -110,7 +112,7 @@ func play_spawn_animation():
 	get_tree().set_group("vine", "modulate", Color(1.0, 1.0, 1.0, 0.0))
 	get_tree().set_group("vine", "linear_damp", 100.0)
 	$Vines/Line2D.modulate = Color(1.0,1.0,1.0,0.0)
-	$Sprite2D.modulate = Color(1.0,1.0,1.0,0.0)
+	_sprite.modulate = Color(1.0,1.0,1.0,0.0)
 	$Camera2D.offset = Vector2(0, 6)
 	$Camera2D.zoom = Vector2(15, 15)
 	create_tween().tween_property($Camera2D,"zoom", Vector2(5.95, 5.95), 2.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
@@ -137,9 +139,9 @@ func play_spawn_animation():
 	for vine in get_tree().get_nodes_in_group("vine"):
 		create_tween().tween_property(vine, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
 	create_tween().tween_property($Vines/Line2D, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
-	create_tween().tween_property($Sprite2D, "scale", Vector2(1.0, 1.0), 0.4).from(Vector2(0.5, 0.5)).set_trans(Tween.TRANS_SINE)
-	create_tween().tween_property($Sprite2D, "offset", Vector2(0.0, 0.0), 0.4).from(Vector2(0, 5)).set_trans(Tween.TRANS_SINE)
-	create_tween().tween_property($Sprite2D, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
+	create_tween().tween_property(_sprite, "scale", Vector2(1.0, 1.0), 0.4).from(Vector2(0.5, 0.5)).set_trans(Tween.TRANS_SINE)
+	create_tween().tween_property(_sprite, "offset", Vector2(0.0, 0.0), 0.4).from(Vector2(0, 5)).set_trans(Tween.TRANS_SINE)
+	create_tween().tween_property(_sprite, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
 	get_tree().set_group("vine", "sprite_scale", Vector2(1.0, 0.5))
 	# Finish animation
 	create_tween().tween_property($Camera2D,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
@@ -162,13 +164,18 @@ func _draw_line():
 		vine_line.add_point(vine_seg.position)
 		vine_seg = vine_seg.get_child_seg() if not vine_seg.get_child_seg() is Player2 else null
 
-
+func _teleport_if_stuck():
+	if not can_extend and _player.linear_velocity.length() < 100.0: 
+		stuck_timer.start()
+	else:
+		stuck_timer.stop()
+	
 func _spawn_vine():
 	var first_vine_pos = _player.position + _player.vine_root_offset
 	var final_vine_pos = position + vine_root_offset 
 	var diff = final_vine_pos - first_vine_pos
-	var adj := 1.9
-	_len_per_seg = diff.length() / base_segments * adj
+	_len_per_seg = diff.length() / base_segments
+	_len_per_seg_adj = _len_per_seg
 	var curr_seg : Vine = null
 	var last_seg : Vine = null
 	 
@@ -201,7 +208,7 @@ func act_on_state():
 		if _segs <= base_segments:
 			begin_inactive()
 	elif _state == State.INACTIVE:
-		pass
+		_teleport_if_stuck()
 
 func begin_extending():
 	if _state == State.INACTIVE and can_extend and not _animating:
@@ -221,6 +228,7 @@ func begin_extending():
 		linear_damp = 0.0
 		_player.mass = 0.25
 		extend_speed_mod = 1.0
+		mass = 0.1
 		create_tween().tween_property(self, "extend_speed_mod", 1.0, 0.3)
 
 func begin_inactive():
@@ -251,16 +259,18 @@ func begin_inactive():
 	_player.linear_damp = 0.0
 	_player.mass = 1.0
 	linear_damp = 0.0
+	mass = 0.01
 
 func begin_retracting():
 	_state = State.RETRACTING
 	get_tree().call_group("vine", "set_grav", 0.3)
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
 	physics_material_override.friction = 1.0
-	stuck_timer.start()
+	stuck_timer.stop()
 	_player.gravity_scale = 0.4
+	_player.mass = 0.25
 	linear_damp = 10.0
-	gravity_scale = 0.2
+	gravity_scale = 0.3
 	_extending_dist_travelled = 0
 	_extended_len = 0
 
@@ -294,9 +304,10 @@ func _integrate_forces(state):
 			var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
 			const STR = 6.0
 			state.transform = Transform2D(lerp_angle(rotation, mouse_angle, STR * state.step), state.transform.get_origin())
-			const STR2 = 20.0
-			var force_toward_mouse = Vector2(0, -1).rotated(mouse_angle) * STR2
-			apply_central_force(force_toward_mouse)
+			if can_extend:
+				const STR2 = 20.0
+				var force_toward_mouse = Vector2(0, -1).rotated(mouse_angle) * STR2
+				apply_central_force(force_toward_mouse)
 		_fix_gap(state)
 
 func _display_sun_buff():
@@ -323,17 +334,18 @@ func _physics_process(delta):
 					_sun_buff_applied = true
 					_display_sun_buff()
 				_extending_dist_travelled += _last_pos.distance_to(pos)
-				var mod = (1.0 / lightning_speed_mod)
-				if _extending_dist_travelled > _len_per_seg * mod:
+				var mod = (1.0 / pow(lightning_speed_mod, 1))
+				_len_per_seg_adj = _len_per_seg * mod
+				if _extending_dist_travelled > _len_per_seg_adj:
 					_add_seg()
-					_extended_len += _len_per_seg * mod
-					_extending_dist_travelled -= _len_per_seg
+					_extended_len += _len_per_seg_adj
+					_extending_dist_travelled -= _len_per_seg_adj
 					if extra_len and extra_len_display:
-						extra_len_display -= _len_per_seg * mod
+						extra_len_display -= _len_per_seg_adj
 						if extra_len_display < 0.0: extra_len_display = 0.0
-					else: vine_len_display -= _len_per_seg * mod
+					else: vine_len_display -= _len_per_seg_adj
 					if lightning_buff_amount:
-						lightning_buff_amount -= _len_per_seg * mod
+						lightning_buff_amount -= _len_per_seg_adj
 				if _extended_len > max_extended_len + extra_len:
 					begin_retracting()
 			State.RETRACTING:
@@ -387,13 +399,17 @@ func _add_seg():
 	$Vines.add_child(new_child)
 	new_child.make_self_exception()
 	new_child.add_collision_exception_with(child)
-	new_child.position = child.position
-	new_child.rotation = child.rotation
-	
-	child.position = child.position + Vector2(0, _len_per_seg / 1.5).rotated(global_rotation)
+	var adj = Vector2(0, _len_per_seg_adj).rotated(global_rotation)
+	new_child.position = _root_seg.position + adj
+	new_child._set_pos = new_child.position
+	new_child.rotation = global_rotation
+	new_child._set_rot = global_rotation
+	child.position = _root_seg.position + adj * 2
 	child._set_pos = child.position
 	child.rotation = global_rotation
 	child._set_rot = global_rotation
+	#new_child.rotation = child.rotation
+	
 
 	_root_seg.get_node("PinJoint2D").node_b = new_child.get_path()
 	_segs += 1
@@ -454,7 +470,7 @@ func _remove_lightning_buff():
 
 
 func _set_electricity(val):
-	material.set_shader_parameter("electricity", val)
+	_sprite.material.set_shader_parameter("electricity", val)
 	get_tree().call_group("vine", "_set_electricity", val)
 	vine_line.material.set_shader_parameter("electricity", val)
 
@@ -490,8 +506,8 @@ func _on_sunrays_hit():
 			_get_lightning_buff()
 
 func _on_stuck_timer_timeout():
-	_can_nudge = true
-	pass
+	position = _player.global_position
+	get_tree().set_group("vine", "global_position", _player.global_position)
 
 func _on_sprite_2d_animation_looped():
 	if _sprite.animation == "spiked":
@@ -504,3 +520,4 @@ func set_volume():
 	sun_bg_music.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_sun
 	storm_bg_music.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_storm
 	_player.set_volume(SceneManager.sound_volume + SceneManager.sound_volume_offset_sfx)
+

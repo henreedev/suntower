@@ -24,6 +24,10 @@ config/icon="res://assets/image/suntower-icon.png"
 window/size/borderless=true
 window/stretch/mode="canvas_items"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/smoothing/plugin.cfg")
+
 [gui]
 
 theme/custom="res://scenes/menus/themes/menu_theme.tres"

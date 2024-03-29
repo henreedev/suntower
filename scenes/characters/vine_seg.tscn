@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://jfxpur7d1w8n"]
+[gd_scene load_steps=12 format=3 uid="uid://jfxpur7d1w8n"]
 
 [ext_resource type="Script" path="res://scenes/characters/vine_seg.gd" id="1_d58dt"]
 [ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/stem-rope.png" id="1_fkaj8"]
+[ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_2cghh"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="2_kpskx"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_owbri"]
@@ -34,8 +35,8 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
-radius = 5.0
-height = 16.0
+radius = 4.0
+height = 14.0
 
 [node name="VineSeg" type="RigidBody2D" groups=["vine"]]
 collision_layer = 2
@@ -67,5 +68,8 @@ position = Vector2(0, -3)
 shape = SubResource("CapsuleShape2D_nmj1a")
 
 [node name="PinJoint2D" type="PinJoint2D" parent="."]
-position = Vector2(0, 1)
+position = Vector2(0, 2)
 node_a = NodePath("..")
+
+[node name="Smoothing2D" type="Node2D" parent="."]
+script = ExtResource("2_2cghh")

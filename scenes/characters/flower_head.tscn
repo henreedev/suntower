@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=42 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="1_700xu"]
@@ -7,21 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/suntower-lightning-particle.png" id="4_14gk3"]
 [ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/flower-extend.png" id="4_ski6y"]
 [ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/flower.mp3" id="5_1ssef"]
+[ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="5_kbo6i"]
 [ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/scuffed_storms.mp3" id="7_6xq58"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_04w2w"]
-frequency = 0.1089
-fractal_weighted_strength = 1.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l4c21"]
-noise = SubResource("FastNoiseLite_04w2w")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_67x27"]
-shader = ExtResource("1_700xu")
-shader_parameter/electricity = 0.0
-shader_parameter/scroll_speed = 0.307
-shader_parameter/electric_color = Color(0.458824, 1, 1, 1)
-shader_parameter/noise = SubResource("NoiseTexture2D_l4c21")
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0
@@ -96,6 +83,20 @@ color_ramp = SubResource("GradientTexture1D_3y8qs")
 anim_speed_min = 1.0
 anim_speed_max = 1.0
 anim_speed_curve = SubResource("CurveTexture_nc3yn")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_04w2w"]
+frequency = 0.1089
+fractal_weighted_strength = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l4c21"]
+noise = SubResource("FastNoiseLite_04w2w")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_67x27"]
+shader = ExtResource("1_700xu")
+shader_parameter/electricity = 0.0
+shader_parameter/scroll_speed = 0.307
+shader_parameter/electric_color = Color(0.458824, 1, 1, 1)
+shader_parameter/noise = SubResource("NoiseTexture2D_l4c21")
 
 [sub_resource type="Gradient" id="Gradient_q1ijr"]
 colors = PackedColorArray(0.20014, 0.451195, 0.0228207, 1, 0.262616, 0.576407, 0.0353309, 1)
@@ -194,7 +195,6 @@ fill_to = Vector2(1, 1)
 
 [node name="FlowerHead" type="RigidBody2D" groups=["flowerhead"]]
 z_index = 1
-material = SubResource("ShaderMaterial_67x27")
 collision_layer = 5
 collision_mask = 5
 mass = 0.1
@@ -202,6 +202,7 @@ physics_material_override = SubResource("PhysicsMaterial_plfvk")
 center_of_mass_mode = 1
 center_of_mass = Vector2(0, 5)
 can_sleep = false
+angular_damp = 2.0
 script = ExtResource("1_13r3v")
 vine_seg = ExtResource("2_ircd2")
 
@@ -231,8 +232,11 @@ joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 1
 
-[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
-use_parent_material = true
+[node name="Smoothing2D" type="Node2D" parent="."]
+script = ExtResource("5_kbo6i")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="Smoothing2D"]
+material = SubResource("ShaderMaterial_67x27")
 sprite_frames = SubResource("SpriteFrames_g3nl5")
 animation = &"spiked"
 frame = 3
@@ -257,6 +261,8 @@ limit_top = -10000
 limit_right = 192
 limit_bottom = 16
 limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
 drag_vertical_enabled = true
 drag_top_margin = 0.1
 drag_bottom_margin = 0.1
@@ -278,7 +284,7 @@ attenuation = 1e-05
 panning_strength = 0.0
 
 [node name="StuckTimer" type="Timer" parent="."]
-wait_time = 0.5
+wait_time = 3.0
 
 [node name="StormLight" type="PointLight2D" parent="."]
 scale = Vector2(2.72, 2.72)
@@ -288,7 +294,7 @@ shadow_item_cull_mask = 2
 texture = SubResource("GradientTexture2D_80j4o")
 texture_scale = 0.15
 
-[connection signal="animation_finished" from="Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
-[connection signal="animation_looped" from="Sprite2D" to="." method="_on_sprite_2d_animation_looped"]
+[connection signal="animation_finished" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
+[connection signal="animation_looped" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_looped"]
 [connection signal="finished" from="Sound/BGMusic" to="." method="_on_bg_music_finished"]
 [connection signal="timeout" from="StuckTimer" to="." method="_on_stuck_timer_timeout"]

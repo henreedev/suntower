@@ -1,6 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=18 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" path="res://scenes/characters/Player2.gd" id="1_u6jn4"]
+[ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_46eyb"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/pot.png" id="2_dk0m0"]
 [ext_resource type="AudioStream" uid="uid://c4uiv50jfctbm" path="res://assets/sound/sfx/pot-hit-small.wav" id="3_8bkf5"]
 [ext_resource type="AudioStream" uid="uid://4r0o4tmxx1l1" path="res://assets/sound/sfx/hit.wav" id="4_1fw06"]
@@ -53,11 +54,14 @@ max_contacts_reported = 2
 contact_monitor = true
 script = ExtResource("1_u6jn4")
 
-[node name="Pot" type="Sprite2D" parent="."]
+[node name="Smoothing2D" type="Node2D" parent="."]
+script = ExtResource("2_46eyb")
+
+[node name="Pot" type="Sprite2D" parent="Smoothing2D"]
 texture = ExtResource("2_dk0m0")
 offset = Vector2(0, -27)
 
-[node name="Shadow" type="Sprite2D" parent="Pot"]
+[node name="Shadow" type="Sprite2D" parent="Smoothing2D/Pot"]
 show_behind_parent = true
 position = Vector2(1.19209e-07, 5)
 scale = Vector2(0.328125, 0.0703125)

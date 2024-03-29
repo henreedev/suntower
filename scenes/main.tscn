@@ -49,7 +49,6 @@ position = Vector2(-41, -1398)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
 position = Vector2(-41, -1448)
-play_animation_on_start = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 offset = Vector2(0, -100)
