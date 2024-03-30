@@ -67,7 +67,7 @@ func _physics_process(delta):
 func _play_sound():
 	var diff = abs(prev_vel_sqrd - linear_velocity.length_squared())
 	var adiff = abs(prev_avel - angular_velocity)
-	var rand_pitch = randf_range(0.9, 1.1)
+	var rand_pitch = randf_range(0.8, 1.1)
 	if not _head._animating:
 		if diff > 150000.0:
 			fail.play()

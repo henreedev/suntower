@@ -20,6 +20,7 @@
 
 extends Node2D
 
+class_name Smoothing2D
 
 @export
 var target: NodePath:

@@ -48,13 +48,17 @@ linear_damp = 1.0
 angular_damp = 20.0
 script = ExtResource("1_d58dt")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Smoothing2D" type="Node2D" parent="."]
+script = ExtResource("2_2cghh")
+flags = 6
+
+[node name="Sprite2D" type="Sprite2D" parent="Smoothing2D"]
 material = SubResource("ShaderMaterial_67x27")
 position = Vector2(0, 0.5)
 scale = Vector2(1, 0.5)
 texture = ExtResource("1_fkaj8")
 
-[node name="StormLight" type="PointLight2D" parent="Sprite2D"]
+[node name="StormLight" type="PointLight2D" parent="Smoothing2D/Sprite2D"]
 scale = Vector2(2.72, 2.72)
 enabled = false
 color = Color(0.639216, 1, 1, 1)
@@ -70,6 +74,3 @@ shape = SubResource("CapsuleShape2D_nmj1a")
 [node name="PinJoint2D" type="PinJoint2D" parent="."]
 position = Vector2(0, 2)
 node_a = NodePath("..")
-
-[node name="Smoothing2D" type="Node2D" parent="."]
-script = ExtResource("2_2cghh")

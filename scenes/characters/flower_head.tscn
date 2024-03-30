@@ -223,6 +223,9 @@ texture = ExtResource("4_14gk3")
 [node name="Vines" type="Node" parent="."]
 
 [node name="Line2D" type="Line2D" parent="Vines"]
+process_thread_group = 1
+process_thread_group_order = 0
+process_thread_messages = 0
 material = SubResource("ShaderMaterial_67x27")
 points = PackedVector2Array(0, 6)
 width = 2.0
@@ -284,7 +287,7 @@ attenuation = 1e-05
 panning_strength = 0.0
 
 [node name="StuckTimer" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 1.5
 
 [node name="StormLight" type="PointLight2D" parent="."]
 scale = Vector2(2.72, 2.72)
@@ -294,7 +297,11 @@ shadow_item_cull_mask = 2
 texture = SubResource("GradientTexture2D_80j4o")
 texture_scale = 0.15
 
+[node name="DeadTimer" type="Timer" parent="."]
+wait_time = 2.0
+
 [connection signal="animation_finished" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
 [connection signal="animation_looped" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_looped"]
 [connection signal="finished" from="Sound/BGMusic" to="." method="_on_bg_music_finished"]
 [connection signal="timeout" from="StuckTimer" to="." method="_on_stuck_timer_timeout"]
+[connection signal="timeout" from="DeadTimer" to="." method="_on_dead_timer_timeout"]
