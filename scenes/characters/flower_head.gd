@@ -47,6 +47,7 @@ var _animating = false
 var base_segments := 15
 var _segs := 15
 var _set_transform 
+var fixing_gap
 var _target_angle : float
 var _len_per_seg : float
 var _extending_dist_travelled := 0.0
@@ -235,6 +236,7 @@ func begin_inactive():
 	_sprite.animation = "retract"
 	_sprite.frame = 0
 	_sprite.play()
+	fixing_gap = true
 	_has_sun_buff = false
 	_sun_buff_applied = false
 	if sun_buff_tween:
@@ -380,7 +382,7 @@ func _physics_process(delta):
 		_last_pos = pos
 
 func _fix_gap(state):
-	if _state == State.INACTIVE or _state == State.EXTENDING:
+	if _state == State.EXTENDING or fixing_gap:
 		const MAX_GAP = 3.0
 		var child : Vine = _root_seg.get_child_seg()
 		var gap : Vector2 = _root_seg.position - child.position
@@ -391,6 +393,8 @@ func _fix_gap(state):
 			child.rotation = global_rotation
 			child._set_rot = global_rotation
 			_root_seg.set_child(child)
+		await get_tree().create_timer(0.1).timeout
+		fixing_gap = false
 
 func _add_seg():
 	var child : Vine = _root_seg.get_child_seg()
