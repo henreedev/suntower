@@ -45,10 +45,10 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-position = Vector2(-41, -1398)
+position = Vector2(0, 7)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-position = Vector2(-41, -1448)
+position = Vector2(0, -43)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 offset = Vector2(0, -100)
@@ -75,9 +75,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -119.575
-offset_top = 1.0
+offset_top = -53.515
 offset_right = -39.575
-offset_bottom = 17.0
+offset_bottom = -37.515
 grow_horizontal = 2
 scale = Vector2(3, 3)
 texture_under = ExtResource("7_8lc2f")
