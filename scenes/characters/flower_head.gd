@@ -180,7 +180,6 @@ func _teleport_if_stuck():
 				stuck_timer.stop()
 	elif _state == State.RETRACTING:
 		dead = _segs == _prev_segs and not Input.is_anything_pressed()
-		print(dead_timer.time_left)
 		if dead:
 			if dead_timer.is_stopped():
 				dead_timer.start()
