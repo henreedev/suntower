@@ -297,7 +297,7 @@ texture = SubResource("GradientTexture2D_80j4o")
 texture_scale = 0.15
 
 [node name="DeadTimer" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 4.0
 
 [connection signal="animation_finished" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
 [connection signal="animation_looped" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_looped"]

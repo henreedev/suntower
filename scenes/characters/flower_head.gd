@@ -529,13 +529,14 @@ func _on_sunrays_hit():
 			_get_lightning_buff()
 
 func _on_stuck_timer_timeout():
-	position = _player.global_position
-	get_tree().set_group("vine", "global_position", _player.global_position)
+	unstuck()
 
 func _on_dead_timer_timeout():
-	position = _player.global_position
-	get_tree().set_group("vine", "global_position", _player.global_position)
+	unstuck()
 
+func unstuck():
+	position = _player.global_position
+	get_tree().set_group("vine", "global_position", _player.global_position - Vector2(0, 10))
 
 func _on_sprite_2d_animation_looped():
 	if _sprite.animation == "spiked":

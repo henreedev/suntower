@@ -2,7 +2,7 @@ shader_type canvas_item;
 render_mode unshaded;
 
 uniform sampler2D noise : repeat_enable;
-const float str = 0.3;
+const float str = 0.4;
 const float hoz_offset = -0.1;
 
 void fragment() {

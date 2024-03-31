@@ -80,7 +80,7 @@ func _process(delta):
 	if shake_strength:
 		$CanvasLayer.offset = get_random_offset()
 	# Check for win
-	if _head.position.y <= -2000.0:
+	if _head.position.y <= -2200.0:
 		win = true
 	if win:
 		$CanvasLayer/Label.text = str($Stopwatch.time).pad_decimals(2)
