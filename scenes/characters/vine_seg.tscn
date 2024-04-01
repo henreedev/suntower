@@ -53,13 +53,15 @@ script = ExtResource("2_2cghh")
 flags = 6
 
 [node name="Sprite2D" type="Sprite2D" parent="Smoothing2D"]
+visible = false
 material = SubResource("ShaderMaterial_67x27")
 position = Vector2(0, 0.5)
 scale = Vector2(1, 0.5)
 texture = ExtResource("1_fkaj8")
 
-[node name="StormLight" type="PointLight2D" parent="Smoothing2D/Sprite2D"]
-scale = Vector2(2.72, 2.72)
+[node name="StormLight" type="PointLight2D" parent="Smoothing2D"]
+position = Vector2(0, 0.5)
+scale = Vector2(2.72, 1.36)
 enabled = false
 color = Color(0.639216, 1, 1, 1)
 energy = 0.0

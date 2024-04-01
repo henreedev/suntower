@@ -7,7 +7,7 @@ var _set_child
 var detached_child : Vine
 @onready var sprite : Sprite2D = $Smoothing2D/Sprite2D
 @onready var sprite_scale = sprite.scale
-@onready var light : PointLight2D = $Smoothing2D/Sprite2D/StormLight
+@onready var light : PointLight2D = $Smoothing2D/StormLight
 @onready var smooth : Smoothing2D = $Smoothing2D
 @onready var last_pos : Vector2 = position
 var this_scene : PackedScene = preload("res://scenes/characters/vine_seg.tscn")
