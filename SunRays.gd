@@ -21,7 +21,7 @@ func _make_rays(count):
 		add_child(ray)
 		ray.position = Vector2(0, i)
 		ray.add_to_group("rays")
-		ray.collision_mask = 3
+		ray.collision_mask = 1 + 2 + 32
 		# Visualization line
 		#var line = Line2D.new()
 		#ray.add_child(line)
