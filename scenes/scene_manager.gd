@@ -20,7 +20,12 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	if Input.is_action_just_pressed("fullscreen"):
+		if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+			
 
 func _on_menu_game_started():
 	$TransitionOverlay/AnimationPlayer.play("fade_to_black")
@@ -28,11 +33,19 @@ func _on_menu_game_started():
 
 func _on_transition_overlay_transitioned():
 	# store volume
-	$CurrentScene.get_child(0).queue_free()
+	start_game()
+
+func start_game():
+	var child = $CurrentScene.get_child(0)
+	child.queue_free()
+	$CurrentScene.remove_child(child)
+	#await get_tree().create_timer(0.2).timeout
 	if skip_cutscene:
 		var game = game_scene.instantiate()
 		game.get_node("FlowerHead").play_animation_on_start = false
 		$CurrentScene.add_child(game)
 	else:
-		$CurrentScene.add_child(game_scene.instantiate())
+		var game = game_scene.instantiate()
+		game.get_node("FlowerHead").play_animation_on_start = true
+		$CurrentScene.add_child(game)
 		skip_cutscene = true

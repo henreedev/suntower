@@ -1,9 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=39 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" path="res://scenes/characters/Player2.gd" id="1_u6jn4"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_46eyb"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/pot.png" id="2_dk0m0"]
 [ext_resource type="AudioStream" uid="uid://c4uiv50jfctbm" path="res://assets/sound/sfx/pot-hit-small.wav" id="3_8bkf5"]
+[ext_resource type="Texture2D" uid="uid://dtw0lgoge1iy1" path="res://assets/image/pot-shadow.png" id="4_0jlhp"]
 [ext_resource type="AudioStream" uid="uid://4r0o4tmxx1l1" path="res://assets/sound/sfx/hit.wav" id="4_1fw06"]
 [ext_resource type="AudioStream" uid="uid://cfnrcvg2w5vo1" path="res://assets/sound/sfx/hit-2.wav" id="5_3adu4"]
 [ext_resource type="AudioStream" uid="uid://bp0dvhnvv41cp" path="res://assets/sound/sfx/hit-3.wav" id="6_1q6qq"]
@@ -13,16 +14,6 @@
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4ed4y"]
 friction = 12.75
-
-[sub_resource type="Gradient" id="Gradient_p3c54"]
-offsets = PackedFloat32Array(0, 0.48, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.107661, 0.117275, 0.117276, 1, 0.254902, 0.266667, 0.266667, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_a3wbl"]
-gradient = SubResource("Gradient_p3c54")
-fill = 1
-fill_from = Vector2(0.487805, 0.542683)
-fill_to = Vector2(0.859756, 0.884146)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jnhsv"]
 size = Vector2(10, 11)
@@ -41,6 +32,121 @@ height = 128
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
+
+[sub_resource type="Curve" id="Curve_augk2"]
+min_value = -2.0
+max_value = 2.0
+_data = [Vector2(0, 2), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="CurveTexture" id="CurveTexture_5ctgx"]
+curve = SubResource("Curve_augk2")
+
+[sub_resource type="Gradient" id="Gradient_yhc6a"]
+offsets = PackedFloat32Array(0.124183, 0.657952, 0.895425)
+colors = PackedColorArray(0.19, 0.19, 0.19, 1, 1, 1, 1, 1, 0.19, 0.19, 0.19, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_k604l"]
+gradient = SubResource("Gradient_yhc6a")
+use_hdr = true
+
+[sub_resource type="Curve" id="Curve_oskuw"]
+_data = [Vector2(0.505208, 0.505494), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="CurveTexture" id="CurveTexture_8sskm"]
+curve = SubResource("Curve_oskuw")
+
+[sub_resource type="Curve" id="Curve_3cmea"]
+max_value = 2.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.0492813, 0.995409), 0.0, 0.0, 0, 0, Vector2(0.731006, 1.00536), 0.0, 0.0, 0, 0, Vector2(0.852156, 0.786534), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_pdjnw"]
+curve = SubResource("Curve_3cmea")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cr4jn"]
+particle_flag_disable_z = true
+particle_flag_damping_as_friction = true
+angular_velocity_min = -594.79
+angular_velocity_max = 469.57
+angular_velocity_curve = SubResource("CurveTexture_5ctgx")
+gravity = Vector3(0, 150, 0)
+damping_min = 1.0
+damping_max = 1.0
+damping_curve = SubResource("CurveTexture_8sskm")
+scale_curve = SubResource("CurveTexture_pdjnw")
+color = Color(3, 3, 1.5, 1)
+color_ramp = SubResource("GradientTexture1D_k604l")
+collision_mode = 1
+collision_friction = 0.3
+collision_bounce = 0.0
+
+[sub_resource type="Curve" id="Curve_ao2md"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_naaow"]
+curve = SubResource("Curve_ao2md")
+
+[sub_resource type="Curve" id="Curve_jc8ph"]
+min_value = -2.0
+max_value = 2.0
+_data = [Vector2(0, 2), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="CurveTexture" id="CurveTexture_k0f34"]
+curve = SubResource("Curve_jc8ph")
+
+[sub_resource type="Gradient" id="Gradient_w7kct"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 1, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rlvp0"]
+gradient = SubResource("Gradient_w7kct")
+
+[sub_resource type="Gradient" id="Gradient_aws2j"]
+offsets = PackedFloat32Array(0.591463, 0.841463, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.286716, 0.286716, 0.286716, 1, 0.19, 0.19, 0.19, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xxl0r"]
+gradient = SubResource("Gradient_aws2j")
+use_hdr = true
+
+[sub_resource type="Curve" id="Curve_cbmc2"]
+min_value = 1.0
+max_value = 2.01
+_data = [Vector2(0.442708, 1), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="CurveTexture" id="CurveTexture_xcelp"]
+curve = SubResource("Curve_cbmc2")
+
+[sub_resource type="Curve" id="Curve_srae7"]
+max_value = 2.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.0492813, 0.995409), 0.0, 0.0, 0, 0, Vector2(0.731006, 1.00536), 0.0, 0.0, 0, 0, Vector2(0.852156, 0.786534), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_wdoxf"]
+curve = SubResource("Curve_srae7")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_5uudk"]
+particle_flag_disable_z = true
+particle_flag_damping_as_friction = true
+angular_velocity_min = -594.79
+angular_velocity_max = 469.57
+angular_velocity_curve = SubResource("CurveTexture_k0f34")
+gravity = Vector3(0, 150, 0)
+damping_min = 0.5
+damping_max = 0.5
+damping_curve = SubResource("CurveTexture_xcelp")
+scale_curve = SubResource("CurveTexture_wdoxf")
+color = Color(0.350528, 0.225032, 0.0776887, 1)
+color_ramp = SubResource("GradientTexture1D_xxl0r")
+color_initial_ramp = SubResource("GradientTexture1D_rlvp0")
+alpha_curve = SubResource("CurveTexture_naaow")
+collision_mode = 1
+collision_friction = 0.3
+collision_bounce = 0.0
 
 [node name="Player2" type="RigidBody2D" groups=["player2"]]
 collision_layer = 9
@@ -62,16 +168,16 @@ texture = ExtResource("2_dk0m0")
 offset = Vector2(0, -27)
 
 [node name="Shadow" type="Sprite2D" parent="Smoothing2D/Pot"]
-show_behind_parent = true
-position = Vector2(1.19209e-07, 5)
-scale = Vector2(0.328125, 0.0703125)
-texture = SubResource("GradientTexture2D_a3wbl")
+position = Vector2(0, 5.5)
+texture = ExtResource("4_0jlhp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_jnhsv")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, -2)
 shape = SubResource("CircleShape2D_r87u0")
 
@@ -117,6 +223,24 @@ attenuation = 0.258817
 [node name="Fail" type="AudioStreamPlayer2D" parent="Sound"]
 stream = ExtResource("9_y6hj8")
 pitch_scale = 0.85
+
+[node name="Sparks" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 30
+process_material = SubResource("ParticleProcessMaterial_cr4jn")
+lifetime = 0.75
+one_shot = true
+explosiveness = 1.0
+trail_lifetime = 0.2
+
+[node name="Dust" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 30
+process_material = SubResource("ParticleProcessMaterial_5uudk")
+lifetime = 0.55
+one_shot = true
+explosiveness = 1.0
+trail_lifetime = 0.2
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

@@ -29,4 +29,5 @@ func _on_volume_slider_value_changed(value):
 
 func _on_reset_button_pressed():
 	get_tree().paused = false
-	get_tree().reload_current_scene()
+	scene_manager.start_game()
+	#get_tree().reload_current_scene()

@@ -14,6 +14,8 @@ func _ready():
 func set_energy_mult(val):
 	energy_mult = val
 
+func get_energy_mult():
+	return energy_mult
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	$DirectionalLight2D.energy = light_1_energy * energy_mult

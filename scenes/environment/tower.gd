@@ -1,4 +1,4 @@
-extends TileMap
+extends Node2D
 
 class_name Tower
 
@@ -25,8 +25,9 @@ var _left_day_start_angle_storm = -_right_day_end_angle_storm
 var _left_day_end_angle_storm = -_right_day_start_angle_storm
 var _goal_rotation = _right_day_start_angle
 var _right = true
-var sunny_modulate := Color(.635, .463, .51, 1.0)
+var sunny_modulate := Color(.89, .89, .89, 1.0)
 var storm_modulate := Color(0.0, 0.0, 0.0, 1.0)
+var windy_modulate := Color.WHITE
 var modulate_tween : Tween 
 var lightning_striking = false
 var lock_lights = false
@@ -46,7 +47,6 @@ func _process(delta):
 	_act_on_weather_state()
 	_lerp_lights_towards_goal(delta)
 	_sunrays.set_rotate($Lights.rotation)
-	pass
 
 func start_stormy():
 	if not weather == Weather.STORMY:
@@ -54,7 +54,7 @@ func start_stormy():
 		if modulate_tween:
 			modulate_tween.kill()
 		modulate_tween = create_tween().set_parallel()
-		modulate_tween.tween_method(_lights.set_energy_mult, 1.0, 0.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		modulate_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 0.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		_bg.enter_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", storm_modulate, 1.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_lightning_bar()
@@ -72,10 +72,26 @@ func start_sunny():
 		main.switch_to_sun_bar()
 		_player.switch_music(weather, 3.0)
 
+func start_windy():
+	if not weather == Weather.WINDY:
+		var old_weather = weather 
+		weather = Weather.WINDY
+		if modulate_tween:
+			modulate_tween.kill()
+		modulate_tween = create_tween().set_parallel()
+		modulate_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 1.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		
+		if old_weather == Weather.STORMY:
+			_bg.exit_storm(modulate_tween, 3.0)
+		modulate_tween.tween_property($CanvasModulate, "color", windy_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
+		main.switch_to_wind_bar()
+		_player.switch_music(weather, 3.0)
+
+
 func _change_weather_on_progress():
 	_progress = _player.position.y / MAX_PROG_HEIGHT
 	if in_wind:
-		weather = Weather.WINDY
+		start_windy()
 	elif in_storm:
 		start_stormy()
 	else: 
@@ -129,6 +145,9 @@ func _act_on_weather_state():
 		Weather.PEACEFUL:
 			pass # Full sun, but hard platforming
 
+
+
+
 func do_lightning():
 	if weather == Weather.STORMY:
 		lock_lights = true
@@ -152,7 +171,9 @@ func do_lightning():
 		lock_lights = false
 
 func _lerp_lights_towards_goal(delta):
-	var rotation_strength = 1.5 if weather == Weather.SUNNY else 5.0
+	var rotation_strength = 1.5 
+	if weather == Weather.STORMY: rotation_strength = 5.0
+	if weather == Weather.WINDY: rotation_strength = 2.0
 	$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
 
 func _on_storm_area_body_entered(body):
@@ -162,3 +183,12 @@ func _on_storm_area_body_entered(body):
 func _on_storm_area_body_exited(body):
 	if body is FlowerHead:
 		in_storm = false
+		
+
+func _on_wind_area_body_entered(body):
+	if body is FlowerHead:
+		in_wind = true
+
+func _on_wind_area_body_exited(body):
+	if body is FlowerHead:
+		in_wind = false

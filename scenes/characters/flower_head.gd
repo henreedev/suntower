@@ -49,7 +49,7 @@ var stuck = false # inactive and stuck
 var dead = false # extending and stuck
 var _prev_segs := _segs
 var _set_transform 
-var fixing_gap
+var fixing_gap = false
 var _target_angle : float
 var _len_per_seg : float
 var _extending_dist_travelled := 0.0
@@ -77,7 +77,9 @@ var _len_per_seg_adj
 @onready var sun_particles : GPUParticles2D = $Sparkles
 @onready var sun_bg_music : AudioStreamPlayer2D = $Sound/BGMusic
 @onready var storm_bg_music : AudioStreamPlayer2D = $Sound/StormBGMusic
+@onready var wind_bg_music : AudioStreamPlayer2D = $Sound/StormBGMusic
 @onready var scene_manager = get_tree().get_first_node_in_group("scenemanager")
+@onready var camera_2d = $Camera2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -102,6 +104,7 @@ func no_cutscene_setup():
 	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC)
 
 func _process(delta):
+	
 	_draw_line()
 	_root_seg.make_self_exception()
 	if not _animating:
@@ -109,8 +112,6 @@ func _process(delta):
 		_update_lightning_buff(delta)
 		time += delta
 		
-
-
 
 func play_spawn_animation():
 	# Make vines and line invisible, tween fade them in
@@ -222,6 +223,10 @@ func act_on_state():
 			begin_retracting()
 	elif _state == State.RETRACTING:
 		lock_rotation = true
+		#if _segs <= 50:
+			#get_tree().call_group("vine", "set_grav", 0.3)
+		#else: 
+			#get_tree().call_group("vine", "set_grav", 0.1)
 		if _segs <= base_segments:
 			begin_inactive()
 		_teleport_if_stuck()
@@ -273,7 +278,7 @@ func begin_inactive():
 	sun_particles.emitting = false
 	gravity_scale = GRAVITY
 	lock_rotation = false
-	get_tree().call_group("vine", "set_grav", 0.03)
+	get_tree().call_group("vine", "set_grav", -0.03)
 	stuck_timer.stop()
 	dead_timer.stop()
 	_player.gravity_scale = 1.0
@@ -291,6 +296,7 @@ func begin_retracting():
 	_player.gravity_scale = 0.4
 	_player.mass = 0.25
 	linear_damp = 10.0
+	linear_velocity = Vector2(0, 0)
 	gravity_scale = 0.3
 	_extending_dist_travelled = 0
 	_extended_len = 0
@@ -355,7 +361,7 @@ func _physics_process(delta):
 					_sun_buff_applied = true
 					_display_sun_buff()
 				_extending_dist_travelled += _last_pos.distance_to(pos)
-				var mod = (1.0 / pow(lightning_speed_mod, 1))
+				var mod = (1.0 / lightning_speed_mod)
 				_len_per_seg_adj = _len_per_seg * mod
 				if _extending_dist_travelled > _len_per_seg_adj:
 					_add_seg()
@@ -407,7 +413,7 @@ func _fix_gap(state):
 		var gap : Vector2 = _root_seg.position - child.position
 		if gap.length() > MAX_GAP:
 			_root_seg.get_node("PinJoint2D").node_b = ""
-			child.position += gap 
+			child.position += gap
 			child._set_pos = child.position
 			child.rotation = global_rotation
 			child._set_rot = global_rotation
@@ -417,22 +423,25 @@ func _fix_gap(state):
 
 func _add_seg():
 	var child : Vine = _root_seg.get_child_seg()
-	
 	var new_child : Vine = vine_creator.create(child)
 	$Vines.add_child(new_child)
 	new_child.make_self_exception()
 	new_child.add_collision_exception_with(child)
+	
 	var adj = Vector2(0, _len_per_seg_adj).rotated(global_rotation)
+	
 	new_child.position = _root_seg.position + adj
 	new_child._set_pos = new_child.position
 	new_child.rotation = global_rotation
 	new_child._set_rot = global_rotation
+	
 	child.position = _root_seg.position + adj * 2
 	child._set_pos = child.position
 	child.rotation = global_rotation
 	child._set_rot = global_rotation
-	#new_child.rotation = child.rotation
 	
+	#new_child.linear_velocity = linear_velocity
+	#child.linear_velocity = linear_velocity
 
 	_root_seg.get_node("PinJoint2D").node_b = new_child.get_path()
 	_segs += 1
@@ -457,6 +466,12 @@ func _get_lightning_buff():
 		lightning_buff_amount = MAX_LIGHTNING_BUFF
 		lightning_buff_display = MAX_LIGHTNING_BUFF
 		lightning_speed_mod = LIGHTNING_SPEED
+
+func _get_wind_buff():
+	pass # TODO
+
+func _update_wind_buff(delta):
+	pass
 
 func _update_lightning_buff(delta):
 	if _has_lightning_buff:
@@ -501,24 +516,26 @@ func switch_music(weather : Tower.Weather, duration : float):
 	if music_tween:
 		music_tween.kill()
 	music_tween = create_tween().set_parallel()
-	var old : AudioStreamPlayer2D
+	var olds : Array[AudioStreamPlayer2D]
 	var new : AudioStreamPlayer2D
 	match weather:
 		Tower.Weather.SUNNY:
-			old = storm_bg_music
+			olds = [storm_bg_music, wind_bg_music]
 			new = sun_bg_music
 		Tower.Weather.STORMY:
-			old = sun_bg_music
+			olds = [sun_bg_music, wind_bg_music]
 			new = storm_bg_music
-	music_tween.tween_property(old, "pitch_scale", 0.01, duration / 2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CIRC)
-	music_tween.tween_property(old, "volume_db", -50.0, duration).set_trans(Tween.TRANS_CIRC)
-	music_tween.tween_callback(old.stop).set_delay(duration)
+		Tower.Weather.WINDY:
+			olds = [sun_bg_music, storm_bg_music]
+			new = wind_bg_music
+	for old_music : AudioStreamPlayer2D in olds:
+		music_tween.tween_property(old_music, "pitch_scale", 0.01, duration / 2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CIRC)
+		music_tween.tween_property(old_music, "volume_db", -50.0, duration).set_trans(Tween.TRANS_CIRC)
+		if old_music.playing:
+			music_tween.tween_callback(old_music.stop).set_delay(duration)
 	music_tween.tween_callback(new.play)
 	music_tween.tween_property(new, "pitch_scale", 1.0, duration / 2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CIRC)
 	music_tween.tween_property(new, "volume_db", SceneManager.sound_volume + SceneManager.sound_volume_offset_sun, duration).set_trans(Tween.TRANS_CIRC)
-
-func _on_bg_music_finished():
-	pass
 
 func _on_sunrays_hit():
 	match tower.weather:

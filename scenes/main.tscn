@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cjl7hh0kgvrb8"]
+[gd_scene load_steps=20 format=3 uid="uid://cjl7hh0kgvrb8"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_7xsfy"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
@@ -12,11 +12,13 @@
 [ext_resource type="Texture2D" uid="uid://dr8bxndhr0tm5" path="res://assets/image/growbar-sun.png" id="9_xggyo"]
 [ext_resource type="Texture2D" uid="uid://ca2w6exe7r1ed" path="res://assets/image/growbar-lightning.png" id="10_iut7u"]
 [ext_resource type="Script" path="res://scenes/Stopwatch.gd" id="10_v3nai"]
+[ext_resource type="Texture2D" uid="uid://do1nlubiugans" path="res://assets/image/wind-under.png" id="11_dw3tv"]
 [ext_resource type="PackedScene" uid="uid://b574p0trbhj2o" path="res://scenes/menus/pause_menu.tscn" id="11_swgty"]
+[ext_resource type="Texture2D" uid="uid://oob82gi6ut36" path="res://assets/image/wind-over.png" id="12_fsejr"]
+[ext_resource type="Texture2D" uid="uid://chbnbpvg4p0wi" path="res://assets/image/wind-progress.png" id="13_c3ak3"]
 
 [sub_resource type="Environment" id="Environment_4vhcu"]
 background_mode = 3
-ambient_light_energy = 0.0
 reflected_light_source = 1
 glow_enabled = true
 glow_intensity = 8.0
@@ -45,11 +47,10 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-position = Vector2(54, -1397)
+position = Vector2(26, -2661)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-position = Vector2(54, -1447)
-play_animation_on_start = true
+position = Vector2(26, -2711)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 offset = Vector2(0, -100)
@@ -66,6 +67,7 @@ offset_right = -39.575
 offset_bottom = 17.0
 grow_horizontal = 2
 scale = Vector2(3, 3)
+step = 0.0
 texture_under = ExtResource("7_8lc2f")
 texture_over = ExtResource("8_al0vm")
 texture_progress = ExtResource("9_xggyo")
@@ -81,9 +83,26 @@ offset_right = -39.575
 offset_bottom = -37.515
 grow_horizontal = 2
 scale = Vector2(3, 3)
+step = 0.0
 texture_under = ExtResource("7_8lc2f")
 texture_over = ExtResource("9_kkmna")
 texture_progress = ExtResource("10_iut7u")
+
+[node name="WindBar" type="TextureProgressBar" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_5bg1h")
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -119.575
+offset_top = 1.0
+offset_right = -39.575
+offset_bottom = 17.0
+grow_horizontal = 2
+scale = Vector2(3, 3)
+step = 0.0
+texture_under = ExtResource("11_dw3tv")
+texture_over = ExtResource("12_fsejr")
+texture_progress = ExtResource("13_c3ak3")
 
 [node name="VinesBar" type="TextureProgressBar" parent="CanvasLayer" groups=["hud"]]
 material = SubResource("ShaderMaterial_5bg1h")

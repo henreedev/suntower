@@ -9,5 +9,5 @@ void fragment() {
 	COLOR = COLOR - vec4(darken, darken, darken, 0.0);
 	if (COLOR.r < 0.0) COLOR.r = 0.0;
 	if (COLOR.g < 0.0) COLOR.g = 0.0;
-	if (COLOR.b < 0.0) COLOR.b = 0.0; 
+	if (COLOR.b < 0.0) COLOR.b = 0.0;
 }

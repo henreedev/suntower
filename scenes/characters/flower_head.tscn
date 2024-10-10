@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=45 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="1_700xu"]
@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/flower.mp3" id="5_1ssef"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="5_kbo6i"]
 [ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/scuffed_storms.mp3" id="7_6xq58"]
+[ext_resource type="AudioStream" uid="uid://bfw5tgtp7tefi" path="res://assets/sound/flower_light_ver.mp3" id="10_uunqv"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0
@@ -193,6 +194,12 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_v0r25"]
+polygon = PackedVector2Array(-161, -192, -165, -181, 167, -181, 169, -205)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_pdk35"]
+polygon = PackedVector2Array(-170, 164, 184, 168, 184, 190, -176, 185)
+
 [node name="FlowerHead" type="RigidBody2D" groups=["flowerhead"]]
 z_index = 1
 collision_layer = 5
@@ -282,6 +289,14 @@ panning_strength = 0.0
 stream = ExtResource("7_6xq58")
 volume_db = -16.0
 pitch_scale = 0.01
+max_distance = 10000.0
+attenuation = 1e-05
+panning_strength = 0.0
+
+[node name="WindBGMusic" type="AudioStreamPlayer2D" parent="Sound"]
+stream = ExtResource("10_uunqv")
+volume_db = -16.0
+max_distance = 10000.0
 attenuation = 1e-05
 panning_strength = 0.0
 
@@ -298,6 +313,20 @@ texture_scale = 0.15
 
 [node name="DeadTimer" type="Timer" parent="."]
 wait_time = 4.0
+
+[node name="Occluders" type="Node" parent="."]
+
+[node name="Node2D" type="Node2D" parent="Occluders"]
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Occluders/Node2D"]
+occluder = SubResource("OccluderPolygon2D_v0r25")
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="Occluders/Node2D"]
+occluder = SubResource("OccluderPolygon2D_pdk35")
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
+remote_path = NodePath("../Occluders/Node2D")
+update_rotation = false
 
 [connection signal="animation_finished" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
 [connection signal="animation_looped" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_looped"]
