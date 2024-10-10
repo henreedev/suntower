@@ -19,4 +19,3 @@ func _process(delta):
 	$DirectionalLight2D.energy = light_1_energy * energy_mult
 	$DirectionalLight2D2.energy = light_2_energy * energy_mult
 	$DirectionalLight2D3.energy = light_3_energy * energy_mult
-

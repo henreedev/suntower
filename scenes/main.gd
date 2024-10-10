@@ -95,4 +95,3 @@ func get_random_offset():
 		randf_range(-shake_strength, shake_strength),
 		randf_range(-shake_strength, shake_strength)
 	)
-

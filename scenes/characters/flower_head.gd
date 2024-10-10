@@ -549,4 +549,3 @@ func set_volume():
 	sun_bg_music.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_sun
 	storm_bg_music.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_storm
 	_player.set_volume(SceneManager.sound_volume + SceneManager.sound_volume_offset_sfx)
-

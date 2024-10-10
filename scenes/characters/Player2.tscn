@@ -50,8 +50,8 @@ physics_material_override = SubResource("PhysicsMaterial_4ed4y")
 gravity_scale = 1.1
 center_of_mass_mode = 1
 center_of_mass = Vector2(0, 4)
-max_contacts_reported = 2
 contact_monitor = true
+max_contacts_reported = 2
 script = ExtResource("1_u6jn4")
 
 [node name="Smoothing2D" type="Node2D" parent="."]
