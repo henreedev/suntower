@@ -43,13 +43,19 @@ layout_mode = 2
 
 [node name="ResetButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-text = "Reset"
+text = "Restart"
+expand_icon = true
+
+[node name="MenuButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Quit to Menu"
 expand_icon = true
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
-text = "Quit"
+text = "Quit to Desktop"
 
 [connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

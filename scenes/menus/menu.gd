@@ -7,7 +7,6 @@ var rate = 0.658
 var rate2 = rate * 0.5
 
 
-@onready var scene_manager = get_tree().get_first_node_in_group("scenemanager")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var tween = create_tween().set_loops()
@@ -35,7 +34,7 @@ func animate_title2():
 	alternate2 = !alternate2
 
 func _on_start_button_pressed():
-	game_started.emit()
+	SceneManager.instance.menu_to_game()
 
 func _on_options_button_pressed():
 	pass # Replace with function body.

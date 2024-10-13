@@ -6,7 +6,7 @@ class_name Main
 @onready var _sun_bar : TextureProgressBar = $CanvasLayer/SunBar
 @onready var _lightning_bar : TextureProgressBar = $CanvasLayer/LightningBar
 @onready var _wind_bar : TextureProgressBar = $CanvasLayer/WindBar
-@onready var _head : FlowerHead = $FlowerHead
+@onready var flower_head : FlowerHead = $FlowerHead
 @onready var _cam : Camera2D = $FlowerHead/Camera2D
 var hud_offset := Vector2(0,-50)
 var win = false
@@ -17,10 +17,10 @@ var switch_bars_tween : Tween
 # Called when the node enters the scene tree for the first time.
 
 func _ready():
-	_vines_bar.max_value = _head.BASE_MAX_EXTENDED_LEN
-	_sun_bar.max_value = _head.BASE_MAX_EXTENDED_LEN
-	_lightning_bar.max_value = _head.MAX_LIGHTNING_BUFF
-	_wind_bar.max_value = _head.BASE_MAX_EXTENDED_LEN
+	_vines_bar.max_value = flower_head.BASE_MAX_EXTENDED_LEN
+	_sun_bar.max_value = flower_head.BASE_MAX_EXTENDED_LEN
+	_lightning_bar.max_value = flower_head.MAX_LIGHTNING_BUFF
+	_wind_bar.max_value = flower_head.BASE_MAX_EXTENDED_LEN
 	_vines_bar.value = 0.0
 	_sun_bar.value = 0.0
 	_lightning_bar.value = 0.0
@@ -75,18 +75,18 @@ func _process(delta):
 	if shake_strength:
 		shake_strength = lerp(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
 	# Set hud progress bar values
-	if _head.can_extend:
-		if _head.extra_len_display == _head.BASE_MAX_EXTENDED_LEN:
-			_sun_bar.value = _head.BASE_MAX_EXTENDED_LEN
+	if flower_head.can_extend:
+		if flower_head.extra_len_display == flower_head.BASE_MAX_EXTENDED_LEN:
+			_sun_bar.value = flower_head.BASE_MAX_EXTENDED_LEN
 		const STR = 10.0
-		var diff = abs(_head.vine_len_display - _vines_bar.value)
-		_vines_bar.value = move_toward(_vines_bar.value, _head.vine_len_display, diff * STR * delta)
-		diff = abs(_head.extra_len_display - _sun_bar.value)
-		_sun_bar.value =move_toward(_sun_bar.value, _head.extra_len_display, diff * STR * delta)
-		diff = abs(_head.lightning_buff_amount - _lightning_bar.value)
-		_lightning_bar.value =move_toward(_lightning_bar.value, _head.lightning_buff_amount, diff * STR * 2.0 * delta)
-		diff = abs(_head.extra_len_display - _wind_bar.value)
-		_wind_bar.value =move_toward(_wind_bar.value, _head.extra_len_display, diff * STR * delta)
+		var diff = abs(flower_head.vine_len_display - _vines_bar.value)
+		_vines_bar.value = move_toward(_vines_bar.value, flower_head.vine_len_display, diff * STR * delta)
+		diff = abs(flower_head.extra_len_display - _sun_bar.value)
+		_sun_bar.value =move_toward(_sun_bar.value, flower_head.extra_len_display, diff * STR * delta)
+		diff = abs(flower_head.lightning_buff_amount - _lightning_bar.value)
+		_lightning_bar.value =move_toward(_lightning_bar.value, flower_head.lightning_buff_amount, diff * STR * 2.0 * delta)
+		diff = abs(flower_head.extra_len_display - _wind_bar.value)
+		_wind_bar.value =move_toward(_wind_bar.value, flower_head.extra_len_display, diff * STR * delta)
 	else: 
 		if Input.is_action_just_pressed("extend"):
 			shake()
@@ -95,7 +95,7 @@ func _process(delta):
 	if shake_strength:
 		$CanvasLayer.offset = get_random_offset()
 	# Check for win
-	if _head.position.y <= -3000.0:
+	if flower_head.position.y <= -3000.0:
 		win = true
 	if win:
 		$CanvasLayer/Label.text = str($Stopwatch.time).pad_decimals(2)

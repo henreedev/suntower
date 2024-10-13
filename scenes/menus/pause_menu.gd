@@ -21,5 +21,8 @@ func _on_quit_button_pressed():
 
 func _on_reset_button_pressed():
 	get_tree().paused = false
-	scene_manager.start_game()
-	#get_tree().reload_current_scene()
+	SceneManager.instance.restart_game()
+
+
+func _on_menu_button_pressed():
+	SceneManager.instance.game_to_menu()

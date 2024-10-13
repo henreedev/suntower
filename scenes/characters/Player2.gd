@@ -7,7 +7,7 @@ var small_hit_can_play = true
 var touching = false
 var prev_vel_sqrd : float
 var prev_avel : float
-@onready var _head : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
+@onready var flower_head : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
 @onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 const POT_HIT_SMALL = preload("res://assets/sound/sfx/pot-hit-small.wav")
 const MEDIUM_BIG_HIT = preload("res://assets/sound/sfx/hit.wav")
@@ -34,7 +34,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	_check_inputs()
-	_act_on_state(_head._state)
+	_act_on_state(flower_head._state)
 	_display_shadow()
 
 func _display_shadow():
@@ -57,13 +57,13 @@ func _act_on_state(state : FlowerHead.State):
 
 func _check_inputs():
 	if Input.is_action_just_pressed("extend"):
-		_head.begin_extending()
+		flower_head.begin_extending()
 
 func _physics_process(delta):
 	prev_vel_sqrd = linear_velocity.length_squared()
 	prev_avel = angular_velocity
 	# Make sure touching is never false when not moving at all (must be grounded)
-	if not touching and _head._state == FlowerHead.State.INACTIVE and \
+	if not touching and flower_head._state == FlowerHead.State.INACTIVE and \
 			prev_vel_sqrd < 0.01 and abs(prev_avel) < 0.01:
 		touching = true 
 
@@ -83,7 +83,7 @@ func _play_sound_on_impact():
 	var adiff = abs(prev_avel - angular_velocity)
 	var rand_pitch = randf_range(0.8, 1.1)
 	var left_or_right := Vector2(1 * ((int)(linear_velocity.rotated(rotation).x < 0) * 2 - 1), 0)
-	if not _head._animating:
+	if not flower_head._animating:
 		#_emit_dust(10, left_or_right)
 		if diff > 150000.0:
 			_play_sound(FAIL)
