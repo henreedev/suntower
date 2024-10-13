@@ -41,7 +41,6 @@ font_size = 64
 font_color = Color(1, 1, 0.380392, 1)
 
 [node name="Main" type="Node2D" groups=["main"]]
-process_mode = 1
 script = ExtResource("1_7xsfy")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -50,12 +49,10 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-process_mode = 1
-position = Vector2(118, -1275)
+position = Vector2(108, -1269)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-process_mode = 1
-position = Vector2(118, -1325)
+position = Vector2(108, -1319)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 offset = Vector2(0, -100)

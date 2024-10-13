@@ -56,11 +56,13 @@ func set_rotation_match(node):
 	_rotation_match_node = node
 
 func _set_electricity(val):
-	sprite.material.set_shader_parameter("electricity", val)
 	if val > 0:
+		sprite.material.set_shader_parameter("electricity", val)
 		light.enabled = true
 		light.energy = val
-	else: light.enabled = false
+	else: 
+		light.enabled = false
+		sprite.material.set_shader_parameter("electricity", 0)
 
 
 func _integrate_forces(state):
