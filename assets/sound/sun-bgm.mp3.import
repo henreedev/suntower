@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/sun-bgm.mp3-c622548f3b3001281daab67aafeb138e.
 [params]
 
 loop=true
-loop_offset=0
-bpm=0
+loop_offset=0.0
+bpm=92.0
 beat_count=0
 bar_beats=4

@@ -48,18 +48,6 @@ func _process(delta):
 	_lerp_lights_towards_goal(delta)
 	_sunrays.set_rotate($Lights.rotation)
 
-func start_stormy():
-	if not weather == Weather.STORMY:
-		weather = Weather.STORMY
-		if modulate_tween:
-			modulate_tween.kill()
-		modulate_tween = create_tween().set_parallel()
-		modulate_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 0.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		_bg.enter_storm(modulate_tween, 3.0)
-		modulate_tween.tween_property($CanvasModulate, "color", storm_modulate, 1.0).set_trans(Tween.TRANS_CUBIC)
-		main.switch_to_lightning_bar()
-		_player.switch_music(weather, 3.0)
-
 func start_sunny():
 	if not weather == Weather.SUNNY:
 		weather = Weather.SUNNY
@@ -70,7 +58,20 @@ func start_sunny():
 		_bg.exit_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", sunny_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_sun_bar()
-		_player.switch_music(weather, 3.0)
+		SceneManager.instance.switch_bgm("Sun")
+
+func start_stormy():
+	if not weather == Weather.STORMY:
+		weather = Weather.STORMY
+		if modulate_tween:
+			modulate_tween.kill()
+		modulate_tween = create_tween().set_parallel()
+		modulate_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 0.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		_bg.enter_storm(modulate_tween, 3.0)
+		modulate_tween.tween_property($CanvasModulate, "color", storm_modulate, 1.0).set_trans(Tween.TRANS_CUBIC)
+		main.switch_to_lightning_bar()
+		SceneManager.instance.switch_bgm("Storm")
+
 
 func start_windy():
 	if not weather == Weather.WINDY:
@@ -85,7 +86,8 @@ func start_windy():
 			_bg.exit_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", windy_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_wind_bar()
-		_player.switch_music(weather, 3.0)
+		SceneManager.instance.switch_bgm("Wind")
+
 
 func _change_weather_on_progress():
 	_progress = _player.position.y / MAX_PROG_HEIGHT

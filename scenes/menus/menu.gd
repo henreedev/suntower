@@ -5,13 +5,11 @@ var alternate := false
 var alternate2 := false
 var rate = 0.658
 var rate2 = rate * 0.5
-@onready var _vol_slider : HSlider = $VBoxContainer/VolumeSlider
 
 
 @onready var scene_manager = get_tree().get_first_node_in_group("scenemanager")
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_vol_slider.value = db_to_linear(SceneManager.sound_volume) * 100 / 1.5
 	var tween = create_tween().set_loops()
 	animate_title()
 	tween.tween_callback(animate_title).set_delay(rate)
@@ -36,12 +34,6 @@ func animate_title2():
 		create_tween().tween_property($Title, "scale", Vector2(1.0, 1.0), rate2 ).set_trans(Tween.TRANS_LINEAR)
 	alternate2 = !alternate2
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	SceneManager.sound_volume = linear_to_db(_vol_slider.value * 1.5 / _vol_slider.max_value)
-	$BGMusic.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_menu
-
 func _on_start_button_pressed():
 	game_started.emit()
 
@@ -50,7 +42,3 @@ func _on_options_button_pressed():
 
 func _on_quit_button_pressed():
 	get_tree().quit()
-
-func _on_bg_music_finished():
-	await get_tree().create_timer(1.5).timeout
-	$BGMusic.play()

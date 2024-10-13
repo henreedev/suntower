@@ -75,15 +75,11 @@ var _len_per_seg_adj
 @onready var storm_light : PointLight2D = $StormLight
 @onready var lightning_particles : GPUParticles2D = $Lightning
 @onready var sun_particles : GPUParticles2D = $Sparkles
-@onready var sun_bg_music : AudioStreamPlayer2D = $Sound/BGMusic
-@onready var storm_bg_music : AudioStreamPlayer2D = $Sound/StormBGMusic
-@onready var wind_bg_music : AudioStreamPlayer2D = $Sound/StormBGMusic
 @onready var scene_manager = get_tree().get_first_node_in_group("scenemanager")
 @onready var camera_2d = $Camera2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	set_volume()
 	_spawn_vine()
 	add_collision_exception_with(_player)
 	if play_animation_on_start:
@@ -95,13 +91,11 @@ func _ready():
 		no_cutscene_setup()
 
 func no_cutscene_setup():
-	sun_bg_music.play()
 	get_tree().get_first_node_in_group("stopwatch").start()
 	create_tween().tween_property($Camera2D,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property($Camera2D, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
 	_set_electricity(0)
-	await get_tree().create_timer(0.5).timeout
-	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC)
+	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
 
 func _process(delta):
 	
@@ -515,30 +509,6 @@ func _set_electricity(val):
 	get_tree().call_group("vine", "_set_electricity", val)
 	vine_line.material.set_shader_parameter("electricity", val)
 
-func switch_music(weather : Tower.Weather, duration : float):
-	if music_tween:
-		music_tween.kill()
-	music_tween = create_tween().set_parallel()
-	var olds : Array[AudioStreamPlayer2D]
-	var new : AudioStreamPlayer2D
-	match weather:
-		Tower.Weather.SUNNY:
-			olds = [storm_bg_music, wind_bg_music]
-			new = sun_bg_music
-		Tower.Weather.STORMY:
-			olds = [sun_bg_music, wind_bg_music]
-			new = storm_bg_music
-		Tower.Weather.WINDY:
-			olds = [sun_bg_music, storm_bg_music]
-			new = wind_bg_music
-	for old_music : AudioStreamPlayer2D in olds:
-		music_tween.tween_property(old_music, "pitch_scale", 0.01, duration / 2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CIRC)
-		music_tween.tween_property(old_music, "volume_db", -50.0, duration).set_trans(Tween.TRANS_CIRC)
-		if old_music.playing:
-			music_tween.tween_callback(old_music.stop).set_delay(duration)
-	music_tween.tween_callback(new.play)
-	music_tween.tween_property(new, "pitch_scale", 1.0, duration / 2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CIRC)
-	music_tween.tween_property(new, "volume_db", SceneManager.sound_volume + SceneManager.sound_volume_offset_sun, duration).set_trans(Tween.TRANS_CIRC)
 
 func _on_sunrays_hit():
 	match tower.weather:
@@ -564,8 +534,3 @@ func _on_sprite_2d_animation_looped():
 		_sprite.pause()
 	elif _sprite.animation == "retract":
 		_sprite.animation = "normal"
-
-func set_volume():
-	sun_bg_music.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_sun
-	storm_bg_music.volume_db = SceneManager.sound_volume + SceneManager.sound_volume_offset_storm
-	_player.set_volume(SceneManager.sound_volume + SceneManager.sound_volume_offset_sfx)

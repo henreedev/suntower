@@ -1,12 +1,8 @@
 extends CanvasLayer
 
-@onready var _vol_slider : HSlider = $VBoxContainer/VolumeSlider
 @onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 @onready var player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	_vol_slider.value = db_to_linear(SceneManager.sound_volume) * 100 / 1.5
 
 func unpause_game():
 	get_tree().paused = false
@@ -22,10 +18,6 @@ func _on_resume_button_pressed():
 
 func _on_quit_button_pressed():
 	get_tree().quit()
-
-func _on_volume_slider_value_changed(value):
-	scene_manager.sound_volume = linear_to_db(_vol_slider.value * 1.5 / _vol_slider.max_value)
-	player.set_volume()
 
 func _on_reset_button_pressed():
 	get_tree().paused = false

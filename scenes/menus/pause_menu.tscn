@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b574p0trbhj2o"]
+[gd_scene load_steps=4 format=3 uid="uid://b574p0trbhj2o"]
 
 [ext_resource type="Script" path="res://scenes/menus/pause_menu.gd" id="1_nm5fg"]
 [ext_resource type="Theme" uid="uid://cn83a0xrk33ty" path="res://scenes/menus/themes/menu_theme.tres" id="2_2rwhk"]
+[ext_resource type="PackedScene" uid="uid://b8abnqqvhhok3" path="res://scenes/menus/volume_bar.tscn" id="3_hgmnj"]
 
 [node name="PauseMenu" type="CanvasLayer"]
 process_mode = 2
@@ -37,9 +38,8 @@ layout_mode = 2
 text = "Resume"
 expand_icon = true
 
-[node name="VolumeSlider" type="HSlider" parent="VBoxContainer"]
+[node name="VolumeBar" parent="VBoxContainer" instance=ExtResource("3_hgmnj")]
 layout_mode = 2
-value = 33.0
 
 [node name="ResetButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -51,6 +51,5 @@ layout_mode = 2
 text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
-[connection signal="value_changed" from="VBoxContainer/VolumeSlider" to="." method="_on_volume_slider_value_changed"]
 [connection signal="pressed" from="VBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
