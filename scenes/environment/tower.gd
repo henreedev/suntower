@@ -8,6 +8,8 @@ var weather : Weather = Weather.SUNNY
 var in_storm = false
 var in_wind = false
 
+static var instance : Tower
+
 var _progress = 0.0
 const MAX_PROG = 3.5
 const MAX_PROG_HEIGHT = -2268.0 # 3 screens of height 216 for the 3.5 sections
@@ -32,13 +34,29 @@ var modulate_tween : Tween
 var lightning_striking = false
 var lock_lights = false
 
+# Wind variables
+const BASE_WIND_STRENGTH := 120.0 # px/s^2
+const WIND_STRENGTH_HIGH_PASS = 0.5 # wind strength value under which wind strength becomes 0
+const WIND_ANCHOR_FALLOFF_DIST = 100.0 # px. wind strength becomes 0 at this distance from anchor 
+var bodies_in_wind : Array = [] # all physics bodies that will be affected by passive wind 
+var wind_direction := Vector2i(1, 0)
+var wind_strength := 1.0 # multiplier on base strength
+var wind_burst_tween : Tween
+# This height is the value relative to which wind strength will decrease. 
+# It is set to the pot's position on wind burst.
+var wind_strength_anchor_height := 0.0 
+
+@onready var wind_area: Area2D = $WindArea
 @onready var _bg : Background = $ParallaxBackground
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
+@onready var _pot : Player2 = get_tree().get_first_node_in_group("player2")
 @onready var _lights : Lights = $Lights
 @onready var _sunrays : SunRays = $SunRays
 @onready var main : Main = get_tree().get_first_node_in_group("main")
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	instance = self
 	create_tween().set_loops().tween_callback(do_lightning).set_delay(5.0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -133,6 +151,16 @@ func _change_weather_on_progress():
 					_right = false
 				else:
 					_goal_rotation = lerp(_left_day_start_angle_storm, _left_day_end_angle_storm, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
+		elif weather == Weather.WINDY:
+			_update_wind_strength()
+
+func _update_wind_strength():
+	var normalized_dist = get_pot_dist_from_anchor() / WIND_ANCHOR_FALLOFF_DIST
+	var new_str := lerpf(1.0, 0.0, normalized_dist)
+	new_str = clampf(new_str, 0, 1)
+	if new_str < WIND_STRENGTH_HIGH_PASS:
+		new_str = 0.0
+	wind_strength = clampf(new_str, 0, 1)
 
 func _act_on_weather_state():
 	match weather:
@@ -146,6 +174,53 @@ func _act_on_weather_state():
 		Weather.PEACEFUL:
 			pass # Full sun, but hard platforming
 
+
+static var time = 0.0
+func _physics_process(delta: float) -> void:
+	if in_wind and weather == Weather.WINDY: 
+		_apply_passive_wind()
+		if time > 1.0:
+			time = 0.0
+			print("wind strength: " , wind_strength)
+			print("wind dir: " , wind_direction)
+			print()
+		time += delta
+		
+
+func _apply_passive_wind():
+	var wind_force = wind_direction * wind_strength * BASE_WIND_STRENGTH
+	for body : RigidBody2D in bodies_in_wind:
+		if body is FlowerHead:
+			const MOD = 0.5;
+			body.apply_central_force(wind_force * MOD)
+		elif body is Player2:
+			const MOD = 1.0;
+			body.apply_central_force(wind_force * MOD)
+		elif body is Vine: # must be a Vine
+			const MOD = 0.5;
+			body.apply_central_force(wind_force * MOD)
+
+func do_wind_burst(dir : Vector2i, strength := 2.0, duration := 1.5):
+	print("doing burst: \n", "dir = ", dir, "\nstrength = ", strength, "\nduration = ", duration)
+	wind_direction = dir
+	reset_wind_anchor()
+	
+	if wind_burst_tween: 
+		wind_burst_tween.kill()
+	wind_burst_tween = create_tween() 
+	
+	wind_burst_tween.tween_property(self, "wind_strength", strength, duration * 0.33).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	wind_burst_tween.tween_property(self, "wind_strength", 1.0, duration * 0.67).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_IN)
+
+func get_pot_dist_from_anchor():
+	return abs(wind_strength_anchor_height - _pot.position.y)
+
+func reset_wind_anchor(reset_to_head := false):
+	if reset_to_head:
+		wind_strength_anchor_height = _player.position.y
+	else:
+		wind_strength_anchor_height = _pot.position.y
+	
 
 func do_lightning():
 	if weather == Weather.STORMY:
@@ -182,12 +257,14 @@ func _on_storm_area_body_entered(body):
 func _on_storm_area_body_exited(body):
 	if body is FlowerHead:
 		in_storm = false
-		
+
 
 func _on_wind_area_body_entered(body):
 	if body is FlowerHead:
 		in_wind = true
+	bodies_in_wind.append(body)
 
 func _on_wind_area_body_exited(body):
 	if body is FlowerHead:
 		in_wind = false
+	bodies_in_wind.erase(body)
