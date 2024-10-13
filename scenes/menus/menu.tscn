@@ -1,18 +1,18 @@
-[gd_scene load_steps=10 format=3 uid="uid://c7w06rdclh4r0"]
+[gd_scene load_steps=11 format=3 uid="uid://c7w06rdclh4r0"]
 
 [ext_resource type="Script" path="res://scenes/menus/menu.gd" id="1_5r3os"]
 [ext_resource type="Theme" uid="uid://cn83a0xrk33ty" path="res://scenes/menus/themes/menu_theme.tres" id="1_lakh0"]
 [ext_resource type="Texture2D" uid="uid://bl7me8ad14jm0" path="res://assets/image/gwj66-title-screen.png" id="2_d4uli"]
 [ext_resource type="Shader" path="res://scenes/environment/bigclouds.gdshader" id="3_deo1s"]
 [ext_resource type="Texture2D" uid="uid://dr33adajhwsi0" path="res://assets/image/gwj66-small-clouds.png" id="4_0lpyl"]
+[ext_resource type="Script" path="res://scenes/environment/scrolling_sprite_2d.gd" id="5_l53r8"]
 [ext_resource type="Texture2D" uid="uid://bs3swf40ifqbt" path="res://assets/image/gwj66-tower.png" id="5_tidle"]
 [ext_resource type="PackedScene" uid="uid://b8abnqqvhhok3" path="res://scenes/menus/volume_bar.tscn" id="7_dbh4w"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dotrv"]
 shader = ExtResource("3_deo1s")
-shader_parameter/hoz_offset = -0.02
-shader_parameter/speed_mult = 1.0
-shader_parameter/darken = 0.0
+shader_parameter/scroll_offset = -0.05
+shader_parameter/brightness = 1.0
 
 [sub_resource type="LabelSettings" id="LabelSettings_lvt62"]
 font_size = 108
@@ -40,6 +40,7 @@ texture = ExtResource("2_d4uli")
 material = SubResource("ShaderMaterial_dotrv")
 position = Vector2(0, 52.785)
 texture = ExtResource("4_0lpyl")
+script = ExtResource("5_l53r8")
 
 [node name="Tower" type="Sprite2D" parent="Background"]
 texture = ExtResource("5_tidle")

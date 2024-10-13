@@ -26,7 +26,6 @@ func _ready():
 	_sun_bar.value = 0.0
 	_lightning_bar.value = 0.0
 	_wind_bar.value = 0.0
-	
 
 func reset():
 	get_tree().reload_current_scene()

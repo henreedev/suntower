@@ -51,11 +51,11 @@ environment = SubResource("Environment_4vhcu")
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
 process_mode = 1
-position = Vector2(0, 6)
+position = Vector2(118, -1275)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
 process_mode = 1
-position = Vector2(0, -44)
+position = Vector2(118, -1325)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 offset = Vector2(0, -100)
