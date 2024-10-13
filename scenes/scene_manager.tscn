@@ -213,7 +213,7 @@ grow_vertical = 0
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamInteractive_hcqxd")
-volume_db = -12.408
+volume_db = -18.548
 autoplay = true
 bus = &"Music"
 

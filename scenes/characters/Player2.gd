@@ -70,14 +70,16 @@ func _physics_process(delta):
 		touching = true 
 
 func _play_sound(sound):
+	if !playback: playback = sound_effect_player.get_stream_playback()
 	var volume = _get_volume(sound)
 	var rand_pitch = randf_range(0.8, 1.1)
 	print(playback.play_stream(sound, 0, volume, rand_pitch))
 
 func _get_volume(sound):
 	match sound:
-		FAIL, SMALL_HIT: return 10
-		MEDIUM_BIG_HIT: return 5
+		FAIL: return 20
+		SMALL_HIT: return 10
+		MEDIUM_BIG_HIT: return 3
 		_: return 0
 
 func _play_sound_on_impact():

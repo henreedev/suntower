@@ -41,6 +41,14 @@ expand_icon = true
 [node name="VolumeBar" parent="VBoxContainer" instance=ExtResource("3_hgmnj")]
 layout_mode = 2
 
+[node name="VolumeBar2" parent="VBoxContainer" instance=ExtResource("3_hgmnj")]
+layout_mode = 2
+bus_name = "Music"
+
+[node name="VolumeBar3" parent="VBoxContainer" instance=ExtResource("3_hgmnj")]
+layout_mode = 2
+bus_name = "SFX"
+
 [node name="RestartButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Restart"

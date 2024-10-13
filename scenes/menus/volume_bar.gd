@@ -17,10 +17,20 @@ func _ready() -> void:
 func _enter_tree() -> void:
 	_update_other_bars()
 
+func update_self():
+	match bus_name:
+		"Master": 
+			value = master_volume
+			print("master = ", master_volume)
+		"Music": 
+			value = music_volume
+		"SFX": 
+			value = sfx_volume
+
 func _update_other_bars():
+	update_self()
 	for bar : VolumeBar in get_tree().get_nodes_in_group("volumebar"):
-		if bar.bus_index == bus_index:
-			bar.value = value
+		bar.update_self()
 
 func _on_value_changed(value : float):
 	AudioServer.set_bus_volume_db(bus_index, linear_to_db(lerpf(0.0, 1.25, value)))
@@ -29,7 +39,7 @@ func _on_value_changed(value : float):
 			master_volume = value
 		"Music": 
 			music_volume = value
-		"Master": 
+		"SFX": 
 			sfx_volume = value
 
 
