@@ -6,7 +6,7 @@ class_name SceneManager
 const GAME_SCENE = preload("res://scenes/main.tscn")
 
 static var instance : SceneManager
-@export var should_play_cutscene = true
+@export var should_play_cutscene = false
 
 var base_volume : float
 var player_volume_offset := 0.0
@@ -31,9 +31,13 @@ func _ready():
 	playback = audio_stream_player.get_stream_playback()
 	stream = audio_stream_player.stream
 	base_volume = audio_stream_player.volume_db
+	_setup_game()
+
+
+func _setup_game():
 	remove_child(game)
 	game.flower_head.play_animation_on_start = should_play_cutscene
-
+	should_play_cutscene = false
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -48,24 +52,24 @@ func _process(delta):
 
 func menu_to_game():
 	tween_transition([remove_child.bind(start_menu), add_child.bind(game), \
-		switch_bgm.bind("Sun")])
-
+		switch_bgm.bind("Sun"), reduce_if_paused])
 
 func game_to_menu():
 	tween_transition([remove_child.bind(game), add_child.bind(start_menu), \
-	 switch_bgm.bind("Menu")])
+	 switch_bgm.bind("Menu"), reset_music_volume])
 
 func restart_game():
-	tween_transition([switch_bgm.bind("Game"), _set_game_to_new_copy])
+	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy])
 
 func _set_game_to_new_copy():
+	game.queue_free()
 	remove_child(game)
 	game = GAME_SCENE.instantiate()
 	add_child(game)
 	game.flower_head.play_animation_on_start = should_play_cutscene
 
-func switch_bgm(name : String):
-	playback.switch_to_clip_by_name(name)
+func switch_bgm(clip_name : String):
+	playback.switch_to_clip_by_name(clip_name)
 
 
 func tween_transition(method_calls : Array[Callable]):
@@ -79,6 +83,24 @@ func tween_transition(method_calls : Array[Callable]):
 	for callable : Callable in method_calls:
 		level_switch_tween.tween_callback(callable)
 	level_switch_tween.tween_property(color_rect, "modulate:a", 0.0, 0.5)\
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)\
+		.set_delay(0.25)
 	level_switch_tween.parallel().tween_property(animated_sprite_2d, "modulate:a", 0.0, 0.5)\
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)\
+		.set_delay(0.25)
+
+func reduce_music_volume():
+	if volume_tween:
+		volume_tween.kill()
+	volume_tween = create_tween()
+	volume_tween.tween_property(self, "tween_volume_offset", -18.0, 0.75).set_ease(Tween.EASE_IN_OUT)
+
+func reset_music_volume():
+	if volume_tween:
+		volume_tween.kill()
+	volume_tween = create_tween()
+	volume_tween.tween_property(self, "tween_volume_offset", 0.0, 0.75).set_ease(Tween.EASE_OUT)
+
+func reduce_if_paused():
+	if get_tree().paused:
+		reduce_music_volume()

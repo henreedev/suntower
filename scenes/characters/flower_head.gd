@@ -82,10 +82,10 @@ var _len_per_seg_adj
 func _ready():
 	_spawn_vine()
 	add_collision_exception_with(_player)
-	if play_animation_on_start:
+	if scene_manager.should_play_cutscene:
 		_animating = true
 	begin_inactive()
-	if play_animation_on_start:
+	if scene_manager.should_play_cutscene:
 		play_spawn_animation()
 	else:
 		no_cutscene_setup()
@@ -118,20 +118,19 @@ func play_spawn_animation():
 	create_tween().tween_property($Camera2D,"zoom", Vector2(5.95, 5.95), 2.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property($Camera2D,"offset", Vector2(0, 4), 2.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	
-	await get_tree().create_timer(2.0).timeout
-	$Sound/BGMusic.play()
+	#await Timing.create_timer(self, 2.0)
 	
 	var offset_tween = create_tween()
 	offset_tween.tween_property($Camera2D, "offset", Vector2(-80, 4), 1.5).from(Vector2(0, 4)).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
 	offset_tween.tween_property($Camera2D, "offset", Vector2(80, 4), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
 	offset_tween.tween_property($Camera2D, "offset", Vector2(0, 4), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
 	# 7 seconds of camera panning 
-	await get_tree().create_timer(6.7).timeout
+	await Timing.create_timer(self, 6.7)
 	var delay = 1.95
 	var i = -1
 	for vine in get_tree().get_nodes_in_group("vine"):
 		i = i + 1
-		await get_tree().create_timer(delay * 1.0 / (i+3)).timeout
+		await Timing.create_timer(self, delay * 1.0 / (i+3))
 		var tween = create_tween().set_parallel(true)
 		tween.tween_property(vine, "modulate", Color(1.0,1.0,1.0,1.0), 0.5)
 		var sprite_scale = Vector2(1.0, 1.4)
@@ -146,7 +145,7 @@ func play_spawn_animation():
 	# Finish animation
 	create_tween().tween_property($Camera2D,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property($Camera2D, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
-	await get_tree().create_timer(0.5).timeout
+	await Timing.create_timer(self, 0.5)
 	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC)
 	_animating = false
 	get_tree().get_first_node_in_group("stopwatch").start()
@@ -170,7 +169,7 @@ func _teleport_if_stuck():
 		if stuck: 
 			stuck_timer.start()
 		else:
-			await get_tree().create_timer(1.0).timeout
+			await Timing.create_timer(self, 1.0)
 			if not stuck:
 				stuck_timer.stop()
 	elif _state == State.RETRACTING:
@@ -415,7 +414,7 @@ func _fix_gap(state):
 			child.rotation = global_rotation
 			child._set_rot = global_rotation
 			_root_seg.set_child(child)
-		await get_tree().create_timer(0.1).timeout
+		await Timing.create_timer(self, 0.1)
 		fixing_gap = false
 
 func _add_seg():
@@ -500,7 +499,7 @@ func _remove_lightning_buff():
 		lightning_buff_tween.tween_property(storm_light, "color", Color(1, 1, 1, 1), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		lightning_buff_tween.tween_property(storm_light, "energy", 0.15, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		lightning_buff_tween.tween_method(_set_electricity, 1.5, 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		await get_tree().create_timer(0.5).timeout
+		await Timing.create_timer(self, 0.5)
 		lightning_particles.emitting = false
 
 

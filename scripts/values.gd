@@ -1,4 +1,3 @@
-extends Node
 class_name Values
 
 static var skip_cutscene = false

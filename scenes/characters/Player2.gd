@@ -17,7 +17,7 @@ const WEIRD_HIT = preload("res://assets/sound/sfx/hit-4.wav")
 # TODO fail and small_hit need +10db
 const SMALL_HIT = preload("res://assets/sound/sfx/hit-5.wav")
 const FAIL = preload("res://assets/sound/sfx/fail.wav")
-@onready var sound_effect_player = %SoundEffectPlayer
+@onready var sound_effect_player : AudioStreamPlayer2D = %SoundEffectPlayer
 
 @onready var shadow : Sprite2D = $Smoothing2D/Pot/Shadow
 @onready var sparks : GPUParticles2D = $Sparks
@@ -29,7 +29,7 @@ var playback : AudioStreamPlaybackPolyphonic
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	stream = sound_effect_player.stream
-	playback = sound_effect_player.get_stream_playback()
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -44,7 +44,9 @@ func _display_shadow():
 	else:
 		create_tween().tween_property(shadow, "modulate", Color(1, 1, 1, 0), 0.1)
 
-
+func _enter_tree():
+	await Timing.create_timer(self, 0.05, true)
+	playback = sound_effect_player.get_stream_playback()
 
 func _act_on_state(state : FlowerHead.State):
 	match state:
@@ -70,7 +72,7 @@ func _physics_process(delta):
 func _play_sound(sound):
 	var volume = _get_volume(sound)
 	var rand_pitch = randf_range(0.8, 1.1)
-	playback.play_stream(sound, 0, volume, rand_pitch)
+	print(playback.play_stream(sound, 0, volume, rand_pitch))
 
 func _get_volume(sound):
 	match sound:
@@ -84,7 +86,6 @@ func _play_sound_on_impact():
 	var rand_pitch = randf_range(0.8, 1.1)
 	var left_or_right := Vector2(1 * ((int)(linear_velocity.rotated(rotation).x < 0) * 2 - 1), 0)
 	if not flower_head._animating:
-		#_emit_dust(10, left_or_right)
 		if diff > 150000.0:
 			_play_sound(FAIL)
 			_play_sound(MEDIUM_BIG_HIT)
@@ -103,7 +104,7 @@ func _play_sound_on_impact():
 				_play_sound(SMALL_HIT)
 				_emit_spark(randi_range(1, 3), left_or_right)
 				small_hit_can_play = false
-				await get_tree().create_timer(0.5).timeout
+				await Timing.create_timer(self, 0.5)
 				small_hit_can_play = true
 
 func _emit_spark(amount : int, dir : Vector2, both_sides = false):

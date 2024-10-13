@@ -1,26 +1,28 @@
 extends CanvasLayer
 
-@onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
-@onready var player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
+var just_unpaused = false
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause"):
+		unpause()
 
-func unpause_game():
-	get_tree().paused = false
-	hide()
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	if Input.is_action_just_pressed("pause"):
-		unpause_game()
+func unpause():
+	if get_tree().paused:
+		SceneManager.instance.reset_music_volume()
+		just_unpaused = true
+		get_tree().paused = false
+		hide()
+		await Timing.create_timer(self, 0.01, true)
+		just_unpaused = false
 
 func _on_resume_button_pressed():
-	unpause_game()
+	unpause()
 
 func _on_quit_button_pressed():
 	get_tree().quit()
 
-func _on_reset_button_pressed():
-	get_tree().paused = false
+func _on_restart_button_pressed():
+	unpause()
 	SceneManager.instance.restart_game()
 
 

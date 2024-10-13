@@ -41,7 +41,7 @@ expand_icon = true
 [node name="VolumeBar" parent="VBoxContainer" instance=ExtResource("3_hgmnj")]
 layout_mode = 2
 
-[node name="ResetButton" type="Button" parent="VBoxContainer"]
+[node name="RestartButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Restart"
 expand_icon = true
@@ -51,11 +51,6 @@ layout_mode = 2
 text = "Quit to Menu"
 expand_icon = true
 
-[node name="QuitButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "Quit to Desktop"
-
 [connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/MenuButton" to="." method="_on_menu_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

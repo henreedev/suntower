@@ -2,19 +2,20 @@ extends Node2D
 
 class_name Main
 
-@onready var _vines_bar : TextureProgressBar = $CanvasLayer/VinesBar
-@onready var _sun_bar : TextureProgressBar = $CanvasLayer/SunBar
-@onready var _lightning_bar : TextureProgressBar = $CanvasLayer/LightningBar
-@onready var _wind_bar : TextureProgressBar = $CanvasLayer/WindBar
-@onready var flower_head : FlowerHead = $FlowerHead
-@onready var _cam : Camera2D = $FlowerHead/Camera2D
 var hud_offset := Vector2(0,-50)
 var win = false
 var shake_strength = 0.0
 const SHAKE_DECAY_RATE = 20.0
 const RANDOM_SHAKE_STRENGTH = 30.0
 var switch_bars_tween : Tween
-# Called when the node enters the scene tree for the first time.
+
+@onready var _vines_bar : TextureProgressBar = $CanvasLayer/VinesBar
+@onready var _sun_bar : TextureProgressBar = $CanvasLayer/SunBar
+@onready var _lightning_bar : TextureProgressBar = $CanvasLayer/LightningBar
+@onready var _wind_bar : TextureProgressBar = $CanvasLayer/WindBar
+@onready var flower_head : FlowerHead = $FlowerHead
+@onready var _cam : Camera2D = $FlowerHead/Camera2D
+@onready var pause_menu = $PauseMenu
 
 func _ready():
 	_vines_bar.max_value = flower_head.BASE_MAX_EXTENDED_LEN
@@ -30,10 +31,15 @@ func _ready():
 func reset():
 	get_tree().reload_current_scene()
 
-func pause_game():
-	await get_tree().create_timer(0.05).timeout
-	get_tree().paused = true
-	$PauseMenu.show()
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause") and not pause_menu.just_unpaused:
+		pause()
+
+func pause():
+	if not get_tree().paused:
+		get_tree().paused = true
+		pause_menu.show()
+	SceneManager.instance.reduce_music_volume()
 
 func switch_to_lightning_bar():
 	if switch_bars_tween:
@@ -69,9 +75,6 @@ func switch_to_sun_bar():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Input.is_action_just_pressed("pause"):
-		pause_game()
-
 	if shake_strength:
 		shake_strength = lerp(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
 	# Set hud progress bar values
@@ -95,7 +98,7 @@ func _process(delta):
 	if shake_strength:
 		$CanvasLayer.offset = get_random_offset()
 	# Check for win
-	if flower_head.position.y <= -3000.0:
+	if flower_head.position.y <= -4000.0:
 		win = true
 	if win:
 		$CanvasLayer/Label.text = str($Stopwatch.time).pad_decimals(2)

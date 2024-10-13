@@ -292,10 +292,15 @@ wait_time = 4.0
 [node name="Node2D" type="Node2D" parent="Occluders"]
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Occluders/Node2D"]
+visible = false
+position = Vector2(0, -96)
 occluder = SubResource("OccluderPolygon2D_v0r25")
+sdf_collision = false
 
 [node name="LightOccluder2D2" type="LightOccluder2D" parent="Occluders/Node2D"]
+visible = false
 occluder = SubResource("OccluderPolygon2D_pdk35")
+sdf_collision = false
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
 remote_path = NodePath("../Occluders/Node2D")

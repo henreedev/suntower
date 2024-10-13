@@ -48,6 +48,12 @@ clip_10/auto_advance = 0
 clip_11/name = &"Victory"
 clip_11/auto_advance = 0
 _transitions = {
+Vector2i(1, 1): {
+"fade_beats": 1,
+"fade_mode": 4,
+"from_time": 0,
+"to_time": 1
+},
 Vector2i(1, 4): {
 "fade_beats": 1,
 "fade_mode": 4,

@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://c7w06rdclh4r0"]
+[gd_scene load_steps=10 format=3 uid="uid://c7w06rdclh4r0"]
 
 [ext_resource type="Script" path="res://scenes/menus/menu.gd" id="1_5r3os"]
 [ext_resource type="Theme" uid="uid://cn83a0xrk33ty" path="res://scenes/menus/themes/menu_theme.tres" id="1_lakh0"]
 [ext_resource type="Texture2D" uid="uid://bl7me8ad14jm0" path="res://assets/image/gwj66-title-screen.png" id="2_d4uli"]
 [ext_resource type="Shader" path="res://scenes/environment/bigclouds.gdshader" id="3_deo1s"]
 [ext_resource type="Texture2D" uid="uid://dr33adajhwsi0" path="res://assets/image/gwj66-small-clouds.png" id="4_0lpyl"]
-[ext_resource type="AudioStream" uid="uid://bfw5tgtp7tefi" path="res://assets/sound/menu-bgm.mp3" id="4_q06le"]
 [ext_resource type="Texture2D" uid="uid://bs3swf40ifqbt" path="res://assets/image/gwj66-tower.png" id="5_tidle"]
 [ext_resource type="PackedScene" uid="uid://b8abnqqvhhok3" path="res://scenes/menus/volume_bar.tscn" id="7_dbh4w"]
 
@@ -21,7 +20,7 @@ font_color = Color(1, 1, 0.8, 1)
 shadow_size = 5
 
 [node name="Menu" type="Control"]
-process_mode = 1
+process_mode = 3
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -85,13 +84,5 @@ pivot_offset = Vector2(163, 43)
 text = "Suntower"
 label_settings = SubResource("LabelSettings_lvt62")
 
-[node name="BGMusic" type="AudioStreamPlayer2D" parent="." groups=["bgm"]]
-stream = ExtResource("4_q06le")
-volume_db = -24.0
-autoplay = true
-attenuation = 1e-05
-panning_strength = 0.0
-
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
-[connection signal="finished" from="BGMusic" to="." method="_on_bg_music_finished"]

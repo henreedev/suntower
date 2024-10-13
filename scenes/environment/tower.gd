@@ -156,19 +156,19 @@ func do_lightning():
 		const windup_duration = 1.0
 		create_tween().tween_method(_lights.set_energy_mult, 0.04, 1.0, windup_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_IN)
 		create_tween().tween_method(_bg.set_cloud_brightness, _bg.dark, _bg.dark - cloud_brighten, windup_duration).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_IN)
-		await get_tree().create_timer(windup_duration + 0.05).timeout
+		await Timing.create_timer(self, windup_duration + 0.05)
 		
 		const lightning_duration = 0.3
 		_lights.set_energy_mult(20.0)
 		_bg.set_cloud_brightness(_bg.dark - cloud_brighten)
 		lightning_striking = true
-		await get_tree().create_timer(lightning_duration).timeout
+		await Timing.create_timer(self, lightning_duration)
 		lightning_striking = false
 		
 		const winddown_duration = 0.5
 		create_tween().tween_method(_lights.set_energy_mult, 1.0, 0.04, winddown_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 		create_tween().tween_method(_bg.set_cloud_brightness, _bg.dark - cloud_brighten, _bg.dark, winddown_duration).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
-		await get_tree().create_timer(winddown_duration).timeout
+		await Timing.create_timer(self, winddown_duration)
 		lock_lights = false
 
 func _lerp_lights_towards_goal(delta):

@@ -18,7 +18,7 @@ var frame = 0
 func _ready():
 	smooth.set_enabled(false)
 	smoothing = false
-	await get_tree().create_timer(0.2).timeout
+	await Timing.create_timer(self, 0.2)
 	smooth.set_enabled(true)
 	smooth.teleport()
 	smoothing = true
