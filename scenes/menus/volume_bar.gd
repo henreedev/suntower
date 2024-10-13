@@ -21,7 +21,6 @@ func update_self():
 	match bus_name:
 		"Master": 
 			value = master_volume
-			print("master = ", master_volume)
 		"Music": 
 			value = music_volume
 		"SFX": 

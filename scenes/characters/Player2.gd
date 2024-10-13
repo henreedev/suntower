@@ -3,28 +3,30 @@ class_name Player2
 
 const vine_root_offset = Vector2(0, -4)
 
-var small_hit_can_play = true
-var touching = false
-var prev_vel_sqrd : float
-var prev_avel : float
-@onready var flower_head : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
-@onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
+
 const POT_HIT_SMALL = preload("res://assets/sound/sfx/pot-hit-small.wav")
 const MEDIUM_BIG_HIT = preload("res://assets/sound/sfx/hit.wav")
 const MEDIUM_INTERMEDIATE_HIT = preload("res://assets/sound/sfx/hit-2.wav")
 const BIG_HIT_WHOOSH = preload("res://assets/sound/sfx/hit-3.wav")
 const WEIRD_HIT = preload("res://assets/sound/sfx/hit-4.wav")
-# TODO fail and small_hit need +10db
 const SMALL_HIT = preload("res://assets/sound/sfx/hit-5.wav")
 const FAIL = preload("res://assets/sound/sfx/fail.wav")
-@onready var sound_effect_player : AudioStreamPlayer2D = %SoundEffectPlayer
 
-@onready var shadow : Sprite2D = $Smoothing2D/Pot/Shadow
-@onready var sparks : GPUParticles2D = $Sparks
-@onready var dust : GPUParticles2D = $Dust
+var small_hit_can_play = true
+var touching = false
+var prev_vel_sqrd : float
+var prev_avel : float
+var velocity_diff
 
 var stream : AudioStreamPolyphonic
 var playback : AudioStreamPlaybackPolyphonic
+
+@onready var flower_head : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
+@onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
+@onready var sound_effect_player : AudioStreamPlayer2D = %SoundEffectPlayer
+@onready var shadow : Sprite2D = $Smoothing2D/Pot/Shadow
+@onready var sparks : GPUParticles2D = $Sparks
+@onready var dust : GPUParticles2D = $Dust
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -69,11 +71,11 @@ func _physics_process(delta):
 			prev_vel_sqrd < 0.01 and abs(prev_avel) < 0.01:
 		touching = true 
 
-func _play_sound(sound):
+func _play_sound(sound, volume_offset := 0):
 	if !playback: playback = sound_effect_player.get_stream_playback()
-	var volume = _get_volume(sound)
+	var volume = _get_volume(sound) + volume_offset
 	var rand_pitch = randf_range(0.8, 1.1)
-	print(playback.play_stream(sound, 0, volume, rand_pitch))
+	playback.play_stream(sound, 0, volume, rand_pitch)
 
 func _get_volume(sound):
 	match sound:
@@ -83,31 +85,50 @@ func _get_volume(sound):
 		_: return 0
 
 func _play_sound_on_impact():
-	var diff = abs(prev_vel_sqrd - linear_velocity.length_squared())
+	velocity_diff = abs(prev_vel_sqrd - linear_velocity.length_squared())
 	var adiff = abs(prev_avel - angular_velocity)
 	var rand_pitch = randf_range(0.8, 1.1)
 	var left_or_right := Vector2(1 * ((int)(linear_velocity.rotated(rotation).x < 0) * 2 - 1), 0)
+	var volume_offset := 0.0
 	if not flower_head._animating:
-		if diff > 150000.0:
-			_play_sound(FAIL)
-			_play_sound(MEDIUM_BIG_HIT)
-			_play_sound(BIG_HIT_WHOOSH)
+		if velocity_diff > 150000.0:
+			volume_offset = get_volume_adjust_by_speed(200000.0, 150000.0)
+			_play_sound(FAIL, volume_offset)
+			_play_sound(MEDIUM_BIG_HIT, volume_offset)
+			_play_sound(BIG_HIT_WHOOSH, volume_offset)
 			_emit_spark(randi_range(20, 35), left_or_right, true)
 			_emit_dust(randi_range(10, 15), left_or_right, true)
-		elif diff > 50000.0:
-			_play_sound(MEDIUM_BIG_HIT)
+		elif velocity_diff > 50000.0:
+			volume_offset = get_volume_adjust_by_speed(150000.0, 50000.0)
+			_play_sound(MEDIUM_BIG_HIT, volume_offset)
 			_emit_spark(randi_range(7, 13), left_or_right, true)
 			_emit_dust(randi_range(5, 10), left_or_right, true)
-		elif diff > 10000.0:
-			_play_sound(MEDIUM_INTERMEDIATE_HIT)
+		elif velocity_diff > 10000.0:
+			volume_offset = get_volume_adjust_by_speed(50000.0, 10000.0)
+			_play_sound(MEDIUM_INTERMEDIATE_HIT, volume_offset)
 			_emit_dust(randi_range(3, 7), left_or_right)
-		elif diff > 500.0 or adiff > 3.0:
+		elif velocity_diff > 500.0 or adiff > 3.0:
 			if small_hit_can_play:
-				_play_sound(SMALL_HIT)
+				volume_offset = get_volume_adjust_by_speed(10000.0, 500.0)
+				_play_sound(SMALL_HIT, volume_offset)
 				_emit_spark(randi_range(1, 3), left_or_right)
 				small_hit_can_play = false
 				await Timing.create_timer(self, 0.5)
 				small_hit_can_play = true
+
+func get_volume_adjust_by_speed(upper : float, lower : float):
+	const MIN_DB = -4.0
+	const MAX_DB = 4.0 
+	
+	var bounds_diff = upper - lower
+	var volume_adjust = lerpf(MIN_DB, MAX_DB, (velocity_diff - lower) / bounds_diff)
+	#print()
+	#print("upper = ", upper )
+	#print("lower = ", lower )
+	#print("diff = ", velocity_diff )
+	#print("t = ", (velocity_diff - lower) / bounds_diff)
+	#print("db = ", volume_adjust)
+	return clampf(volume_adjust, MIN_DB, MAX_DB)
 
 func _emit_spark(amount : int, dir : Vector2, both_sides = false):
 	const BOTTOM_HEIGHT = 5.5
@@ -134,7 +155,7 @@ func _emit_dust(amount : int, dir : Vector2, both_sides = false):
 	for i in range(amount):
 		if both_sides: hoz_vel *= Vector2.LEFT
 		if both_sides: dir *= Vector2.LEFT
-		var spark_origin = global_position + dir * SIDE_LENGTH + Vector2(0, BOTTOM_HEIGHT)
+		var spark_origin = global_position + Vector2(0, -3)
 		var rand_vel := ((upward_vel + hoz_vel) * randf_range(0.4, 0.8)).rotated(randf_range(-0.5, 0.5))
 		dust.emit_particle(Transform2D(0, Vector2.ONE, 0, spark_origin), 
 			rand_vel, Color.WHITE, Color.WHITE, 5)
