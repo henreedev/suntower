@@ -3,19 +3,30 @@ extends Node2D
 class_name SceneManager
 
 @export var game_scene : PackedScene
-static var sound_volume_offset_menu = -12.0
-static var sound_volume_offset_sun = -10.0
-static var sound_volume_offset_sfx = -8.0
-static var sound_volume_offset_storm = -10.0
-static var sound_volume_offset_unnormalized = 10.0
-static var sfx_bighit_adj = 5.0
-@onready var bgmusic = $CurrentScene/Menu/BGMusic
-static var sound_volume = -10.0
+#static var sound_volume_offset_menu = -12.0
+#static var sound_volume_offset_sun = -10.0
+#static var sound_volume_offset_sfx = -8.0
+#static var sound_volume_offset_storm = -10.0
+#static var sound_volume_offset_unnormalized = 10.0
+#static var sfx_bighit_adj = 5.0
+#@onready var bgmusic = $CurrentScene/Menu/BGMusic
+#static var sound_volume = -10.0
 static var skip_cutscene = false
+
+var base_volume : float
+var player_volume_offset := 0.0
+var tween_volume_offset := 0.0
+var volume_tween : Tween
+
+@onready var audio_stream_player: AudioStreamPlayer = $AudioStreamPlayer
+var playback : AudioStreamPlaybackInteractive
+var stream : AudioStreamInteractive
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	playback = audio_stream_player.get_stream_playback()
+	stream = audio_stream_player.stream
+	base_volume = audio_stream_player.volume_db
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -1,15 +1,116 @@
-[gd_scene load_steps=5 format=3 uid="uid://jvuqketuhc3e"]
+[gd_scene load_steps=11 format=3 uid="uid://jvuqketuhc3e"]
 
 [ext_resource type="PackedScene" uid="uid://bml36duxahxnm" path="res://scenes/menus/TransitionOverlay.tscn" id="1_56eja"]
 [ext_resource type="Script" path="res://scenes/scene_manager.gd" id="1_du78n"]
 [ext_resource type="PackedScene" uid="uid://cjl7hh0kgvrb8" path="res://scenes/main.tscn" id="2_axfdj"]
 [ext_resource type="PackedScene" uid="uid://c7w06rdclh4r0" path="res://scenes/menus/menu.tscn" id="2_sf0c0"]
+[ext_resource type="AudioStream" uid="uid://bfw5tgtp7tefi" path="res://assets/sound/menu-bgm.mp3" id="5_21kdo"]
+[ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/sun-bgm.mp3" id="6_0ik4c"]
+[ext_resource type="AudioStream" uid="uid://dmb7q4tmk1afv" path="res://assets/sound/gwj-test2.mp3" id="7_6xiwy"]
+[ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/storm-bgm.mp3" id="8_xc61x"]
+[ext_resource type="AudioStream" uid="uid://yycwfoeimnw7" path="res://assets/sound/wind-bgm.mp3" id="9_10mur"]
+
+[sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_hcqxd"]
+clip_count = 12
+clip_0/name = &"Menu"
+clip_0/stream = ExtResource("5_21kdo")
+clip_0/auto_advance = 0
+clip_1/name = &"Sun"
+clip_1/stream = ExtResource("6_0ik4c")
+clip_1/auto_advance = 0
+clip_2/name = &"StormToSun"
+clip_2/auto_advance = 1
+clip_2/next_clip = 1
+clip_3/name = &"SunToStorm"
+clip_3/auto_advance = 1
+clip_3/next_clip = 4
+clip_4/name = &"Storm"
+clip_4/stream = ExtResource("8_xc61x")
+clip_4/auto_advance = 0
+clip_5/name = &"WindToStorm"
+clip_5/auto_advance = 1
+clip_5/next_clip = 4
+clip_6/name = &"StormToWind"
+clip_6/auto_advance = 1
+clip_6/next_clip = 7
+clip_7/name = &"Wind"
+clip_7/stream = ExtResource("9_10mur")
+clip_7/auto_advance = 0
+clip_8/name = &"PeacefulToWind"
+clip_8/auto_advance = 1
+clip_8/next_clip = 7
+clip_9/name = &"WindToPeaceful"
+clip_9/auto_advance = 1
+clip_9/next_clip = 10
+clip_10/name = &"Peaceful"
+clip_10/stream = ExtResource("7_6xiwy")
+clip_10/auto_advance = 0
+clip_11/name = &"Victory"
+clip_11/auto_advance = 0
+_transitions = {
+Vector2i(1, 4): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 3,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+},
+Vector2i(4, 1): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 2,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+},
+Vector2i(4, 7): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 6,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+},
+Vector2i(7, 4): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 5,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 0,
+"use_filler_clip": true
+},
+Vector2i(7, 10): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 9,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+},
+Vector2i(10, 7): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 8,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+}
+}
 
 [node name="SceneManager" type="Node2D" groups=["scenemanager"]]
+process_mode = 3
 script = ExtResource("1_du78n")
 game_scene = ExtResource("2_axfdj")
 
 [node name="CurrentScene" type="Node2D" parent="."]
+process_mode = 1
 
 [node name="Menu" parent="CurrentScene" instance=ExtResource("2_sf0c0")]
 anchors_preset = 7
@@ -23,5 +124,8 @@ grow_vertical = 0
 
 [node name="TransitionOverlay" parent="." instance=ExtResource("1_56eja")]
 
-[connection signal="game_started" from="CurrentScene/Menu" to="." method="_on_menu_game_started"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamInteractive_hcqxd")
+volume_db = -12.408
+
 [connection signal="transitioned" from="TransitionOverlay" to="." method="_on_transition_overlay_transitioned"]

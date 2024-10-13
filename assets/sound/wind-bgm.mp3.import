@@ -2,7 +2,7 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-uid="uid://craryoop4ppev"
+uid="uid://yycwfoeimnw7"
 path="res://.godot/imported/wind-bgm.mp3-aa86858ce6defe1c7774809f1a425f7a.mp3str"
 
 [deps]
@@ -12,8 +12,8 @@ dest_files=["res://.godot/imported/wind-bgm.mp3-aa86858ce6defe1c7774809f1a425f7a
 
 [params]
 
-loop=false
-loop_offset=0
-bpm=0
-beat_count=0
+loop=true
+loop_offset=0.0
+bpm=216.0
+beat_count=96
 bar_beats=4

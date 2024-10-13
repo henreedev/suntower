@@ -406,6 +406,9 @@ func _physics_process(delta):
 				pass
 		_last_pos = pos
 
+func useless_function():
+	pass
+
 func _fix_gap(state):
 	if _state == State.EXTENDING or fixing_gap:
 		const MAX_GAP = 3.0

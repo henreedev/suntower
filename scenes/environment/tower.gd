@@ -87,7 +87,6 @@ func start_windy():
 		main.switch_to_wind_bar()
 		_player.switch_music(weather, 3.0)
 
-
 func _change_weather_on_progress():
 	_progress = _player.position.y / MAX_PROG_HEIGHT
 	if in_wind:

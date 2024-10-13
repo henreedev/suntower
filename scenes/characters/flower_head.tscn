@@ -6,10 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/characters/vine_seg.tscn" id="2_ircd2"]
 [ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/suntower-lightning-particle.png" id="4_14gk3"]
 [ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/flower-extend.png" id="4_ski6y"]
-[ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/flower.mp3" id="5_1ssef"]
+[ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/sun-bgm.mp3" id="5_1ssef"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="5_kbo6i"]
-[ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/scuffed_storms.mp3" id="7_6xq58"]
-[ext_resource type="AudioStream" uid="uid://bfw5tgtp7tefi" path="res://assets/sound/flower_light_ver.mp3" id="10_uunqv"]
+[ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/storm-bgm.mp3" id="7_6xq58"]
+[ext_resource type="AudioStream" uid="uid://bfw5tgtp7tefi" path="res://assets/sound/menu-bgm.mp3" id="10_uunqv"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0
