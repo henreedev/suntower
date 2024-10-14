@@ -89,6 +89,7 @@ func start_stormy():
 		modulate_tween.tween_property($CanvasModulate, "color", storm_modulate, 1.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_lightning_bar()
 		SceneManager.instance.switch_bgm("Storm")
+		_player.disable_wind_particles()
 
 
 func start_windy():
@@ -104,6 +105,7 @@ func start_windy():
 		modulate_tween.tween_property($CanvasModulate, "color", windy_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_wind_bar()
 		SceneManager.instance.switch_bgm("Wind")
+		_player.enable_wind_particles()
 
 
 func _change_weather_on_progress():
@@ -205,7 +207,8 @@ func do_wind_burst(dir : Vector2i, strength := 2.0, duration := 1.5):
 	wind_direction = dir
 	reset_wind_anchor()
 	
-	print("didd burst")
+	const CLOUD_SPEED = 1.0
+	_bg.set_speed_mult(CLOUD_SPEED * dir.x, true, CLOUD_SPEED * strength * dir.x)
 	
 	if wind_burst_tween: 
 		wind_burst_tween.kill()

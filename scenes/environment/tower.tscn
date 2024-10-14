@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://ckx0bck6rq1od" path="res://assets/image/gwj66-big-clouds.png" id="5_vxu1j"]
 [ext_resource type="PackedScene" uid="uid://dnbyf1fjmx5if" path="res://scenes/environment/pot.tscn" id="6_43tb6"]
 [ext_resource type="Texture2D" uid="uid://dr33adajhwsi0" path="res://assets/image/gwj66-small-clouds.png" id="6_pkgui"]
-[ext_resource type="Script" path="res://scenes/environment/scrolling_sprite_2d.gd" id="7_ntwpm"]
+[ext_resource type="Script" path="res://scenes/environment/clouds.gd" id="7_dv22i"]
 [ext_resource type="TileSet" uid="uid://r7paxto5gyud" path="res://scenes/environment/tower-tileset.tres" id="10_ssbvr"]
 [ext_resource type="PackedScene" uid="uid://ca4fvc73x8ydq" path="res://scenes/environment/wind_burst_area.tscn" id="13_ptelv"]
 
@@ -106,7 +106,7 @@ motion_mirroring = Vector2(384, 432)
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/SmallClouds"]
 material = SubResource("ShaderMaterial_m5nt1")
 texture = ExtResource("6_pkgui")
-script = ExtResource("7_ntwpm")
+script = ExtResource("7_dv22i")
 
 [node name="BigClouds" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.35)
@@ -116,7 +116,7 @@ motion_mirroring = Vector2(384, 432)
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/BigClouds"]
 material = SubResource("ShaderMaterial_xdns3")
 texture = ExtResource("5_vxu1j")
-script = ExtResource("7_ntwpm")
+script = ExtResource("7_dv22i")
 
 [node name="Lights" type="Node2D" parent="." groups=["lights"]]
 rotation = 1.18682

@@ -319,9 +319,11 @@ func begin_retracting():
 
 func enable_wind_particles():
 	wind_particles.emitting = true
+	wind_particles.emitting = true
 
 func disable_wind_particles():
-	wind_particles.emitting = false
+	wind_gust_particles.emitting = false
+	wind_gust_particles.emitting = false
 
 #func emit_wind_burst_particles():
 	#wind_particles_mat.

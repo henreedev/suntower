@@ -36,15 +36,15 @@ func enter_windy(tween : Tween, duration : float):
 	const wind_cloud_modulate = Color.WEB_GRAY
 	tween.tween_property(bg, "modulate", Color(0.4, 0.4, 0.4, 0.3), duration)
 	tween.tween_property(forest, "modulate", Color.TRANSPARENT, duration)
-	set_speed_mult(1, true, -5.8)
-	set_speed_mult(-4, false, -7.5)
-	tween.tween_property(big_clouds, "scale", Vector2(4.3, 4.3), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	set_speed_mult(1.0, true, -5.8)
+	set_speed_mult(-2.5, false, -20.5)
+	tween.tween_property(big_clouds, "scale", Vector2(1.5, 1.5), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(big_clouds, "brightness", 1.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(big_clouds, "modulate", wind_cloud_modulate, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(small_clouds, "scale", Vector2(5.5, 5.5), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(small_clouds, "scale", Vector2(3.0, 3.0), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "brightness", 1.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "modulate", wind_cloud_modulate, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-
+	
 
 
 func set_cloud_brightness(val):
@@ -55,7 +55,7 @@ func set_speed_mult(val : float, is_big, trans_val := val):
 	if is_big:
 		big_clouds.switch_scroll_speed(val, trans_val)
 	else:
-		small_clouds.switch_scroll_speed(val)
+		small_clouds.switch_scroll_speed(val, trans_val)
 
 func set_darken(val, is_big):
 	if is_big:
