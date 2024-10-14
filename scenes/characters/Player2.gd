@@ -16,7 +16,7 @@ var small_hit_can_play = true
 var touching = false
 var prev_vel_sqrd : float
 var prev_avel : float
-var velocity_diff
+var velocity_diff : float
 
 var stream : AudioStreamPolyphonic
 var playback : AudioStreamPlaybackPolyphonic

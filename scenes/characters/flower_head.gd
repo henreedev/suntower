@@ -16,6 +16,8 @@ var extra_len = 0.0
 var extra_len_display = 0.0
 var vine_len_display = BASE_MAX_EXTENDED_LEN
 var time = 0.0
+
+var spiked_hitbox_tween : Tween
 #const EXTEND_SPEED = 200.0
 #@export var max_extended_len := 5000.0
 #const BASE_MAX_EXTENDED_LEN := 5000.0
@@ -77,6 +79,9 @@ var _len_per_seg_adj
 @onready var sun_particles : GPUParticles2D = $Sparkles
 @onready var scene_manager = get_tree().get_first_node_in_group("scenemanager")
 @onready var camera_2d = $Camera2D
+@onready var spiked_hitbox: CollisionPolygon2D = $SpikedHitbox
+@onready var wind_particles: GPUParticles2D = %WindParticles
+@onready var wind_particles_mat: ParticleProcessMaterial = wind_particles.process_material
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -163,13 +168,17 @@ func _draw_line():
 		vine_line.add_point(vine_seg.get_avg_pos())
 		vine_seg = vine_seg.get_child_seg() if not vine_seg.get_child_seg() is Player2 else null
 
+var waiting_to_check = false
 func _teleport_if_stuck():
 	if _state == State.INACTIVE:
 		stuck = not can_extend and _player.linear_velocity.length() < 100.0
 		if stuck: 
 			stuck_timer.start()
 		else:
-			await Timing.create_timer(self, 1.0)
+			if not waiting_to_check:
+				waiting_to_check = true
+				await Timing.create_timer(self, 1.0)
+				waiting_to_check = false
 			if not stuck:
 				stuck_timer.stop()
 	elif _state == State.RETRACTING:
@@ -216,10 +225,6 @@ func act_on_state():
 			begin_retracting()
 	elif _state == State.RETRACTING:
 		lock_rotation = true
-		#if _segs <= 50:
-			#get_tree().call_group("vine", "set_grav", 0.3)
-		#else: 
-			#get_tree().call_group("vine", "set_grav", 0.1)
 		if _segs <= base_segments:
 			begin_inactive()
 		_teleport_if_stuck()
@@ -236,7 +241,7 @@ func begin_extending():
 			sun_particles.amount = 5
 		lock_rotation = false
 		collision_mask = 13
-		$SpikedHitbox.disabled = false
+		enable_spiked_hitbox()
 		get_tree().call_group("vine", "set_grav", 0.1)
 		stuck_timer.stop()
 		dead_timer.stop()
@@ -247,6 +252,22 @@ func begin_extending():
 		extend_speed_mod = 1.0
 		mass = 0.1
 		create_tween().tween_property(self, "extend_speed_mod", 1.0, 0.3)
+
+func enable_spiked_hitbox():
+	if spiked_hitbox_tween:
+		spiked_hitbox_tween.kill()
+	spiked_hitbox_tween = create_tween()
+	
+	spiked_hitbox.disabled = false
+	spiked_hitbox.scale = Vector2(0.4, 0.4)
+	spiked_hitbox_tween.tween_property(spiked_hitbox, "scale", Vector2.ONE, 0.5).set_trans(Tween.TRANS_CUBIC)
+
+func disable_spiked_hitbox():
+	if spiked_hitbox_tween:
+		spiked_hitbox_tween.kill()
+	spiked_hitbox_tween = create_tween()
+	spiked_hitbox_tween.tween_property(spiked_hitbox, "scale", Vector2.ONE * 0.4, 0.5).set_trans(Tween.TRANS_CUBIC)
+	spiked_hitbox_tween.tween_property(spiked_hitbox, "disabled", true, 0)
 
 func begin_inactive():
 	_sprite.animation = "retract"
@@ -267,7 +288,7 @@ func begin_inactive():
 	extra_len_display = 0.0
 	vine_len_display = BASE_MAX_EXTENDED_LEN
 	physics_material_override.friction = 0.0
-	$SpikedHitbox.disabled = true
+	disable_spiked_hitbox()
 	sun_particles.emitting = false
 	gravity_scale = GRAVITY
 	lock_rotation = false
@@ -293,6 +314,23 @@ func begin_retracting():
 	gravity_scale = 0.3
 	_extending_dist_travelled = 0
 	_extended_len = 0
+
+func enable_wind_particles():
+	wind_particles.emitting = true
+
+func disable_wind_particles():
+	wind_particles.emitting = false
+
+
+func update_wind_particles(new_dir : Vector2i, new_strength : float):
+	const MOD = 0.5 # reduce the accel, just show wind's "velocity"
+	var dir = Vector3(new_dir.x, 0, 0)
+	wind_particles_mat.gravity = dir
+	wind_particles_mat.direction = dir
+	wind_particles_mat.initial_velocity_min = new_strength
+	wind_particles_mat.initial_velocity_min = new_strength
+	wind_particles_mat.linear_accel_min = new_strength * MOD
+	wind_particles_mat.linear_accel_max = new_strength * MOD
 
 func _integrate_forces(state):
 	if not _animating:

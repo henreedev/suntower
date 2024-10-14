@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=50 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="1_700xu"]
@@ -191,6 +191,69 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
 
+[sub_resource type="Curve" id="Curve_qje61"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0733333, 0.428571), 0.0, 0.0, 0, 0, Vector2(0.260759, 1), 0.0, 0.0, 0, 0, Vector2(0.673333, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_yxy64"]
+curve = SubResource("Curve_qje61")
+
+[sub_resource type="Gradient" id="Gradient_3ms67"]
+offsets = PackedFloat32Array(0, 0.868852, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.2, 0.14902, 0, 1, 0.2, 0.647059, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_srubg"]
+gradient = SubResource("Gradient_3ms67")
+
+[sub_resource type="Gradient" id="Gradient_eqayp"]
+offsets = PackedFloat32Array(0, 0.532787)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_i6g4q"]
+gradient = SubResource("Gradient_eqayp")
+
+[sub_resource type="Curve" id="Curve_bv6i6"]
+max_value = 2.0
+_data = [Vector2(0, 0.989011), 0.0, 0.0, 0, 0, Vector2(0.753333, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_1nn7m"]
+curve = SubResource("Curve_bv6i6")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yiuwx"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 5.0
+direction = Vector3(-1.15, 0, 0)
+spread = 0.0
+initial_velocity_min = 40.0
+initial_velocity_max = 40.0
+gravity = Vector3(-0.135, 0, 0)
+linear_accel_min = 40.0
+linear_accel_max = 40.0
+tangential_accel_min = -1.0
+tangential_accel_max = 0.999998
+scale_curve = SubResource("CurveTexture_1nn7m")
+color = Color(1, 0.858824, 0.0392157, 1)
+color_ramp = SubResource("GradientTexture1D_i6g4q")
+color_initial_ramp = SubResource("GradientTexture1D_srubg")
+alpha_curve = SubResource("CurveTexture_yxy64")
+
+[sub_resource type="GDScript" id="GDScript_68qa0"]
+script/source = "extends GPUParticles2D
+
+@onready var flower_head: FlowerHead = $\"../..\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	global_position.x = 0
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	global_position.y = flower_head.global_position.y
+"
+
 [node name="FlowerHead" type="RigidBody2D" groups=["flowerhead"]]
 z_index = 1
 collision_layer = 5
@@ -285,6 +348,17 @@ wait_time = 4.0
 
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
 update_rotation = false
+
+[node name="Node" type="Node" parent="."]
+
+[node name="WindParticles" type="GPUParticles2D" parent="Node"]
+unique_name_in_owner = true
+show_behind_parent = true
+amount = 45
+process_material = SubResource("ParticleProcessMaterial_yiuwx")
+lifetime = 0.65
+trail_enabled = true
+script = SubResource("GDScript_68qa0")
 
 [connection signal="animation_finished" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
 [connection signal="animation_looped" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_looped"]

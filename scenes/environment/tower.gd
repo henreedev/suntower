@@ -35,7 +35,7 @@ var lightning_striking = false
 var lock_lights = false
 
 # Wind variables
-const BASE_WIND_STRENGTH := 120.0 # px/s^2
+const BASE_WIND_STRENGTH := 70.0 # px/s^2
 const WIND_STRENGTH_HIGH_PASS = 0.5 # wind strength value under which wind strength becomes 0
 const WIND_ANCHOR_FALLOFF_DIST = 100.0 # px. wind strength becomes 0 at this distance from anchor 
 var bodies_in_wind : Array = [] # all physics bodies that will be affected by passive wind 
@@ -161,6 +161,7 @@ func _update_wind_strength():
 	if new_str < WIND_STRENGTH_HIGH_PASS:
 		new_str = 0.0
 	wind_strength = clampf(new_str, 0, 1)
+	_player.update_wind_particles(wind_direction, wind_strength * BASE_WIND_STRENGTH)
 
 func _act_on_weather_state():
 	match weather:
@@ -191,13 +192,13 @@ func _apply_passive_wind():
 	var wind_force = wind_direction * wind_strength * BASE_WIND_STRENGTH
 	for body : RigidBody2D in bodies_in_wind:
 		if body is FlowerHead:
-			const MOD = 0.5;
+			const MOD = 0.2;
 			body.apply_central_force(wind_force * MOD)
 		elif body is Player2:
 			const MOD = 1.0;
 			body.apply_central_force(wind_force * MOD)
 		elif body is Vine: # must be a Vine
-			const MOD = 0.5;
+			const MOD = 0.2;
 			body.apply_central_force(wind_force * MOD)
 
 func do_wind_burst(dir : Vector2i, strength := 2.0, duration := 1.5):

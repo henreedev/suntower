@@ -11,13 +11,18 @@ func _ready() -> void:
 	if burst_direction == 0: burst_direction = -1
 	burst_direction_vec = Vector2i(burst_direction, 0)
 
-func _on_body_entered(body: Node2D) -> void:
-	if body is Player2:
-		if body.velocity_diff > 0.1: # Pot is moving. Don't burst if pot wasn't (in case of reenabling)
-			Tower.instance.do_wind_burst(burst_direction_vec, burst_strength, burst_overall_duration)
-			
 
 func _disable_for_duration():
-	collision_shape_2d.disabled = true
-	await Timing.create_timer(self, disable_duration)
-	collision_shape_2d.disabled = false
+	if disable_duration > 0:
+		collision_shape_2d.set_deferred("disabled", true)
+		await Timing.create_timer(self, disable_duration)
+		collision_shape_2d.set_deferred("disabled", false)
+
+func _on_body_entered(body: Node2D) -> void:
+	if body is Player2:
+		Tower.instance.do_wind_burst(burst_direction_vec, burst_strength, burst_overall_duration)
+
+
+
+func _on_body_exited(body: Node2D) -> void:
+	_disable_for_duration()
