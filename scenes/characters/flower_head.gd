@@ -81,7 +81,9 @@ var _len_per_seg_adj
 @onready var camera_2d = $Camera2D
 @onready var spiked_hitbox: CollisionPolygon2D = $SpikedHitbox
 @onready var wind_particles: GPUParticles2D = %WindParticles
+@onready var wind_gust_particles: GPUParticles2D = %WindGustParticles
 @onready var wind_particles_mat: ParticleProcessMaterial = wind_particles.process_material
+@onready var wind_gust_particles_mat: ParticleProcessMaterial = wind_gust_particles.process_material
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -325,7 +327,7 @@ func disable_wind_particles():
 	#wind_particles_mat.
 
 func update_wind_particles(new_dir : Vector2i, new_strength : float):
-	const MOD = 3.0 # reduce the accel, just show wind's "velocity"
+	const MOD = 2.5 # reduce the accel, just show wind's "velocity"
 	const GRAVITY_MOD = MOD / 2.0 # reduce the accel, just show wind's "velocity"
 	var dir = Vector3(new_dir.x, 0, 0)
 	wind_particles_mat.gravity = dir * new_strength * MOD
@@ -334,6 +336,12 @@ func update_wind_particles(new_dir : Vector2i, new_strength : float):
 	wind_particles_mat.initial_velocity_min = new_strength
 	wind_particles_mat.linear_accel_min = new_strength * MOD
 	wind_particles_mat.linear_accel_max = new_strength * MOD
+	wind_gust_particles_mat.gravity = dir * new_strength * MOD
+	wind_gust_particles_mat.direction = dir
+	wind_gust_particles_mat.initial_velocity_min = new_strength
+	wind_gust_particles_mat.initial_velocity_min = new_strength
+	wind_gust_particles_mat.linear_accel_min = new_strength * MOD - 20.0
+	wind_gust_particles_mat.linear_accel_max = new_strength * MOD + 20.0
 
 func _integrate_forces(state):
 	if not _animating:

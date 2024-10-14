@@ -41,6 +41,7 @@ font_size = 64
 font_color = Color(1, 1, 0.380392, 1)
 
 [node name="Main" type="Node2D" groups=["main"]]
+process_mode = 1
 script = ExtResource("1_7xsfy")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

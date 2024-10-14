@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=67 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="1_700xu"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/suntower-lightning-particle.png" id="4_14gk3"]
 [ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/flower-extend.png" id="4_ski6y"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="5_kbo6i"]
+[ext_resource type="Texture2D" uid="uid://d2hoycvv7ngsl" path="res://assets/image/wind-gust.png" id="8_p6u3c"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0
@@ -234,6 +235,7 @@ point_count = 2
 curve = SubResource("Curve_cfb3m")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yiuwx"]
+particle_flag_align_y = true
 particle_flag_disable_z = true
 emission_shape_offset = Vector3(174.335, 0, 0)
 emission_shape = 3
@@ -273,6 +275,78 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	global_position.y = flower_head.global_position.y
 "
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_g0rad"]
+particles_animation = true
+particles_anim_h_frames = 13
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_n05g6"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.15443, 1), 0.0, 0.0, 0, 0, Vector2(0.220253, 0.955868), 0.0, 0.0, 0, 0, Vector2(0.435443, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_qdcje"]
+curve = SubResource("Curve_n05g6")
+
+[sub_resource type="Curve" id="Curve_rnkt4"]
+min_value = -1.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.501266, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_k40r7"]
+curve = SubResource("Curve_rnkt4")
+
+[sub_resource type="Curve" id="Curve_pblax"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.536709, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_fxuxm"]
+curve = SubResource("Curve_pblax")
+
+[sub_resource type="Curve" id="Curve_e4jr0"]
+max_value = 2.0
+_data = [Vector2(0, 0.989011), 0.0, 0.0, 0, 0, Vector2(0.753333, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_lqrx6"]
+curve = SubResource("Curve_e4jr0")
+
+[sub_resource type="Curve" id="Curve_q757f"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 0.220244), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_qk2uq"]
+curve = SubResource("Curve_q757f")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_njwcs"]
+particle_flag_align_y = true
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(174.335, 0, 0)
+emission_shape = 3
+emission_box_extents = Vector3(384, 202.075, 1)
+angle_min = 1.07288e-05
+angle_max = 1.07288e-05
+direction = Vector3(-1.15, 0, 0)
+spread = 0.0
+initial_velocity_min = 40.0
+initial_velocity_max = 40.0
+gravity = Vector3(-0.135, 0, 0)
+linear_accel_min = 40.0
+linear_accel_max = 40.0
+linear_accel_curve = SubResource("CurveTexture_fxuxm")
+scale_min = 0.7
+scale_max = 1.3
+scale_curve = SubResource("CurveTexture_lqrx6")
+alpha_curve = SubResource("CurveTexture_qdcje")
+anim_speed_min = 2.0
+anim_speed_max = 2.0
+anim_speed_curve = SubResource("CurveTexture_k40r7")
+turbulence_noise_strength = 0.0
+turbulence_noise_scale = 21.501
+turbulence_influence_min = 0.05
+turbulence_influence_max = 0.05
+turbulence_influence_over_life = SubResource("CurveTexture_qk2uq")
 
 [node name="FlowerHead" type="RigidBody2D" groups=["flowerhead"]]
 z_index = 1
@@ -378,6 +452,18 @@ amount = 205
 process_material = SubResource("ParticleProcessMaterial_yiuwx")
 lifetime = 6.08
 trail_enabled = true
+trail_sections = 28
+script = SubResource("GDScript_68qa0")
+
+[node name="WindGustParticles" type="GPUParticles2D" parent="Node"]
+unique_name_in_owner = true
+show_behind_parent = true
+material = SubResource("CanvasItemMaterial_g0rad")
+amount = 10
+process_material = SubResource("ParticleProcessMaterial_njwcs")
+texture = ExtResource("8_p6u3c")
+lifetime = 3.0
+explosiveness = 0.45
 trail_sections = 28
 script = SubResource("GDScript_68qa0")
 

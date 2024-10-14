@@ -73,7 +73,7 @@ func start_sunny():
 			modulate_tween.kill()
 		modulate_tween = create_tween().set_parallel()
 		modulate_tween.tween_method(_lights.set_energy_mult, 0.0, 1.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		_bg.exit_storm(modulate_tween, 3.0)
+		_bg.enter_sunny(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", sunny_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_sun_bar()
 		SceneManager.instance.switch_bgm("Sun")
@@ -100,8 +100,7 @@ func start_windy():
 		modulate_tween = create_tween().set_parallel()
 		modulate_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 1.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		
-		if old_weather == Weather.STORMY:
-			_bg.exit_storm(modulate_tween, 3.0)
+		_bg.enter_windy(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", windy_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_wind_bar()
 		SceneManager.instance.switch_bgm("Wind")
