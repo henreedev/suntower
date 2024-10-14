@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dr33adajhwsi0" path="res://assets/image/gwj66-small-clouds.png" id="4_0lpyl"]
 [ext_resource type="Script" path="res://scenes/environment/scrolling_sprite_2d.gd" id="5_l53r8"]
 [ext_resource type="Texture2D" uid="uid://bs3swf40ifqbt" path="res://assets/image/gwj66-tower.png" id="5_tidle"]
-[ext_resource type="PackedScene" path="res://scenes/menus/volume_bar.tscn" id="7_dbh4w"]
+[ext_resource type="PackedScene" uid="uid://b8abnqqvhhok3" path="res://scenes/menus/volume_bar.tscn" id="7_dbh4w"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dotrv"]
 shader = ExtResource("3_deo1s")

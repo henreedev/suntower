@@ -25,6 +25,10 @@ var _right_day_start_angle_storm = deg_to_rad(110.0)
 var _right_day_end_angle_storm = deg_to_rad(70.0)
 var _left_day_start_angle_storm = -_right_day_end_angle_storm
 var _left_day_end_angle_storm = -_right_day_start_angle_storm
+var _right_day_start_angle_wind = deg_to_rad(80.0)
+var _right_day_end_angle_wind = deg_to_rad(130.0)
+var _left_day_start_angle_wind = -_right_day_start_angle_wind 
+var _left_day_end_angle_wind = -_right_day_end_angle_wind
 var _goal_rotation = _right_day_start_angle
 var _right = true
 var sunny_modulate := Color(.89, .89, .89, 1.0)
@@ -154,6 +158,25 @@ func _change_weather_on_progress():
 					_goal_rotation = lerp(_left_day_start_angle_storm, _left_day_end_angle_storm, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 		elif weather == Weather.WINDY:
 			_update_wind_strength()
+			
+			const mult = 0.4
+			
+			_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur * mult)
+			_half_day_cycle_dur = _day_cycle_dur / 2 * mult
+			if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
+				if not _right:
+					var tween := create_tween()
+					tween.tween_property(self, "_goal_rotation", _right_day_start_angle_wind, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+					_right = true
+				else:
+					_goal_rotation = lerp(_right_day_start_angle_wind, _right_day_end_angle_wind, _day_cycle / _half_day_cycle_dur)
+			else:
+				if _right:
+					create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle_wind, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+					_right = false
+				else:
+					_goal_rotation = lerp(_left_day_start_angle_wind, _left_day_end_angle_wind, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
+			
 
 func _update_wind_strength():
 	var str = clampf(wind_strength, 1.0, 10.0) # strength of the color of wind particles
@@ -173,7 +196,7 @@ func _act_on_weather_state():
 		Weather.STORMY:
 			pass
 		Weather.WINDY:
-			pass # Wind hitboxes in level activate
+			_lights.set_energy_mult(0.5)
 		Weather.PEACEFUL:
 			pass # Full sun, but hard platforming
 
