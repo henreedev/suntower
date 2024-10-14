@@ -196,27 +196,27 @@ fill_to = Vector2(1, 1)
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0733333, 0.428571), 0.0, 0.0, 0, 0, Vector2(0.253165, 0.262367), 0.0, 0.0, 0, 0, Vector2(0.607595, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 5
 
-[sub_resource type="CurveTexture" id="CurveTexture_yxy64"]
+[sub_resource type="CurveTexture" id="CurveTexture_onuas"]
 curve = SubResource("Curve_qje61")
 
 [sub_resource type="Gradient" id="Gradient_3ms67"]
 colors = PackedColorArray(1, 1, 1, 1, 0.340339, 0.340339, 0.340339, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_srubg"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3i6a0"]
 gradient = SubResource("Gradient_3ms67")
 
 [sub_resource type="Gradient" id="Gradient_eqayp"]
 offsets = PackedFloat32Array(0, 0.495913, 1)
 colors = PackedColorArray(0.400698, 0.400698, 0.400698, 1, 1, 1, 1, 1, 0.400698, 0.400698, 0.400698, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_i6g4q"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_52y75"]
 gradient = SubResource("Gradient_eqayp")
 
 [sub_resource type="Curve" id="Curve_ww5q7"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.536709, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CurveTexture" id="CurveTexture_ug58u"]
+[sub_resource type="CurveTexture" id="CurveTexture_i7vqc"]
 curve = SubResource("Curve_ww5q7")
 
 [sub_resource type="Curve" id="Curve_bv6i6"]
@@ -224,22 +224,22 @@ max_value = 2.0
 _data = [Vector2(0, 0.989011), 0.0, 0.0, 0, 0, Vector2(0.753333, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CurveTexture" id="CurveTexture_1nn7m"]
+[sub_resource type="CurveTexture" id="CurveTexture_u3142"]
 curve = SubResource("Curve_bv6i6")
 
 [sub_resource type="Curve" id="Curve_cfb3m"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 0.220244), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CurveTexture" id="CurveTexture_4qp46"]
+[sub_resource type="CurveTexture" id="CurveTexture_fk61v"]
 curve = SubResource("Curve_cfb3m")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yiuwx"]
 particle_flag_align_y = true
 particle_flag_disable_z = true
-emission_shape_offset = Vector3(174.335, 0, 0)
+emission_shape_offset = Vector3(80, 0, 0)
 emission_shape = 3
-emission_box_extents = Vector3(384, 202.075, 1)
+emission_box_extents = Vector3(500, 202.075, 1)
 direction = Vector3(-1.15, 0, 0)
 spread = 0.0
 initial_velocity_min = 40.0
@@ -247,19 +247,19 @@ initial_velocity_max = 40.0
 gravity = Vector3(-0.135, 0, 0)
 linear_accel_min = 40.0
 linear_accel_max = 40.0
-linear_accel_curve = SubResource("CurveTexture_ug58u")
+linear_accel_curve = SubResource("CurveTexture_i7vqc")
 tangential_accel_min = -1.0
 tangential_accel_max = 0.999998
-scale_curve = SubResource("CurveTexture_1nn7m")
+scale_curve = SubResource("CurveTexture_u3142")
 color = Color(0.783637, 0.874156, 0.979698, 1)
-color_ramp = SubResource("GradientTexture1D_i6g4q")
-color_initial_ramp = SubResource("GradientTexture1D_srubg")
-alpha_curve = SubResource("CurveTexture_yxy64")
+color_ramp = SubResource("GradientTexture1D_52y75")
+color_initial_ramp = SubResource("GradientTexture1D_3i6a0")
+alpha_curve = SubResource("CurveTexture_onuas")
 turbulence_noise_strength = 0.0
 turbulence_noise_scale = 21.501
 turbulence_influence_min = 0.05
 turbulence_influence_max = 0.05
-turbulence_influence_over_life = SubResource("CurveTexture_4qp46")
+turbulence_influence_over_life = SubResource("CurveTexture_fk61v")
 
 [sub_resource type="GDScript" id="GDScript_68qa0"]
 script/source = "extends GPUParticles2D
@@ -335,8 +335,6 @@ gravity = Vector3(-0.135, 0, 0)
 linear_accel_min = 40.0
 linear_accel_max = 40.0
 linear_accel_curve = SubResource("CurveTexture_fxuxm")
-scale_min = 0.7
-scale_max = 1.3
 scale_curve = SubResource("CurveTexture_lqrx6")
 alpha_curve = SubResource("CurveTexture_qdcje")
 anim_speed_min = 2.0
@@ -459,7 +457,7 @@ script = SubResource("GDScript_68qa0")
 unique_name_in_owner = true
 show_behind_parent = true
 material = SubResource("CanvasItemMaterial_g0rad")
-amount = 10
+amount = 1
 process_material = SubResource("ParticleProcessMaterial_njwcs")
 texture = ExtResource("8_p6u3c")
 lifetime = 3.0

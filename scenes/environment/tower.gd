@@ -37,7 +37,7 @@ var lock_lights = false
 # Wind variables
 const BASE_WIND_STRENGTH := 70.0 # px/s^2
 const WIND_STRENGTH_HIGH_PASS = 0.5 # wind strength value under which wind strength becomes 0
-const WIND_ANCHOR_FALLOFF_DIST = 100.0 # px. wind strength becomes 0 at this distance from anchor 
+const WIND_ANCHOR_FALLOFF_DIST = 125.0 # px. wind strength becomes 0 at this distance from anchor 
 var bodies_in_wind : Array = [] # all physics bodies that will be affected by passive wind 
 var wind_direction := Vector2i(1, 0)
 var wind_strength := 1.0 # multiplier on base strength
@@ -154,13 +154,14 @@ func _change_weather_on_progress():
 			_update_wind_strength()
 
 func _update_wind_strength():
+	var str = clampf(wind_strength, 1.0, 10.0) # strength of the color of wind particles
+	_player.update_wind_particles(wind_direction, wind_strength * BASE_WIND_STRENGTH, Color(str, str, str, 1.0))
 	var normalized_dist = get_pot_dist_from_anchor() / WIND_ANCHOR_FALLOFF_DIST
 	var new_str := lerpf(1.0, 0.0, normalized_dist)
 	new_str = clampf(new_str, 0, 1)
 	if new_str < WIND_STRENGTH_HIGH_PASS:
 		new_str = 0.0
 	wind_strength = clampf(new_str, 0, 1)
-	_player.update_wind_particles(wind_direction, wind_strength * BASE_WIND_STRENGTH)
 
 func _act_on_weather_state():
 	match weather:
@@ -201,16 +202,17 @@ func _apply_passive_wind():
 			body.apply_central_force(wind_force * MOD)
 
 func do_wind_burst(dir : Vector2i, strength := 2.0, duration := 1.5):
-	print("doing burst: \n", "dir = ", dir, "\nstrength = ", strength, "\nduration = ", duration)
 	wind_direction = dir
 	reset_wind_anchor()
+	
+	print("didd burst")
 	
 	if wind_burst_tween: 
 		wind_burst_tween.kill()
 	wind_burst_tween = create_tween() 
 	
-	wind_burst_tween.tween_property(self, "wind_strength", strength, duration * 0.33).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
-	wind_burst_tween.tween_property(self, "wind_strength", 1.0, duration * 0.67).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_IN)
+	wind_burst_tween.tween_property(self, "wind_strength", strength, duration * 0.33).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	wind_burst_tween.tween_property(self, "wind_strength", 1.0, duration * 0.67).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 
 func get_pot_dist_from_anchor():
 	return abs(wind_strength_anchor_height - _pot.position.y)

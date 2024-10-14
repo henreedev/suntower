@@ -326,22 +326,23 @@ func disable_wind_particles():
 #func emit_wind_burst_particles():
 	#wind_particles_mat.
 
-func update_wind_particles(new_dir : Vector2i, new_strength : float):
-	const MOD = 2.5 # reduce the accel, just show wind's "velocity"
+func update_wind_particles(new_dir : Vector2i, new_strength : float, color_mod := Color.WHITE):
+	const MOD = 2.0
 	const GRAVITY_MOD = MOD / 2.0 # reduce the accel, just show wind's "velocity"
 	var dir = Vector3(new_dir.x, 0, 0)
+	wind_particles.modulate = color_mod
 	wind_particles_mat.gravity = dir * new_strength * MOD
 	wind_particles_mat.direction = dir
 	wind_particles_mat.initial_velocity_min = new_strength
 	wind_particles_mat.initial_velocity_min = new_strength
 	wind_particles_mat.linear_accel_min = new_strength * MOD
 	wind_particles_mat.linear_accel_max = new_strength * MOD
-	wind_gust_particles_mat.gravity = dir * new_strength * MOD
+	wind_gust_particles_mat.gravity = dir * new_strength * MOD * 0.8
 	wind_gust_particles_mat.direction = dir
 	wind_gust_particles_mat.initial_velocity_min = new_strength
 	wind_gust_particles_mat.initial_velocity_min = new_strength
-	wind_gust_particles_mat.linear_accel_min = new_strength * MOD - 20.0
-	wind_gust_particles_mat.linear_accel_max = new_strength * MOD + 20.0
+	wind_gust_particles_mat.linear_accel_min = new_strength * MOD * 0.5
+	wind_gust_particles_mat.linear_accel_max = new_strength * MOD 
 
 func _integrate_forces(state):
 	if not _animating:
