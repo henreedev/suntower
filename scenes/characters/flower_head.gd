@@ -8,12 +8,13 @@ const GRAVITY = -0.2
 const vine_root_offset := Vector2(0, 5)
 @export var vine_seg : PackedScene
 @export var play_animation_on_start := false
-@export var max_extended_len := 2000.0
-const BASE_MAX_EXTENDED_LEN := 2000.0
+@export var max_extended_len := 125.0
+const BASE_MAX_EXTENDED_LEN := 125.0
 const EXTEND_SPEED = 90.0
 var extend_speed_mod = 1.0
 var extra_len = 0.0
 var extra_len_display = 0.0
+var wind_extra_len_display = BASE_MAX_EXTENDED_LEN
 var vine_len_display = BASE_MAX_EXTENDED_LEN
 var time = 0.0
 
@@ -63,6 +64,10 @@ var can_extend := true
 var _can_nudge = false
 
 var _len_per_seg_adj
+
+const WIND_BUFF_DURATION = 0.75
+var wind_buff_time_left = 0.0
+var has_wind_buff := false
 
 # Onready references to other nodes
 @onready var _last_pos : Vector2 = position
@@ -288,6 +293,7 @@ func begin_inactive():
 	_extended_len = 0.0
 	extra_len = 0.0
 	extra_len_display = 0.0
+	wind_extra_len_display = BASE_MAX_EXTENDED_LEN
 	vine_len_display = BASE_MAX_EXTENDED_LEN
 	physics_material_override.friction = 0.0
 	disable_spiked_hitbox()
@@ -515,12 +521,6 @@ func _get_lightning_buff():
 		lightning_buff_display = MAX_LIGHTNING_BUFF
 		lightning_speed_mod = LIGHTNING_SPEED
 
-func _get_wind_buff():
-	pass # TODO
-
-func _update_wind_buff(delta):
-	pass
-
 func _update_lightning_buff(delta):
 	if _has_lightning_buff:
 		if lightning_buff_amount <= 0:
@@ -560,6 +560,9 @@ func _set_electricity(val):
 	get_tree().call_group("vine", "_set_electricity", val)
 	vine_line.material.set_shader_parameter("electricity", val)
 
+func _get_wind_buff():
+	has_wind_buff = true
+	wind_buff_time_left = WIND_BUFF_DURATION
 
 func _on_sunrays_hit():
 	match tower.weather:
@@ -568,6 +571,8 @@ func _on_sunrays_hit():
 				_has_sun_buff = true
 		Tower.Weather.STORMY:
 			_get_lightning_buff()
+		Tower.Weather.WINDY:
+			_get_wind_buff()
 
 func _on_stuck_timer_timeout():
 	unstuck()
