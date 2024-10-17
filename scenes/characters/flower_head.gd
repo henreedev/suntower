@@ -66,7 +66,7 @@ var _can_nudge = false
 
 var _len_per_seg_adj
 
-const WIND_BUFF_DURATION = 0.25
+const WIND_BUFF_DURATION = 0.1
 var wind_buff_time_left = 0.0
 var has_wind_buff := false
 var wind_direction : Vector2
@@ -366,8 +366,8 @@ func _integrate_forces(state):
 			state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED * lightning_speed_mod), state.transform.get_origin()) 
 			state.angular_velocity = 0
 			var lin_vel = Vector2(0, -EXTEND_SPEED * extend_speed_mod * lightning_speed_mod).rotated(rotation)
-			if has_wind_buff or active_wind_beam_strength_mod: 
-				const WIND_ACTIVE_BEAM_STRENGTH = 35.0
+			if has_wind_buff: 
+				const WIND_ACTIVE_BEAM_STRENGTH = 45.0
 				lin_vel += wind_direction * WIND_ACTIVE_BEAM_STRENGTH * active_wind_beam_strength_mod
 			state.linear_velocity = lin_vel
 		elif _state == State.RETRACTING:
@@ -578,11 +578,13 @@ func _set_electricity(val):
 	vine_line.material.set_shader_parameter("electricity", max(val, 0.0))
 
 func _get_wind_buff():
+	if not has_wind_buff:
+		# TODO spawn wind gust particle here
+		if wind_tween: wind_tween.kill()
+		wind_tween = create_tween()
+		wind_tween.tween_property(self, "active_wind_beam_strength_mod", 1.0, 0.25).set_trans(Tween.TRANS_CUBIC)
 	has_wind_buff = true
 	wind_buff_time_left = WIND_BUFF_DURATION
-	if wind_tween: wind_tween.kill()
-	wind_tween = create_tween()
-	wind_tween.tween_property(self, "active_wind_beam_strength_mod", 1.0, 0.25).set_trans(Tween.TRANS_CUBIC)
 
 func _update_wind_buff(delta):
 	const HALF_PI = PI / 2
@@ -595,8 +597,7 @@ func _update_wind_buff(delta):
 func _remove_wind_buff():
 	has_wind_buff = false
 	if wind_tween: wind_tween.kill()
-	wind_tween = create_tween()
-	wind_tween.tween_property(self, "active_wind_beam_strength_mod", 0.0, 0.25).set_trans(Tween.TRANS_CUBIC)
+	active_wind_beam_strength_mod = 0
 
 func _on_sunrays_hit():
 	match tower.weather:

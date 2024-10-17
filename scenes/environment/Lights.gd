@@ -22,6 +22,7 @@ var energy_mult = 1.0
 
 var wind_tween : Tween
 var wind_tween_2 : Tween
+var wind_tween_3 : Tween
 
 
 func set_energy_mult(val):
@@ -32,6 +33,7 @@ func set_wind_mode(on : bool):
 		# darken lights, add shakiness to lights 2 and 3, add smooth filter to light 1
 		if wind_tween: wind_tween.kill()
 		if wind_tween_2: wind_tween.kill()
+		if wind_tween_3: wind_tween.kill()
 		wind_tween = create_tween()
 		wind_tween.set_parallel()
 		const DUR = 1.0
@@ -44,19 +46,20 @@ func set_wind_mode(on : bool):
 		wind_tween.tween_property(light_3, "energy", base_light_2_energy, DUR).set_trans(Tween.TRANS_CUBIC)
 		wind_tween.tween_property(light_3, "energy", base_light_3_energy, DUR).set_trans(Tween.TRANS_CUBIC)
 		
-		const WIGGLE_DUR_1 = 0.3
-		const WIGGLE_DUR_2 = 0.22
-		wind_tween_2 = create_tween().set_loops().set_parallel()
-		wind_tween_2.tween_property(light_2, "rotation", deg_to_rad(2.5), WIGGLE_DUR_1).set_trans(Tween.TRANS_CUBIC)
-		wind_tween_2.chain().tween_property(light_2, "rotation", deg_to_rad(-2.5), WIGGLE_DUR_1).set_trans(Tween.TRANS_CUBIC)
-		wind_tween_2.tween_property(light_3, "rotation", deg_to_rad(-3), WIGGLE_DUR_2).set_trans(Tween.TRANS_CUBIC)
-		wind_tween_2.chain().tween_property(light_3, "rotation", deg_to_rad(3), WIGGLE_DUR_2).set_trans(Tween.TRANS_CUBIC)
+		const WIGGLE_DUR_1 = 0.278 * 2
+		const WIGGLE_DUR_2 = 0.139 * 2
+		wind_tween_2 = create_tween().set_loops()
+		wind_tween_3 = create_tween().set_loops()
+		wind_tween_2.tween_property(light_2, "rotation", deg_to_rad(1.0), WIGGLE_DUR_1).set_trans(Tween.TRANS_CUBIC)
+		wind_tween_2.tween_property(light_2, "rotation", deg_to_rad(-1), WIGGLE_DUR_1).set_trans(Tween.TRANS_CUBIC)
+		wind_tween_3.tween_property(light_3, "rotation", deg_to_rad(-0.8), WIGGLE_DUR_2).set_trans(Tween.TRANS_CUBIC)
+		wind_tween_3.tween_property(light_3, "rotation", deg_to_rad(0.8), WIGGLE_DUR_2).set_trans(Tween.TRANS_CUBIC)
 	else:
 		# reset to default
 		if wind_tween: wind_tween.kill()
-		if wind_tween_2: wind_tween.kill()
+		if wind_tween_2: wind_tween_2.kill()
+		if wind_tween_3: wind_tween_3.kill()
 		wind_tween = create_tween()
-		wind_tween_2 = create_tween()
 		wind_tween.set_parallel()
 		const DUR = 1.0
 		wind_tween.tween_property(light_1, "shadow_filter", Light2D.ShadowFilter.SHADOW_FILTER_NONE, DUR)

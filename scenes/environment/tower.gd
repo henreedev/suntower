@@ -168,13 +168,13 @@ func _change_weather_on_progress():
 			if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
 				if not _right:
 					var tween := create_tween()
-					tween.tween_property(self, "_goal_rotation", _right_day_start_angle_wind, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+					tween.tween_property(self, "_goal_rotation", _right_day_start_angle_wind, 0.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 					_right = true
 				else:
 					_goal_rotation = lerp(_right_day_start_angle_wind, _right_day_end_angle_wind, _day_cycle / _half_day_cycle_dur)
 			else:
 				if _right:
-					create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle_wind, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+					create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle_wind, 0.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 					_right = false
 				else:
 					_goal_rotation = lerp(_left_day_start_angle_wind, _left_day_end_angle_wind, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
