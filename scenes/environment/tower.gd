@@ -103,7 +103,7 @@ func start_windy():
 		if modulate_tween:
 			modulate_tween.kill()
 		modulate_tween = create_tween().set_parallel()
-		modulate_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 1.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		modulate_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 0.4, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		
 		_bg.enter_windy(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", windy_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
@@ -196,7 +196,7 @@ func _act_on_weather_state():
 		Weather.STORMY:
 			pass
 		Weather.WINDY:
-			_lights.set_energy_mult(0.5)
+			pass
 		Weather.PEACEFUL:
 			pass # Full sun, but hard platforming
 

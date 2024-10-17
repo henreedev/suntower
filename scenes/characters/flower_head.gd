@@ -8,8 +8,10 @@ const GRAVITY = -0.2
 const vine_root_offset := Vector2(0, 5)
 @export var vine_seg : PackedScene
 @export var play_animation_on_start := false
-@export var max_extended_len := 125.0
-const BASE_MAX_EXTENDED_LEN := 125.0
+#@export var max_extended_len := 125.0
+#const BASE_MAX_EXTENDED_LEN := 125.0
+@export var max_extended_len := 1250.0
+const BASE_MAX_EXTENDED_LEN := 1250.0
 const EXTEND_SPEED = 90.0
 var extend_speed_mod = 1.0
 var extra_len = 0.0
@@ -556,9 +558,9 @@ func _remove_lightning_buff():
 
 
 func _set_electricity(val):
-	_sprite.material.set_shader_parameter("electricity", val)
+	_sprite.material.set_shader_parameter("electricity", max(val, 0.0))
 	get_tree().call_group("vine", "_set_electricity", val)
-	vine_line.material.set_shader_parameter("electricity", val)
+	vine_line.material.set_shader_parameter("electricity", max(val, 0.0))
 
 func _get_wind_buff():
 	has_wind_buff = true
