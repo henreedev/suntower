@@ -8,10 +8,10 @@ const GRAVITY = -0.2
 const vine_root_offset := Vector2(0, 5)
 @export var vine_seg : PackedScene
 @export var play_animation_on_start := false
-#@export var max_extended_len := 125.0
-#const BASE_MAX_EXTENDED_LEN := 125.0
-@export var max_extended_len := 1250.0
-const BASE_MAX_EXTENDED_LEN := 1250.0
+@export var max_extended_len := 125.0
+const BASE_MAX_EXTENDED_LEN := 125.0
+#@export var max_extended_len := 1250.0
+#const BASE_MAX_EXTENDED_LEN := 1250.0
 const EXTEND_SPEED = 90.0
 var extend_speed_mod = 1.0
 var extra_len = 0.0
@@ -22,8 +22,7 @@ var time = 0.0
 
 var spiked_hitbox_tween : Tween
 #const EXTEND_SPEED = 200.0
-#@export var max_extended_len := 5000.0
-#const BASE_MAX_EXTENDED_LEN := 5000.0
+
 
 var music_tween : Tween
 
@@ -67,10 +66,12 @@ var _can_nudge = false
 
 var _len_per_seg_adj
 
-const WIND_BUFF_DURATION = 0.75
+const WIND_BUFF_DURATION = 0.25
 var wind_buff_time_left = 0.0
 var has_wind_buff := false
-
+var wind_direction : Vector2
+var active_wind_beam_strength_mod := 0.0
+var wind_tween : Tween
 # Onready references to other nodes
 @onready var _last_pos : Vector2 = position
 @onready var vine_line : Line2D = $Vines/Line2D
@@ -112,14 +113,13 @@ func no_cutscene_setup():
 	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
 
 func _process(delta):
-	
 	_draw_line()
 	_root_seg.make_self_exception()
 	if not _animating:
 		act_on_state()
 		_update_lightning_buff(delta)
+		_update_wind_buff(delta)
 		time += delta
-		
 
 func play_spawn_animation():
 	# Make vines and line invisible, tween fade them in
@@ -327,10 +327,10 @@ func begin_retracting():
 
 func enable_wind_particles():
 	wind_particles.emitting = true
-	wind_particles.emitting = true
+	wind_gust_particles.emitting = true
 
 func disable_wind_particles():
-	wind_gust_particles.emitting = false
+	wind_particles.emitting = false
 	wind_gust_particles.emitting = false
 
 #func emit_wind_burst_particles():
@@ -365,7 +365,11 @@ func _integrate_forces(state):
 			_target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
 			state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED * lightning_speed_mod), state.transform.get_origin()) 
 			state.angular_velocity = 0
-			state.linear_velocity = Vector2(0, -EXTEND_SPEED * extend_speed_mod * lightning_speed_mod).rotated(rotation)
+			var lin_vel = Vector2(0, -EXTEND_SPEED * extend_speed_mod * lightning_speed_mod).rotated(rotation)
+			if has_wind_buff or active_wind_beam_strength_mod: 
+				const WIND_ACTIVE_BEAM_STRENGTH = 35.0
+				lin_vel += wind_direction * WIND_ACTIVE_BEAM_STRENGTH * active_wind_beam_strength_mod
+			state.linear_velocity = lin_vel
 		elif _state == State.RETRACTING:
 			var dir = Vector2(0.0, 0.0)
 			if Input.is_action_pressed("move_left") and not _animating:
@@ -413,7 +417,17 @@ func _physics_process(delta):
 					extra_len_display = BASE_MAX_EXTENDED_LEN
 					_sun_buff_applied = true
 					_display_sun_buff()
-				_extending_dist_travelled += _last_pos.distance_to(pos)
+				var dist_travelled = _last_pos.distance_to(pos)
+				_extending_dist_travelled += dist_travelled
+				if has_wind_buff:
+					if extra_len < BASE_MAX_EXTENDED_LEN:
+						var wind_dot = _last_pos.direction_to(pos).dot(wind_direction)
+						wind_dot = maxf(wind_dot, 0.0)
+						extra_len += dist_travelled * wind_dot
+						extra_len_display += dist_travelled * wind_dot
+					elif extra_len > BASE_MAX_EXTENDED_LEN:
+						extra_len = BASE_MAX_EXTENDED_LEN
+					wind_extra_len_display = BASE_MAX_EXTENDED_LEN - extra_len
 				var mod = (1.0 / lightning_speed_mod)
 				_len_per_seg_adj = _len_per_seg * mod
 				if _extending_dist_travelled > _len_per_seg_adj:
@@ -422,7 +436,10 @@ func _physics_process(delta):
 					_extending_dist_travelled -= _len_per_seg_adj
 					if extra_len and extra_len_display:
 						extra_len_display -= _len_per_seg_adj
-						if extra_len_display < 0.0: extra_len_display = 0.0
+						if extra_len_display < 0.0: 
+							# subtract this overflow from vine len display
+							vine_len_display += extra_len_display
+							extra_len_display = 0.0
 					else: vine_len_display -= _len_per_seg_adj
 					if lightning_buff_amount:
 						lightning_buff_amount -= _len_per_seg_adj
@@ -459,8 +476,6 @@ func _physics_process(delta):
 				pass
 		_last_pos = pos
 
-func useless_function():
-	pass
 
 func _fix_gap(state):
 	if _state == State.EXTENDING or fixing_gap:
@@ -565,6 +580,23 @@ func _set_electricity(val):
 func _get_wind_buff():
 	has_wind_buff = true
 	wind_buff_time_left = WIND_BUFF_DURATION
+	if wind_tween: wind_tween.kill()
+	wind_tween = create_tween()
+	wind_tween.tween_property(self, "active_wind_beam_strength_mod", 1.0, 0.25).set_trans(Tween.TRANS_CUBIC)
+
+func _update_wind_buff(delta):
+	const HALF_PI = PI / 2
+	wind_direction = Vector2.from_angle(tower._lights.rotation + HALF_PI)
+	if wind_buff_time_left > 0:
+		wind_buff_time_left -= delta
+	else:
+		_remove_wind_buff()
+
+func _remove_wind_buff():
+	has_wind_buff = false
+	if wind_tween: wind_tween.kill()
+	wind_tween = create_tween()
+	wind_tween.tween_property(self, "active_wind_beam_strength_mod", 0.0, 0.25).set_trans(Tween.TRANS_CUBIC)
 
 func _on_sunrays_hit():
 	match tower.weather:
@@ -574,7 +606,8 @@ func _on_sunrays_hit():
 		Tower.Weather.STORMY:
 			_get_lightning_buff()
 		Tower.Weather.WINDY:
-			_get_wind_buff()
+			if _state == State.EXTENDING:
+				_get_wind_buff()
 
 func _on_stuck_timer_timeout():
 	unstuck()

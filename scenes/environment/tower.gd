@@ -94,6 +94,7 @@ func start_stormy():
 		main.switch_to_lightning_bar()
 		SceneManager.instance.switch_bgm("Storm")
 		_player.disable_wind_particles()
+		_lights.set_wind_mode(false)
 
 
 func start_windy():
@@ -110,6 +111,7 @@ func start_windy():
 		main.switch_to_wind_bar()
 		SceneManager.instance.switch_bgm("Wind")
 		_player.enable_wind_particles()
+		_lights.set_wind_mode(true)
 
 
 func _change_weather_on_progress():

@@ -25,7 +25,7 @@ func _ready():
 	_vines_bar.value = 0.0
 	_sun_bar.value = 0.0
 	_lightning_bar.value = 0.0
-	_wind_bar.value = 0.0
+	_wind_bar.value = flower_head.BASE_MAX_EXTENDED_LEN
 
 func reset():
 	get_tree().reload_current_scene()
@@ -81,14 +81,15 @@ func _process(delta):
 		if flower_head.extra_len_display == flower_head.BASE_MAX_EXTENDED_LEN:
 			_sun_bar.value = flower_head.BASE_MAX_EXTENDED_LEN
 		const STR = 10.0
-		var diff = abs(flower_head.vine_len_display - _vines_bar.value)
+		var diff 
+		diff = abs(flower_head.vine_len_display - _vines_bar.value)
 		_vines_bar.value = move_toward(_vines_bar.value, flower_head.vine_len_display, diff * STR * delta)
 		diff = abs(flower_head.extra_len_display - _sun_bar.value)
 		_sun_bar.value =move_toward(_sun_bar.value, flower_head.extra_len_display, diff * STR * delta)
 		diff = abs(flower_head.lightning_buff_amount - _lightning_bar.value)
 		_lightning_bar.value =move_toward(_lightning_bar.value, flower_head.lightning_buff_amount, diff * STR * 2.0 * delta)
-		diff = abs(flower_head.extra_len_display - _wind_bar.value)
-		_wind_bar.value =move_toward(_wind_bar.value, flower_head.extra_len_display, diff * STR * delta)
+		diff = abs(flower_head.wind_extra_len_display - _wind_bar.value)
+		_wind_bar.value =move_toward(_wind_bar.value, flower_head.wind_extra_len_display, diff * STR * delta)
 	else: 
 		if Input.is_action_just_pressed("extend"):
 			shake()

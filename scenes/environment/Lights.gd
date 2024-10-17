@@ -5,14 +5,70 @@ var energy_mult = 1.0
 @onready var light_1_energy = $DirectionalLight2D.energy
 @onready var light_2_energy = $DirectionalLight2D2.energy
 @onready var light_3_energy = $DirectionalLight2D3.energy
+@onready var light_1 : DirectionalLight2D = $DirectionalLight2D
+@onready var light_2 : DirectionalLight2D = $DirectionalLight2D2
+@onready var light_3 : DirectionalLight2D = $DirectionalLight2D3
+
+@onready var base_light_1_rot := light_1.rotation
+@onready var base_light_2_rot := light_3.rotation
+@onready var base_light_3_rot := light_2.rotation
+@onready var base_light_1_color := light_1.color
+@onready var base_light_2_color := light_2.color
+@onready var base_light_3_color := light_3.color
+@onready var base_light_1_energy := light_1.energy
+@onready var base_light_2_energy := light_2.energy
+@onready var base_light_3_energy := light_3.energy
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
+var wind_tween : Tween
+var wind_tween_2 : Tween
+
 
 func set_energy_mult(val):
 	energy_mult = val
+
+func set_wind_mode(on : bool):
+	if on:
+		# darken lights, add shakiness to lights 2 and 3, add smooth filter to light 1
+		if wind_tween: wind_tween.kill()
+		if wind_tween_2: wind_tween.kill()
+		wind_tween = create_tween()
+		wind_tween.set_parallel()
+		const DUR = 1.0
+		light_1.shadow_filter = Light2D.ShadowFilter.SHADOW_FILTER_PCF13
+		wind_tween.tween_property(light_1, "rotation", base_light_1_rot, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_1, "color", Color.WHITE, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_2, "color", Color(.67, .97, 1), DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_3, "color", Color(.67, .97, 1) * 0.7, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_3, "energy", 1.0, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_3, "energy", base_light_2_energy, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_3, "energy", base_light_3_energy, DUR).set_trans(Tween.TRANS_CUBIC)
+		
+		const WIGGLE_DUR_1 = 0.3
+		const WIGGLE_DUR_2 = 0.22
+		wind_tween_2 = create_tween().set_loops().set_parallel()
+		wind_tween_2.tween_property(light_2, "rotation", deg_to_rad(2.5), WIGGLE_DUR_1).set_trans(Tween.TRANS_CUBIC)
+		wind_tween_2.chain().tween_property(light_2, "rotation", deg_to_rad(-2.5), WIGGLE_DUR_1).set_trans(Tween.TRANS_CUBIC)
+		wind_tween_2.tween_property(light_3, "rotation", deg_to_rad(-3), WIGGLE_DUR_2).set_trans(Tween.TRANS_CUBIC)
+		wind_tween_2.chain().tween_property(light_3, "rotation", deg_to_rad(3), WIGGLE_DUR_2).set_trans(Tween.TRANS_CUBIC)
+	else:
+		# reset to default
+		if wind_tween: wind_tween.kill()
+		if wind_tween_2: wind_tween.kill()
+		wind_tween = create_tween()
+		wind_tween_2 = create_tween()
+		wind_tween.set_parallel()
+		const DUR = 1.0
+		wind_tween.tween_property(light_1, "shadow_filter", Light2D.ShadowFilter.SHADOW_FILTER_NONE, DUR)
+		wind_tween.tween_property(light_1, "rotation", base_light_1_rot, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_2, "rotation", base_light_2_rot, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_3, "rotation", base_light_3_rot, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_1, "color", base_light_1_color, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_2, "color", base_light_2_color, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_3, "color", base_light_3_color, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_3, "energy", base_light_1_energy, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_3, "energy", base_light_2_energy, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(light_3, "energy", base_light_3_energy, DUR).set_trans(Tween.TRANS_CUBIC)
 
 func get_energy_mult():
 	return energy_mult

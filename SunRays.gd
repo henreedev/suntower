@@ -57,4 +57,10 @@ func _check_player_hit():
 					tween.tween_property(hit.sprite, "modulate", Color(1.0, 1.0, 1.0), 0.25)
 				return true
 		return false
+	elif _tower.weather == Tower.Weather.WINDY:
+		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
+			var hit = ray.get_collider()
+			if hit is FlowerHead or (hit.is_in_group("flowerhead") if hit else false):
+				return true
+		return false
 	else: return false
