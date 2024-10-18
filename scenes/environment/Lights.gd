@@ -19,14 +19,18 @@ var energy_mult = 1.0
 @onready var base_light_2_energy := light_2.energy
 @onready var base_light_3_energy := light_3.energy
 
+const WIND_ENERGY = 1.0
 
 var wind_tween : Tween
 var wind_tween_2 : Tween
 var wind_tween_3 : Tween
 
 
+static var count := 0
 func set_energy_mult(val):
 	energy_mult = val
+	print("setting ", count)
+	count += 1
 
 func set_wind_mode(on : bool):
 	if on:
@@ -36,15 +40,15 @@ func set_wind_mode(on : bool):
 		if wind_tween_3: wind_tween.kill()
 		wind_tween = create_tween()
 		wind_tween.set_parallel()
-		const DUR = 1.0
+		const DUR = 1.6
 		light_1.shadow_filter = Light2D.ShadowFilter.SHADOW_FILTER_PCF13
 		wind_tween.tween_property(light_1, "rotation", base_light_1_rot, DUR).set_trans(Tween.TRANS_CUBIC)
 		wind_tween.tween_property(light_1, "color", Color.WHITE, DUR).set_trans(Tween.TRANS_CUBIC)
 		wind_tween.tween_property(light_2, "color", Color(.67, .97, 1), DUR).set_trans(Tween.TRANS_CUBIC)
 		wind_tween.tween_property(light_3, "color", Color(.67, .97, 1) * 0.7, DUR).set_trans(Tween.TRANS_CUBIC)
-		wind_tween.tween_property(light_3, "energy", 1.0, DUR).set_trans(Tween.TRANS_CUBIC)
-		wind_tween.tween_property(light_3, "energy", base_light_2_energy, DUR).set_trans(Tween.TRANS_CUBIC)
-		wind_tween.tween_property(light_3, "energy", base_light_3_energy, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(self, "light_1_energy", WIND_ENERGY, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(self, "light_2_energy", base_light_2_energy, DUR).set_trans(Tween.TRANS_CUBIC)
+		wind_tween.tween_property(self, "light_3_energy", base_light_3_energy, DUR).set_trans(Tween.TRANS_CUBIC)
 		
 		const WIGGLE_DUR_1 = 0.278 * 2
 		const WIGGLE_DUR_2 = 0.139 * 2
@@ -61,7 +65,7 @@ func set_wind_mode(on : bool):
 		if wind_tween_3: wind_tween_3.kill()
 		wind_tween = create_tween()
 		wind_tween.set_parallel()
-		const DUR = 1.0
+		const DUR = 1.6
 		wind_tween.tween_property(light_1, "shadow_filter", Light2D.ShadowFilter.SHADOW_FILTER_NONE, DUR)
 		wind_tween.tween_property(light_1, "rotation", base_light_1_rot, DUR).set_trans(Tween.TRANS_CUBIC)
 		wind_tween.tween_property(light_2, "rotation", base_light_2_rot, DUR).set_trans(Tween.TRANS_CUBIC)
@@ -69,9 +73,10 @@ func set_wind_mode(on : bool):
 		wind_tween.tween_property(light_1, "color", base_light_1_color, DUR).set_trans(Tween.TRANS_CUBIC)
 		wind_tween.tween_property(light_2, "color", base_light_2_color, DUR).set_trans(Tween.TRANS_CUBIC)
 		wind_tween.tween_property(light_3, "color", base_light_3_color, DUR).set_trans(Tween.TRANS_CUBIC)
-		wind_tween.tween_property(light_3, "energy", base_light_1_energy, DUR).set_trans(Tween.TRANS_CUBIC)
-		wind_tween.tween_property(light_3, "energy", base_light_2_energy, DUR).set_trans(Tween.TRANS_CUBIC)
-		wind_tween.tween_property(light_3, "energy", base_light_3_energy, DUR).set_trans(Tween.TRANS_CUBIC)
+		if Tower.instance.weather != Tower.Weather.STORMY:
+			wind_tween.tween_property(self, "light_1_energy", base_light_1_energy, DUR).set_trans(Tween.TRANS_CUBIC)
+			wind_tween.tween_property(self, "light_2_energy", base_light_2_energy, DUR).set_trans(Tween.TRANS_CUBIC)
+			wind_tween.tween_property(self, "light_3_energy", base_light_3_energy, DUR).set_trans(Tween.TRANS_CUBIC)
 
 func get_energy_mult():
 	return energy_mult

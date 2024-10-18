@@ -56,6 +56,7 @@ var swap_tween : Tween
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
 @onready var _pot : Player2 = get_tree().get_first_node_in_group("player2")
 @onready var _lights : Lights = $Lights
+
 @onready var _sunrays : SunRays = $SunRays
 @onready var main : Main = get_tree().get_first_node_in_group("main")
 
@@ -105,8 +106,7 @@ func start_windy():
 		if modulate_tween:
 			modulate_tween.kill()
 		modulate_tween = create_tween().set_parallel()
-		modulate_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 0.4, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		
+		_player.show_active_wind_particles()
 		_bg.enter_windy(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", windy_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_wind_bar()
@@ -181,7 +181,6 @@ func _change_weather_on_progress():
 func _swap_lights_instantly(right_side):
 	_right = not right_side
 	lock_lights = true
-	print("swapping")
 	if swap_tween: swap_tween.kill()
 	swap_tween = create_tween()
 	
@@ -189,7 +188,7 @@ func _swap_lights_instantly(right_side):
 	swap_tween.tween_property(self, "_goal_rotation", _left_day_start_angle_wind if right_side else _right_day_start_angle_wind, 0.0)
 	swap_tween.tween_property(self, "lock_lights", false, 0.0)
 	swap_tween.tween_callback(_set_lights_rotation_to_goal)
-	swap_tween.tween_method(_lights.set_energy_mult, 0.0, 0.5, 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	swap_tween.tween_method(_lights.set_energy_mult, 0.0, _lights.WIND_ENERGY, 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 func _set_lights_rotation_to_goal():
 	_lights.rotation = _goal_rotation
@@ -223,9 +222,6 @@ func _physics_process(delta: float) -> void:
 		_apply_passive_wind()
 		if time > 1.0:
 			time = 0.0
-			print("wind strength: " , wind_strength)
-			print("wind dir: " , wind_direction)
-			print()
 		time += delta
 		
 

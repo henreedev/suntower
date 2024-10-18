@@ -70,7 +70,6 @@ func switch_to_sun_bar():
 	switch_bars_tween.tween_property(_lightning_bar, "position:y", -50.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 	switch_bars_tween.tween_property(_wind_bar, "position:y", -50.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 
-const WIND_TINT = Color(5, 1.213, 5.055) # the multiplicative tint to get to light gray
 func set_vine_windiness(windiness : float):
 	_vines_bar.material.set_shader_parameter("windiness", windiness)
 

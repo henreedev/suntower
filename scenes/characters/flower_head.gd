@@ -95,6 +95,8 @@ var wind_dot : float # Used in speed calculation in beam, and for bar modulate
 @onready var wind_gust_particles: GPUParticles2D = %WindGustParticles
 @onready var wind_particles_mat: ParticleProcessMaterial = wind_particles.process_material
 @onready var wind_gust_particles_mat: ParticleProcessMaterial = wind_gust_particles.process_material
+@onready var beam_particles: GPUParticles2D = %BeamParticles
+@onready var beam_particles_mat: ParticleProcessMaterial = beam_particles.process_material
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -336,8 +338,18 @@ func disable_wind_particles():
 	wind_particles.emitting = false
 	wind_gust_particles.emitting = false
 
-#func emit_wind_burst_particles():
-	#wind_particles_mat.
+func show_active_wind_particles():
+	_spawn_wind_particle(randi_range(5, 20), wind_direction)
+
+func _spawn_wind_particle(amount : int, dir : Vector2):
+	var SPEED = 100.0
+	for i in range(amount):
+		var origin = global_position + Vector2(randf_range(-5, 5), randf_range(-20, 20)).rotated(dir.angle() + PI / 2)
+		var rand_vel := (dir * SPEED * randf_range(0.8, 1.2)).rotated(0)
+		beam_particles.emit_particle(Transform2D(0, Vector2.ONE, 0, origin), 
+			rand_vel, Color.WHITE, Color.WHITE, 5)
+	
+
 
 func update_wind_particles(new_dir : Vector2i, new_strength : float, color_mod := Color.WHITE):
 	const MOD = 2.0
@@ -350,6 +362,15 @@ func update_wind_particles(new_dir : Vector2i, new_strength : float, color_mod :
 	wind_particles_mat.initial_velocity_min = new_strength
 	wind_particles_mat.linear_accel_min = new_strength * MOD
 	wind_particles_mat.linear_accel_max = new_strength * MOD
+	
+	beam_particles.modulate = color_mod
+	beam_particles_mat.gravity = dir * new_strength * MOD
+	beam_particles_mat.direction = dir
+	beam_particles_mat.initial_velocity_min = new_strength
+	beam_particles_mat.initial_velocity_min = new_strength
+	beam_particles_mat.linear_accel_min = new_strength * MOD
+	beam_particles_mat.linear_accel_max = new_strength * MOD
+	
 	wind_gust_particles_mat.gravity = dir * new_strength * MOD * 0.8
 	wind_gust_particles_mat.direction = dir
 	wind_gust_particles_mat.initial_velocity_min = new_strength
@@ -582,7 +603,8 @@ func _set_electricity(val):
 
 func _get_wind_buff():
 	if not has_wind_buff:
-		# TODO spawn wind gust particle here
+		_update_wind_dir()
+		show_active_wind_particles()
 		if wind_tween: wind_tween.kill()
 		wind_tween = create_tween()
 		wind_tween.tween_property(self, "active_wind_beam_strength_mod", 1.0, 0.25).set_trans(Tween.TRANS_CUBIC)
@@ -590,10 +612,13 @@ func _get_wind_buff():
 	has_wind_buff = true
 	wind_buff_time_left = WIND_BUFF_DURATION
 
+func _update_wind_dir():
+	const HALF_PI = PI / 2
+	wind_direction = Vector2.from_angle(tower._lights.rotation + HALF_PI)
+
 func _update_wind_buff(delta):
 	if has_wind_buff:
-		const HALF_PI = PI / 2
-		wind_direction = Vector2.from_angle(tower._lights.rotation + HALF_PI)
+		_update_wind_dir()
 		main.set_vine_windiness(wind_dot)
 		if wind_buff_time_left > 0:
 			wind_buff_time_left -= delta
@@ -607,6 +632,7 @@ func _remove_wind_buff():
 		if wind_tween: wind_tween.kill()
 		active_wind_beam_strength_mod = 0
 		main.set_vine_windiness(0.0)
+
 
 func _on_sunrays_hit():
 	match tower.weather:

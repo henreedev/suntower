@@ -3,6 +3,7 @@ shader_type canvas_item;
 uniform float windiness : hint_range(0.0, 1.0);
 uniform sampler2D windy_noise : repeat_enable, filter_nearest;
 uniform vec2 scroll_speed;
+
  
 
 varying flat vec4 modulate;
