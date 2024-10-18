@@ -13,6 +13,7 @@ const SMALL_HIT = preload("res://assets/sound/sfx/hit-5.wav")
 const FAIL = preload("res://assets/sound/sfx/fail.wav")
 
 var small_hit_can_play = true
+var medium_inter_hit_can_play = true
 var touching = false
 var prev_vel_sqrd : float
 var prev_avel : float
@@ -104,9 +105,13 @@ func _play_sound_on_impact():
 			_emit_spark(randi_range(7, 13), left_or_right, true)
 			_emit_dust(randi_range(5, 10), left_or_right, true)
 		elif velocity_diff > 10000.0:
-			volume_offset = get_volume_adjust_by_speed(50000.0, 10000.0)
-			_play_sound(MEDIUM_INTERMEDIATE_HIT, volume_offset)
-			_emit_dust(randi_range(3, 7), left_or_right)
+			if medium_inter_hit_can_play:
+				volume_offset = get_volume_adjust_by_speed(50000.0, 10000.0)
+				_play_sound(MEDIUM_INTERMEDIATE_HIT, volume_offset)
+				_emit_dust(randi_range(3, 7), left_or_right)
+				medium_inter_hit_can_play = false
+				await Timing.create_timer(self, 0.2)
+				medium_inter_hit_can_play = true
 		elif velocity_diff > 500.0 or adiff > 3.0:
 			if small_hit_can_play:
 				volume_offset = get_volume_adjust_by_speed(10000.0, 500.0)

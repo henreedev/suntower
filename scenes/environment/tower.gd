@@ -25,8 +25,8 @@ var _right_day_start_angle_storm = deg_to_rad(110.0)
 var _right_day_end_angle_storm = deg_to_rad(70.0)
 var _left_day_start_angle_storm = -_right_day_end_angle_storm
 var _left_day_end_angle_storm = -_right_day_start_angle_storm
-var _right_day_start_angle_wind = deg_to_rad(80.0)
-var _right_day_end_angle_wind = deg_to_rad(130.0)
+var _right_day_start_angle_wind = deg_to_rad(100.0)
+var _right_day_end_angle_wind = deg_to_rad(140.0)
 var _left_day_start_angle_wind = -_right_day_start_angle_wind 
 var _left_day_end_angle_wind = -_right_day_end_angle_wind
 var _goal_rotation = _right_day_start_angle
@@ -49,6 +49,7 @@ var wind_burst_tween : Tween
 # This height is the value relative to which wind strength will decrease. 
 # It is set to the pot's position on wind burst.
 var wind_strength_anchor_height := 0.0 
+var swap_tween : Tween
 
 @onready var wind_area: Area2D = $WindArea
 @onready var _bg : Background = $ParallaxBackground
@@ -167,18 +168,31 @@ func _change_weather_on_progress():
 			_half_day_cycle_dur = _day_cycle_dur / 2 * mult
 			if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
 				if not _right:
-					var tween := create_tween()
-					tween.tween_property(self, "_goal_rotation", _right_day_start_angle_wind, 0.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-					_right = true
+					_swap_lights_instantly(_right)
 				else:
 					_goal_rotation = lerp(_right_day_start_angle_wind, _right_day_end_angle_wind, _day_cycle / _half_day_cycle_dur)
 			else:
 				if _right:
-					create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle_wind, 0.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-					_right = false
+					_swap_lights_instantly(_right)
 				else:
 					_goal_rotation = lerp(_left_day_start_angle_wind, _left_day_end_angle_wind, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 			
+
+func _swap_lights_instantly(right_side):
+	_right = not right_side
+	lock_lights = true
+	print("swapping")
+	if swap_tween: swap_tween.kill()
+	swap_tween = create_tween()
+	
+	swap_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 0.0, 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	swap_tween.tween_property(self, "_goal_rotation", _left_day_start_angle_wind if right_side else _right_day_start_angle_wind, 0.0)
+	swap_tween.tween_property(self, "lock_lights", false, 0.0)
+	swap_tween.tween_callback(_set_lights_rotation_to_goal)
+	swap_tween.tween_method(_lights.set_energy_mult, 0.0, 0.5, 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+func _set_lights_rotation_to_goal():
+	_lights.rotation = _goal_rotation
 
 func _update_wind_strength():
 	var str = clampf(wind_strength, 1.0, 10.0) # strength of the color of wind particles

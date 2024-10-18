@@ -72,12 +72,15 @@ var has_wind_buff := false
 var wind_direction : Vector2
 var active_wind_beam_strength_mod := 0.0
 var wind_tween : Tween
+var wind_dot : float # Used in speed calculation in beam, and for bar modulate
+
 # Onready references to other nodes
 @onready var _last_pos : Vector2 = position
 @onready var vine_line : Line2D = $Vines/Line2D
 @onready var vine_creator : Vine = vine_seg.instantiate()
 @onready var stuck_timer : Timer = $StuckTimer
 @onready var dead_timer : Timer = $DeadTimer
+@onready var main : Main = get_tree().get_first_node_in_group("main")
 @onready var _player : Player2 = get_tree().get_first_node_in_group("player2")
 @onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
 @onready var _sprite : AnimatedSprite2D = $Smoothing2D/Sprite2D
@@ -421,7 +424,7 @@ func _physics_process(delta):
 				_extending_dist_travelled += dist_travelled
 				if has_wind_buff:
 					if extra_len < BASE_MAX_EXTENDED_LEN:
-						var wind_dot = _last_pos.direction_to(pos).dot(wind_direction)
+						wind_dot = _last_pos.direction_to(pos).dot(wind_direction)
 						wind_dot = maxf(wind_dot, 0.0)
 						extra_len += dist_travelled * wind_dot
 						extra_len_display += dist_travelled * wind_dot
@@ -583,21 +586,27 @@ func _get_wind_buff():
 		if wind_tween: wind_tween.kill()
 		wind_tween = create_tween()
 		wind_tween.tween_property(self, "active_wind_beam_strength_mod", 1.0, 0.25).set_trans(Tween.TRANS_CUBIC)
+		wind_dot = 0.0
 	has_wind_buff = true
 	wind_buff_time_left = WIND_BUFF_DURATION
 
 func _update_wind_buff(delta):
-	const HALF_PI = PI / 2
-	wind_direction = Vector2.from_angle(tower._lights.rotation + HALF_PI)
-	if wind_buff_time_left > 0:
-		wind_buff_time_left -= delta
-	else:
-		_remove_wind_buff()
+	if has_wind_buff:
+		const HALF_PI = PI / 2
+		wind_direction = Vector2.from_angle(tower._lights.rotation + HALF_PI)
+		main.set_vine_windiness(wind_dot)
+		if wind_buff_time_left > 0:
+			wind_buff_time_left -= delta
+		else:
+			_remove_wind_buff()
+	
 
 func _remove_wind_buff():
-	has_wind_buff = false
-	if wind_tween: wind_tween.kill()
-	active_wind_beam_strength_mod = 0
+	if has_wind_buff:
+		has_wind_buff = false
+		if wind_tween: wind_tween.kill()
+		active_wind_beam_strength_mod = 0
+		main.set_vine_windiness(0.0)
 
 func _on_sunrays_hit():
 	match tower.weather:
