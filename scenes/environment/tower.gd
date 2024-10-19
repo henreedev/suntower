@@ -2,11 +2,12 @@ extends Node2D
 
 class_name Tower
 
-enum Weather {SUNNY, STORMY, WINDY, PEACEFUL}
+enum Weather {SUNNY, STORMY, WINDY, PEACEFUL, VICTORY}
 
 var weather : Weather = Weather.SUNNY
 var in_storm = false
 var in_wind = false
+var in_peaceful = false
 
 static var instance : Tower
 
@@ -34,6 +35,7 @@ var _right = true
 var sunny_modulate := Color(.89, .89, .89, 1.0)
 var storm_modulate := Color(0.0, 0.0, 0.0, 1.0)
 var windy_modulate := Color.WHITE
+var peaceful_modulate := Color(1.05, 1.05, 1.05, 1.0)
 var modulate_tween : Tween 
 var lightning_striking = false
 var lock_lights = false
@@ -114,10 +116,29 @@ func start_windy():
 		_player.enable_wind_particles()
 		_lights.set_wind_mode(true)
 
+func start_peaceful():
+	if not weather == Weather.PEACEFUL:
+		print("STARTED PEACEFUL")
+		weather = Weather.PEACEFUL
+		if modulate_tween:
+			modulate_tween.kill()
+		modulate_tween = create_tween().set_parallel()
+		_player.disable_wind_particles()
+		_bg.enter_peaceful(modulate_tween, 3.0)
+		modulate_tween.tween_property($CanvasModulate, "color", peaceful_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
+		main.switch_to_no_bar()
+		SceneManager.instance.switch_bgm("Peaceful")
+		_player.disable_wind_particles()
+		_lights.set_wind_mode(false)
+
+
+
 
 func _change_weather_on_progress():
 	_progress = _player.position.y / MAX_PROG_HEIGHT
-	if in_wind:
+	if in_peaceful: 
+		start_peaceful()
+	elif in_wind:
 		start_windy()
 	elif in_storm:
 		start_stormy()
@@ -308,3 +329,13 @@ func _on_wind_area_body_exited(body):
 	if body is FlowerHead:
 		in_wind = false
 	bodies_in_wind.erase(body)
+
+
+func _on_peaceful_area_body_entered(body):
+	if body is FlowerHead:
+		in_peaceful = true
+
+
+func _on_peaceful_area_body_exited(body):
+	if body is FlowerHead:
+		in_peaceful = false

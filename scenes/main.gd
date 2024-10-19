@@ -69,6 +69,16 @@ func switch_to_sun_bar():
 	switch_bars_tween.tween_property(_sun_bar, "position:y", 1.0, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 	switch_bars_tween.tween_property(_lightning_bar, "position:y", -50.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 	switch_bars_tween.tween_property(_wind_bar, "position:y", -50.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	
+func switch_to_no_bar():
+	if switch_bars_tween:
+		switch_bars_tween.kill()
+	switch_bars_tween = create_tween()
+	switch_bars_tween.tween_interval(1.5)
+	switch_bars_tween.set_parallel()
+	switch_bars_tween.tween_property(_sun_bar, "position:y", -50.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	switch_bars_tween.tween_property(_lightning_bar, "position:y", -50.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	switch_bars_tween.tween_property(_wind_bar, "position:y", -50.0, 1.0).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 
 func set_vine_windiness(windiness : float):
 	_vines_bar.material.set_shader_parameter("windiness", windiness)

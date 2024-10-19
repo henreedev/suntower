@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=29 format=4 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Script" path="res://scenes/environment/tower.gd" id="2_bq5o6"]
 [ext_resource type="Script" path="res://scenes/environment/Lights.gd" id="3_6s52w"]
@@ -69,6 +69,15 @@ polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5g0xp"]
 size = Vector2(353, 724.999)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j7jso"]
+size = Vector2(353, 450)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bd455"]
+polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -166.935, -2727)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gn4dx"]
+size = Vector2(353, 60.0002)
 
 [node name="TileMap" type="Node2D" groups=["tower"]]
 material = SubResource("ShaderMaterial_ivn7p")
@@ -325,9 +334,44 @@ burst_direction = 1
 burst_overall_duration = 1.0
 disable_duration = 0
 
+[node name="PeacefulArea" type="Area2D" parent="."]
+position = Vector2(0.0172127, -725)
+monitorable = false
+gravity_point_center = Vector2(1, 0)
+gravity_direction = Vector2(1, 0)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PeacefulArea"]
+position = Vector2(-0.5, -2953)
+shape = SubResource("RectangleShape2D_j7jso")
+debug_color = Color(0, 0.27451, 0.32549, 0.113725)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="PeacefulArea"]
+position = Vector2(-2.37417e-05, 1)
+occluder = SubResource("OccluderPolygon2D_bd455")
+
+[node name="Sprite2D" type="Marker2D" parent="."]
+position = Vector2(-1.60875, -3914.64)
+
+[node name="VictoryArea" type="Area2D" parent="."]
+position = Vector2(0.0172127, -725)
+monitorable = false
+gravity_point_center = Vector2(1, 0)
+gravity_direction = Vector2(1, 0)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="VictoryArea"]
+position = Vector2(-0.5, -3148)
+shape = SubResource("RectangleShape2D_gn4dx")
+debug_color = Color(0, 0.27451, 0.32549, 0.113725)
+
 [connection signal="body_entered" from="StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="StormArea" to="." method="_on_storm_area_body_exited"]
 [connection signal="body_entered" from="WindArea" to="." method="_on_wind_area_body_entered"]
 [connection signal="body_exited" from="WindArea" to="." method="_on_wind_area_body_exited"]
 [connection signal="body_exited" from="WindBursts/WindBurstArea" to="." method="_on_wind_burst_area_body_exited"]
 [connection signal="body_exited" from="WindBursts/WindBurstArea2" to="." method="_on_wind_burst_area_body_exited"]
+[connection signal="body_entered" from="PeacefulArea" to="." method="_on_peaceful_area_body_entered"]
+[connection signal="body_exited" from="PeacefulArea" to="." method="_on_peaceful_area_body_exited"]
+[connection signal="body_entered" from="VictoryArea" to="." method="_on_peaceful_area_body_entered"]
+[connection signal="body_exited" from="VictoryArea" to="." method="_on_peaceful_area_body_exited"]

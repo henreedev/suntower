@@ -27,6 +27,7 @@ var level_switch_tween : Tween
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Values.load_user_data()
 	instance = self
 	playback = audio_stream_player.get_stream_playback()
 	stream = audio_stream_player.stream
@@ -89,11 +90,11 @@ func tween_transition(method_calls : Array[Callable]):
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)\
 		.set_delay(0.25)
 
-func reduce_music_volume():
+func reduce_music_volume(duration := 0.75):
 	if volume_tween:
 		volume_tween.kill()
 	volume_tween = create_tween()
-	volume_tween.tween_property(self, "tween_volume_offset", -18.0, 0.75).set_ease(Tween.EASE_IN_OUT)
+	volume_tween.tween_property(self, "tween_volume_offset", -18.0, duration).set_ease(Tween.EASE_IN_OUT)
 
 func reset_music_volume():
 	if volume_tween:
@@ -104,3 +105,10 @@ func reset_music_volume():
 func reduce_if_paused():
 	if get_tree().paused:
 		reduce_music_volume()
+
+func quit_game():
+	reduce_music_volume(0.3)
+	var tween := create_tween()
+	tween.tween_property(self, "modulate", Color.BLACK, 0.3).set_trans(Tween.TRANS_CIRC).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(Values.save_user_data)
+	tween.tween_callback(get_tree().quit)

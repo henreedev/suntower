@@ -99,8 +99,8 @@ var wind_dot : float # Used in speed calculation in beam, and for bar modulate
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	# NOTE use this to view entire level 
-	# create_tween().set_loops().tween_property(self, "position:y", -3500, 20.0).from(0)
+	# NOTE uncomment this to view entire level 
+	create_tween().set_loops().tween_property(self, "position", Vector2(0, -4000), 20.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	_spawn_vine()
 	add_collision_exception_with(_player)
 	if scene_manager.should_play_cutscene:
