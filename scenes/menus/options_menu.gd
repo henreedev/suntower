@@ -18,6 +18,7 @@ class_name OptionsMenu
 @onready var pr_storm_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit/PRStormSplit
 @onready var pr_wind_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit/PRWindSplit
 @onready var pr_peace_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit/PRPeaceSplit
+@onready var pr_escape_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit/PREscapeSplit
 
 @onready var best_height = %BestHeight
 @onready var beat_game = %BeatGame
@@ -37,7 +38,7 @@ var section_icons = [SUNNY_SECTION_ICON, STORM_SECTION_ICON, WIND_SECTION_ICON, 
 
 # Arrays for ease of population
 @onready var best_splits = [null, storm_split, wind_split, peace_split, escape_split, null, null]
-@onready var pr_splits = [null, pr_storm_split, pr_wind_split, pr_peace_split, null, null, null]
+@onready var pr_splits = [null, pr_storm_split, pr_wind_split, pr_peace_split, pr_escape_split, null, null]
 
 enum ColorSetting {PULSE_RED, PULSE_GREEN, RAINBOW, NONE}
 
@@ -139,7 +140,7 @@ func _refresh_labels():
 					congrats = "Good job!"
 				_:
 					if Values.max_height_reached < 500 and Values.max_height_reached > 0:
-						congrats = "you just got started..."
+						congrats = "you just got started... don't give up"
 						congrats_color = ColorSetting.PULSE_RED
 					else:
 						congrats = "Keep going!"

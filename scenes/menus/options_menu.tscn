@@ -50,7 +50,7 @@ offset_top = -6.0
 grow_horizontal = 2
 grow_vertical = 2
 tab_alignment = 1
-current_tab = 1
+current_tab = 2
 
 [node name="Settings" type="TabBar" parent="TabContainer"]
 visible = false
@@ -137,6 +137,7 @@ text = "Speedrun Mode"
 layout_mode = 2
 
 [node name="Stats" type="TabBar" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -209,7 +210,6 @@ text = "[wave amp=10.0 freq=4connected=1][rainbow freq=1.0 sat=.4 val=1][center]
 fit_content = true
 
 [node name="Speedrun" type="TabBar" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
@@ -314,6 +314,13 @@ layout_mode = 2
 texture = ExtResource("7_hbp4d")
 
 [node name="EscapeSplit" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit"]
+custom_minimum_size = Vector2(73.405, 0)
+layout_mode = 2
+bbcode_enabled = true
+text = "5493.23 sec."
+fit_content = true
+
+[node name="PREscapeSplit" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit"]
 custom_minimum_size = Vector2(73.405, 0)
 layout_mode = 2
 bbcode_enabled = true
