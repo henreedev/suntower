@@ -94,7 +94,7 @@ centered = false
 
 [node name="Forest" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.25)
-motion_offset = Vector2(-195, -291.62)
+motion_offset = Vector2(-195, -312)
 motion_mirroring = Vector2(384, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Forest"]
@@ -104,7 +104,7 @@ centered = false
 [node name="SmallClouds" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.11)
 motion_offset = Vector2(-192, -22.64)
-motion_mirroring = Vector2(384, 432)
+motion_mirroring = Vector2(384, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/SmallClouds"]
 material = SubResource("ShaderMaterial_m5nt1")
@@ -113,8 +113,8 @@ script = ExtResource("7_dv22i")
 
 [node name="BigClouds" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.35)
-motion_offset = Vector2(-192, -140)
-motion_mirroring = Vector2(384, 432)
+motion_offset = Vector2(-192, -128.47)
+motion_mirroring = Vector2(384, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/BigClouds"]
 material = SubResource("ShaderMaterial_xdns3")

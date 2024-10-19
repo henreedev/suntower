@@ -546,6 +546,7 @@ update_rotation = false
 
 [node name="WindParticles" type="GPUParticles2D" parent="Node"]
 unique_name_in_owner = true
+visible = false
 show_behind_parent = true
 amount = 205
 process_material = SubResource("ParticleProcessMaterial_yiuwx")
@@ -557,6 +558,7 @@ script = SubResource("GDScript_68qa0")
 
 [node name="BeamParticles" type="GPUParticles2D" parent="Node"]
 unique_name_in_owner = true
+visible = false
 show_behind_parent = true
 emitting = false
 amount = 205
@@ -569,6 +571,7 @@ script = SubResource("GDScript_lfi6u")
 
 [node name="WindGustParticles" type="GPUParticles2D" parent="Node"]
 unique_name_in_owner = true
+visible = false
 show_behind_parent = true
 material = SubResource("CanvasItemMaterial_g0rad")
 amount = 1
