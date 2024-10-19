@@ -21,8 +21,6 @@ var vine_len_display = BASE_MAX_EXTENDED_LEN
 var time = 0.0
 
 var spiked_hitbox_tween : Tween
-#const EXTEND_SPEED = 200.0
-
 
 var music_tween : Tween
 

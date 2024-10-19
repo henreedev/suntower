@@ -10,6 +10,7 @@ var detached_child : Vine
 @onready var light : PointLight2D = $Smoothing2D/StormLight
 @onready var smooth : Smoothing2D = $Smoothing2D
 @onready var last_pos : Vector2 = position
+@onready var fake_light : Sprite2D = $Smoothing2D/FakeLight
 var this_scene : PackedScene = preload("res://scenes/characters/vine_seg.tscn")
 var _rotation_match_node
 var smoothing = false
@@ -58,10 +59,10 @@ func set_rotation_match(node):
 func _set_electricity(val):
 	if val > 0:
 		sprite.material.set_shader_parameter("electricity", val)
-		light.enabled = true
-		light.energy = val
+		fake_light.visible = true
+		fake_light.material.set_shader_parameter("intensity", val * 3)
 	else: 
-		light.enabled = false
+		fake_light.visible = false
 		sprite.material.set_shader_parameter("electricity", 0)
 
 

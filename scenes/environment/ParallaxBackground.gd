@@ -1,7 +1,7 @@
 extends ParallaxBackground
 class_name Background
 
-const storm_modulate := Color(0.4, 0.4, 0.4, 0.5)
+const storm_modulate := Color(0.4, 0.4, 0.4, 0.2)
 const default_modulate := Color.WHITE
 const brightness = 0.4
 @onready var small_clouds : ScrollingSprite2D = $SmallClouds/Sprite2D
@@ -34,7 +34,7 @@ func enter_sunny(tween : Tween, duration : float):
 
 func enter_windy(tween : Tween, duration : float):
 	const wind_cloud_modulate = Color.WEB_GRAY
-	tween.tween_property(bg, "modulate", Color(0.4, 0.4, 0.4, 0.3), duration)
+	tween.tween_property(bg, "modulate", Color(0.4, 0.4, 0.4, 0.1), duration)
 	tween.tween_property(forest, "modulate", Color.TRANSPARENT, duration)
 	set_speed_mult(1.0, true, -5.8)
 	set_speed_mult(-2.5, false, -20.5)

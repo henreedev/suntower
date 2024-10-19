@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://jfxpur7d1w8n"]
+[gd_scene load_steps=14 format=3 uid="uid://jfxpur7d1w8n"]
 
 [ext_resource type="Script" path="res://scenes/characters/vine_seg.gd" id="1_d58dt"]
 [ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/flower/stem-rope.png" id="1_fkaj8"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_2cghh"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="2_kpskx"]
+[ext_resource type="Shader" path="res://scenes/characters/light_2.gdshader" id="5_fobon"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_owbri"]
 friction = 0.0
@@ -34,6 +35,10 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t2dxa"]
+shader = ExtResource("5_fobon")
+shader_parameter/intensity = 10.0
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
 radius = 4.0
 height = 14.0
@@ -59,6 +64,7 @@ scale = Vector2(1, 0.5)
 texture = ExtResource("1_fkaj8")
 
 [node name="StormLight" type="PointLight2D" parent="Smoothing2D"]
+visible = false
 position = Vector2(0, 0.5)
 scale = Vector2(2.72, 1.36)
 enabled = false
@@ -67,6 +73,13 @@ energy = 0.0
 shadow_item_cull_mask = 2
 texture = SubResource("GradientTexture2D_cdlsb")
 texture_scale = 0.02
+
+[node name="FakeLight" type="Sprite2D" parent="Smoothing2D"]
+visible = false
+material = SubResource("ShaderMaterial_t2dxa")
+position = Vector2(0, 0.5)
+scale = Vector2(0.04, 0.027)
+texture = SubResource("GradientTexture2D_cdlsb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -3)
