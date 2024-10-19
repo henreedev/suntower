@@ -1,7 +1,7 @@
 [gd_resource type="TileSet" load_steps=53 format=3 uid="uid://r7paxto5gyud"]
 
 [ext_resource type="Shader" path="res://shaders/electric_crack.gdshader" id="1_0j8fu"]
-[ext_resource type="Texture2D" uid="uid://dilbk4ep56fnp" path="res://assets/image/gwj-tilemap.png" id="2_ml8db"]
+[ext_resource type="Texture2D" uid="uid://dilbk4ep56fnp" path="res://assets/image/environment/gwj-tilemap.png" id="2_ml8db"]
 
 [sub_resource type="TileMapPattern" id="TileMapPattern_1d451"]
 tile_data = PackedInt32Array(0, 262144, 7, 65536, 262144, 7)

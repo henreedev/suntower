@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://scenes/characters/Player2.gd" id="1_u6jn4"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_46eyb"]
-[ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/pot.png" id="2_dk0m0"]
-[ext_resource type="Texture2D" uid="uid://dtw0lgoge1iy1" path="res://assets/image/pot-shadow.png" id="4_0jlhp"]
+[ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/flower/pot.png" id="2_dk0m0"]
+[ext_resource type="Texture2D" uid="uid://dtw0lgoge1iy1" path="res://assets/image/flower/pot-shadow.png" id="4_0jlhp"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4ed4y"]
 friction = 12.75

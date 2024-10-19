@@ -4,7 +4,7 @@ uniform float windiness : hint_range(0.0, 1.0);
 uniform sampler2D windy_noise : repeat_enable, filter_nearest;
 uniform vec2 scroll_speed;
 
- 
+
 
 varying flat vec4 modulate;
 void vertex() {
@@ -16,7 +16,7 @@ void fragment() {
 	float a = color.a;
 	vec4 windy_color = texture(windy_noise, UV + scroll_speed * TIME);
 	color = mix(color, windy_color, windiness * windiness);
-	
+
 	COLOR = vec4((color * modulate).rgb, a);
 }
 

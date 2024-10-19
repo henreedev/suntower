@@ -2,12 +2,12 @@
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="1_700xu"]
-[ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/flower-head.png" id="2_gv2se"]
+[ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/flower/flower-head.png" id="2_gv2se"]
 [ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/characters/vine_seg.tscn" id="2_ircd2"]
-[ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/suntower-lightning-particle.png" id="4_14gk3"]
-[ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/flower-extend.png" id="4_ski6y"]
+[ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/environment/suntower-lightning-particle.png" id="4_14gk3"]
+[ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/flower/flower-extend.png" id="4_ski6y"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="5_kbo6i"]
-[ext_resource type="Texture2D" uid="uid://d2hoycvv7ngsl" path="res://assets/image/wind-gust.png" id="8_p6u3c"]
+[ext_resource type="Texture2D" uid="uid://d2hoycvv7ngsl" path="res://assets/image/environment/wind-gust.png" id="8_p6u3c"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0

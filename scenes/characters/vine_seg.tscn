@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://jfxpur7d1w8n"]
 
 [ext_resource type="Script" path="res://scenes/characters/vine_seg.gd" id="1_d58dt"]
-[ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/stem-rope.png" id="1_fkaj8"]
+[ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/flower/stem-rope.png" id="1_fkaj8"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_2cghh"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="2_kpskx"]
 

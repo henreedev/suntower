@@ -7,7 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/sun-bgm.mp3" id="6_0ik4c"]
 [ext_resource type="AudioStream" uid="uid://dmb7q4tmk1afv" path="res://assets/sound/gwj-test2.mp3" id="7_6xiwy"]
 [ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/storm-bgm.mp3" id="8_xc61x"]
-[ext_resource type="Texture2D" uid="uid://dfrbet6fuea5a" path="res://assets/image/flower-spritesheet.png" id="9_7p0hk"]
+[ext_resource type="Texture2D" uid="uid://dfrbet6fuea5a" path="res://assets/image/flower/flower-spritesheet.png" id="9_7p0hk"]
 [ext_resource type="AudioStream" uid="uid://yycwfoeimnw7" path="res://assets/sound/wind-bgm.mp3" id="9_10mur"]
 
 [sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_hcqxd"]

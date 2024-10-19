@@ -17,11 +17,11 @@ void fragment() {
 		//COLOR = sun_color;
 		//
 	//}
-	
+
 	if (texture(TEXTURE, UV) == VINE_COLOR) {
 		COLOR = sun_color;
 	}
-	
+
 }
 
 //void light() {
