@@ -28,3 +28,7 @@ func _on_restart_button_pressed():
 
 func _on_menu_button_pressed():
 	SceneManager.instance.game_to_menu()
+
+
+func _on_options_button_pressed():
+	pass # Replace with function body.
