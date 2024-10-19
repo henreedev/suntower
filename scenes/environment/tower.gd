@@ -349,3 +349,7 @@ func _on_peaceful_area_body_entered(body):
 func _on_peaceful_area_body_exited(body):
 	if body is FlowerHead:
 		in_peaceful = false
+
+
+func _on_victory_area_body_entered(body):
+	win()

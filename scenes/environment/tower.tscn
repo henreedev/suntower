@@ -373,5 +373,4 @@ debug_color = Color(0.45098, 0, 0.254902, 0)
 [connection signal="body_exited" from="WindBursts/WindBurstArea2" to="." method="_on_wind_burst_area_body_exited"]
 [connection signal="body_entered" from="PeacefulArea" to="." method="_on_peaceful_area_body_entered"]
 [connection signal="body_exited" from="PeacefulArea" to="." method="_on_peaceful_area_body_exited"]
-[connection signal="body_entered" from="VictoryArea" to="." method="_on_peaceful_area_body_entered"]
-[connection signal="body_exited" from="VictoryArea" to="." method="_on_peaceful_area_body_exited"]
+[connection signal="body_entered" from="VictoryArea" to="." method="_on_victory_area_body_entered"]

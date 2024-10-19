@@ -50,9 +50,10 @@ offset_top = -6.0
 grow_horizontal = 2
 grow_vertical = 2
 tab_alignment = 1
-current_tab = 0
+current_tab = 1
 
 [node name="Settings" type="TabBar" parent="TabContainer"]
+visible = false
 custom_minimum_size = Vector2(151, 116)
 layout_mode = 2
 metadata/_tab_index = 0
@@ -136,7 +137,6 @@ text = "Speedrun Mode"
 layout_mode = 2
 
 [node name="Stats" type="TabBar" parent="TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -205,7 +205,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 bbcode_enabled = true
-text = "[wave amp=10.0 freq=4connected=1][rainbow freq=1.0 sat=.4 val=1][center]Stormy out there...[/center][/rainbow][/wave]"
+text = "[wave amp=10.0 freq=4connected=1][rainbow freq=1.0 sat=.4 val=1][center]how many fingers am i holding up[/center][/rainbow][/wave]"
 fit_content = true
 
 [node name="Speedrun" type="TabBar" parent="TabContainer"]

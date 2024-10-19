@@ -14,7 +14,6 @@ func unpause():
 		just_unpaused = true
 		get_tree().paused = false
 		hide()
-		options_menu.refresh()
 		await Timing.create_timer(self, 0.01, true)
 		just_unpaused = false
 

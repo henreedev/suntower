@@ -41,10 +41,10 @@ static func reach_section(section : Tower.Weather):
 	section_time_splits[sec_index] = time
 	
 	# update best split if this split is better
-	if best_section_time_splits[sec_index] != -1:
+	if best_section_time_splits[sec_index] == -1:
 		best_section_time_splits[sec_index] = section_time_splits[sec_index]
 	else:
-		best_section_time_splits = min(section_time_splits[sec_index], \
+		best_section_time_splits[sec_index] = min(section_time_splits[sec_index], \
 									best_section_time_splits[sec_index]) 
 	
 	# update max section if section is higher
@@ -89,6 +89,7 @@ static func save_user_data():
 		print("SAVING SUCCESSFUL")
 
 static func load_user_data():
+	#return # FIXME remove
 	var err = config.load_encrypted(SAVE_PATH, ENCRYPTION_KEY)
 	#var err = config.load(SAVE_PATH)
 	if err != OK:

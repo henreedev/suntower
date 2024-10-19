@@ -28,10 +28,6 @@ func _ready():
 	_lightning_bar.value = 0.0
 	_wind_bar.value = flower_head.BASE_MAX_EXTENDED_LEN
 
-func reset():
-	get_tree().reload_current_scene()
-	Values.reset()
-
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause") and not pause_menu.just_unpaused:
 		pause()
@@ -39,6 +35,7 @@ func _input(event: InputEvent) -> void:
 func pause():
 	if not get_tree().paused:
 		get_tree().paused = true
+		pause_menu.options_menu.refresh()
 		pause_menu.show()
 	SceneManager.instance.reduce_music_volume()
 

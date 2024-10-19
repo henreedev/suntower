@@ -96,39 +96,60 @@ func _refresh_labels():
 	
 	var congrats = "Good luck!"
 	var congrats_color = ColorSetting.NONE
-	if Values.victory_count > 2:
-		congrats = "you're ACTUALLY cracked"
-		congrats_color = ColorSetting.RAINBOW
-	elif Values.victory_count > 1:
-		congrats = "ur cracked wtf"
-		congrats_color = ColorSetting.RAINBOW
-	elif Values.victory_count > 0:
-		congrats = "Good job!"
-		congrats_color = ColorSetting.RAINBOW
-	else:
-		match Values.max_section_reached:
-			Tower.Weather.STORMY:
-				congrats = "Stormy out there..."
-			Tower.Weather.WINDY:
-				congrats = "Windy out there..."
-			Tower.Weather.PEACEFUL:
-				congrats = "So close..."
-			Tower.Weather.VICTORY:
-				congrats = "Good job!"
-			_:
-				if Values.max_height_reached < 500 and Values.max_height_reached > 0:
-					congrats = "you just got started..."
-					congrats_color = ColorSetting.PULSE_RED
-				else:
-					congrats = "Keep going!"
-					congrats_color = ColorSetting.PULSE_GREEN
-					
+	match Values.victory_count:
+		10:
+			congrats = "you won."
+			congrats_color = ColorSetting.RAINBOW
+		9:
+			congrats = "you must be andre. if not ill pay you $15"
+			congrats_color = ColorSetting.RAINBOW
+		8:
+			congrats = "i think you've played the game more than me"
+			congrats_color = ColorSetting.RAINBOW
+		7:
+			congrats = "77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777"
+			congrats_color = ColorSetting.RAINBOW
+		6:
+			congrats = "how many fingers am i holding up?!"
+			congrats_color = ColorSetting.RAINBOW
+		5:
+			congrats = "phew thank you. ur insane btw!"
+			congrats_color = ColorSetting.RAINBOW
+		4:
+			congrats = "woah don't stop at 4 it's unlucky"
+			congrats_color = ColorSetting.RAINBOW
+		3:
+			congrats = "you're ACTUALLY cracked"
+			congrats_color = ColorSetting.RAINBOW
+		2:
+			congrats = "ur cracked wtf"
+			congrats_color = ColorSetting.RAINBOW
+		1:
+			congrats = "Good job!"
+			congrats_color = ColorSetting.RAINBOW
+		_:
+			match Values.max_section_reached:
+				Tower.Weather.STORMY:
+					congrats = "Stormy out there..."
+				Tower.Weather.WINDY:
+					congrats = "Windy out there..."
+				Tower.Weather.PEACEFUL:
+					congrats = "So close..."
+				Tower.Weather.VICTORY:
+					congrats = "Good job!"
+				_:
+					if Values.max_height_reached < 500 and Values.max_height_reached > 0:
+						congrats = "you just got started..."
+						congrats_color = ColorSetting.PULSE_RED
+					else:
+						congrats = "Keep going!"
+						congrats_color = ColorSetting.PULSE_GREEN
 	_set_rich_text_label(congratulations, \
 		congrats, \
-		"", true, congrats_color)
-	_set_rich_text_label(beat_game, \
-		YES if Values.victory_count > 0 else NOT_YET, \
-		"", Values.victory_count > 0, ColorSetting.RAINBOW if Values.victory_count > 0 else ColorSetting.PULSE_RED)
+		"", true, congrats_color, true)
+	var beat_game_text = YES if Values.victory_count > 0 else NOT_YET
+	if Values.victory_count > 1: beat_game_text += " x" + str(Values.victory_count)
+	_set_rich_text_label(beat_game, beat_game_text, "", Values.victory_count > 0, ColorSetting.RAINBOW if Values.victory_count > 0 else ColorSetting.PULSE_RED)
 	_set_rich_text_label(best_height, Values.max_height_reached, PIXELS, false, ColorSetting.NONE)
 	best_section_icon.texture = section_icons[Values.max_section_reached]
 	
@@ -149,8 +170,6 @@ func _set_rich_text_label(rt_label : RichTextLabel, value, suffix : String, wigg
 	if value_str != "":
 		value_str += " " + suffix
 	
-	rt_label.text = value_str
-	
 	match color:
 		ColorSetting.PULSE_RED:
 			value_str = PULSE_RED_FX_PRE + value_str + PULSE_FX_POST
@@ -158,10 +177,14 @@ func _set_rich_text_label(rt_label : RichTextLabel, value, suffix : String, wigg
 			value_str = PULSE_GREEN_FX_PRE + value_str + PULSE_FX_POST
 		ColorSetting.RAINBOW:
 			value_str = RAINBOW_FX_PRE + value_str + RAINBOW_FX_POST
+	
 	if wiggle:
 		value_str = WAVE_FX_PRE + value_str + WAVE_FX_POST
 	if center:
 		value_str = "[center]" + value_str + "[/center]"
+	
+	rt_label.text = value_str
+
 # If values has speedrun mode on, then enable speedrun tab and check the button
 func _refresh_speedrun_mode():
 	check_button.set_pressed_no_signal(Values.speedrun_mode)

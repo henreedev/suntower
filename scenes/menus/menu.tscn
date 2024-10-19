@@ -195,10 +195,10 @@ script = SubResource("GDScript_4vqcu")
 
 [node name="OptionsMenu" parent="." instance=ExtResource("23_q2bfs")]
 layout_mode = 1
-offset_left = 3.0
-offset_top = -26.0
-offset_right = 154.0
-offset_bottom = 105.0
+offset_left = 11.5
+offset_top = -25.0
+offset_right = 189.5
+offset_bottom = 106.0
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]

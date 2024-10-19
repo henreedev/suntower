@@ -145,6 +145,7 @@ color = Color(1, 1, 0.854902, 0)
 script = ExtResource("10_v3nai")
 
 [node name="PauseMenu" parent="." instance=ExtResource("11_swgty")]
+visible = false
 
 [node name="StatsUpdater" type="Node" parent="."]
 script = ExtResource("19_4a02y")

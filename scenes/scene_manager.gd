@@ -61,7 +61,7 @@ func game_to_menu():
 	 switch_bgm.bind("Menu"), reset_music_volume, start_menu.options_menu.refresh])
 
 func restart_game():
-	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy])
+	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy, Values.reset])
 
 func _set_game_to_new_copy():
 	game.queue_free()
