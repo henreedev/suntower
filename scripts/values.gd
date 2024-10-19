@@ -33,7 +33,6 @@ static func increment_time(delta : float):
 
 static func update_height(height : float):
 	max_height_reached = max(max_height_reached, height)
-	save_user_data()
 
 static func reach_section(section : Tower.Weather):
 	var sec_index = int(section)
@@ -66,6 +65,9 @@ static func reset():
 # saving and loading
 static func save_user_data():
 	config.set_value("settings", "speedrun_mode", speedrun_mode)
+	config.set_value("settings", "master_volume", VolumeBar.master_volume)
+	config.set_value("settings", "music_volume", VolumeBar.music_volume)
+	config.set_value("settings", "sfx_volume", VolumeBar.sfx_volume)
 	config.set_value("stats", "best_time", best_time)
 	config.set_value("stats", "best_section_time_splits", best_section_time_splits)
 	config.set_value("stats", "max_section_reached", max_section_reached)
@@ -75,6 +77,8 @@ static func save_user_data():
 	#var err = config.save_encrypted(SAVE_PATH, ENCRYPTION_KEY)
 	if err != OK:
 		print("ERROR SAVING DATA: " + str(err))
+	else:
+		print("SAVING SUCCESSFUL")
 
 static func load_user_data():
 	#var err = config.load_encrypted(SAVE_PATH, ENCRYPTION_KEY)
@@ -84,10 +88,13 @@ static func load_user_data():
 	else:
 		print("LOADING SUCCESSFUL")
 	for section: String in config.get_sections():
+		print(section, ":")
 		for key: String in config.get_section_keys(section):
 			var value = config.get_value(section, key)
 			if value == null:
 				print("INVALID LOAD VALUE: " + section + ", " + key)
+			else:
+				print("  ", key, ": ", value)
 			match key:
 				"speedrun_mode":
 					speedrun_mode = value
@@ -101,3 +108,9 @@ static func load_user_data():
 					max_height_reached = value
 				"victory_count":
 					victory_count = value
+				"master_volume":
+					VolumeBar.master_volume = value
+				"music_volume": 
+					VolumeBar.music_volume = value
+				"sfx_volume": 
+					VolumeBar.sfx_volume = value

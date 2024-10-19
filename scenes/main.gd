@@ -16,6 +16,7 @@ var switch_bars_tween : Tween
 @onready var flower_head : FlowerHead = $FlowerHead
 @onready var _cam : Camera2D = $FlowerHead/Camera2D
 @onready var pause_menu = $PauseMenu
+@onready var color_rect : ColorRect = $CanvasLayer/ColorRect
 
 func _ready():
 	_vines_bar.max_value = flower_head.BASE_MAX_EXTENDED_LEN
@@ -29,6 +30,7 @@ func _ready():
 
 func reset():
 	get_tree().reload_current_scene()
+	Values.reset()
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause") and not pause_menu.just_unpaused:

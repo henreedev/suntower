@@ -433,6 +433,9 @@ func _display_sun_buff():
 	sun_particles.emitting = true
 	sun_particles.amount = 125
 
+func get_height():
+	return -int(global_position.y)
+
 func _physics_process(delta):
 	if not _animating:
 		can_extend = _player.touching and _player.linear_velocity.length_squared() < 2.0 or _state == State.EXTENDING

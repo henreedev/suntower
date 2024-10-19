@@ -131,6 +131,13 @@ func start_peaceful():
 		_player.disable_wind_particles()
 		_lights.set_wind_mode(false)
 
+func win():
+	if not Values.won:
+		var win_tween := create_tween()
+		win_tween.tween_property(_player.camera_2d, "zoom", Vector2(4, 4), 2.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		win_tween.tween_property(main.color_rect, "color:a", 1.0, 2.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT) 
+		Values.update_height(_player.get_height())
+		Values.win()
 
 
 

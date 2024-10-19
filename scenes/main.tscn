@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cjl7hh0kgvrb8"]
+[gd_scene load_steps=23 format=3 uid="uid://cjl7hh0kgvrb8"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_7xsfy"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://chbnbpvg4p0wi" path="res://assets/image/ui/wind-progress.png" id="13_c3ak3"]
 [ext_resource type="Texture2D" uid="uid://b834k37jve3s0" path="res://assets/image/ui/windy_texture.png" id="14_ubjmv"]
 [ext_resource type="FontFile" uid="uid://07upkyw5b3yx" path="res://assets/font/m5x7.ttf" id="15_fcn5l"]
+[ext_resource type="Script" path="res://scenes/stats_updater.gd" id="19_4a02y"]
 
 [sub_resource type="Environment" id="Environment_4vhcu"]
 background_mode = 3
@@ -132,7 +133,18 @@ grow_horizontal = 2
 grow_vertical = 2
 label_settings = SubResource("LabelSettings_ul41i")
 
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0.854902, 0)
+
 [node name="Stopwatch" type="Node" parent="." groups=["stopwatch"]]
 script = ExtResource("10_v3nai")
 
 [node name="PauseMenu" parent="." instance=ExtResource("11_swgty")]
+
+[node name="StatsUpdater" type="Node" parent="."]
+script = ExtResource("19_4a02y")

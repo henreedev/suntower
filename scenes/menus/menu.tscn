@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://c7e11237n0hy6" path="res://assets/image/environment/small-clouds.png" id="4_nox1h"]
 [ext_resource type="Script" path="res://scenes/environment/scrolling_sprite_2d.gd" id="5_l53r8"]
 [ext_resource type="Texture2D" uid="uid://vsdswacwte5t" path="res://assets/image/menu/tower.png" id="6_ab6qd"]
-[ext_resource type="PackedScene" uid="uid://b8abnqqvhhok3" path="res://scenes/menus/volume_bar.tscn" id="7_dbh4w"]
 [ext_resource type="Texture2D" uid="uid://by337dabguqd2" path="res://assets/image/menu/peek-default.png" id="7_usq7t"]
 [ext_resource type="Texture2D" uid="uid://bem7v8unaw2ut" path="res://assets/image/menu/peek1.png" id="8_ilypx"]
 [ext_resource type="Texture2D" uid="uid://dk33hijxta2jk" path="res://assets/image/menu/peek2.png" id="9_7jcb1"]
@@ -23,6 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://brpgvpkaimgn1" path="res://assets/image/menu/options-button1.png" id="20_g5e5y"]
 [ext_resource type="Texture2D" uid="uid://p2o6gk44vlvl" path="res://assets/image/menu/quit-button1.png" id="21_wce5n"]
 [ext_resource type="Texture2D" uid="uid://brb4f51lxrv4i" path="res://assets/image/menu/quit-button2.png" id="22_gowm8"]
+[ext_resource type="PackedScene" uid="uid://dklv0cnm5yyfk" path="res://scenes/menus/options_menu.tscn" id="23_q2bfs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dotrv"]
 shader = ExtResource("3_deo1s")
@@ -158,9 +158,9 @@ texture = ExtResource("15_2ogof")
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = -131.0
-offset_top = -23.0
+offset_top = -50.0
 offset_right = 29.0
-offset_bottom = 174.0
+offset_bottom = 147.0
 theme = ExtResource("1_lakh0")
 theme_override_constants/separation = 5
 alignment = 1
@@ -189,25 +189,15 @@ texture_normal = ExtResource("21_wce5n")
 texture_pressed = ExtResource("22_gowm8")
 texture_hover = ExtResource("22_gowm8")
 
-[node name="VolumeBar" parent="VBoxContainer" instance=ExtResource("7_dbh4w")]
-layout_mode = 2
-
-[node name="VolumeBar2" parent="VBoxContainer" instance=ExtResource("7_dbh4w")]
-layout_mode = 2
-bus_name = "Music"
-
-[node name="VolumeBar3" parent="VBoxContainer" instance=ExtResource("7_dbh4w")]
-layout_mode = 2
-bus_name = "SFX"
-
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(4, 4)
 script = SubResource("GDScript_4vqcu")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="OptionsMenu" parent="." instance=ExtResource("23_q2bfs")]
+offset_left = 3.0
+offset_top = -26.0
+offset_right = 154.0
+offset_bottom = 105.0
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]

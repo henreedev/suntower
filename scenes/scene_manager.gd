@@ -27,6 +27,7 @@ var level_switch_tween : Tween
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	get_tree().set_auto_accept_quit(false)
 	Values.load_user_data()
 	instance = self
 	playback = audio_stream_player.get_stream_playback()
@@ -105,6 +106,10 @@ func reset_music_volume():
 func reduce_if_paused():
 	if get_tree().paused:
 		reduce_music_volume()
+
+func _notification(what):
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		quit_game()
 
 func quit_game():
 	reduce_music_volume(0.3)

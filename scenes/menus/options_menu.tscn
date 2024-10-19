@@ -1,0 +1,103 @@
+[gd_scene load_steps=3 format=3 uid="uid://dklv0cnm5yyfk"]
+
+[ext_resource type="Texture2D" uid="uid://bf5fgabairksk" path="res://assets/image/menu/options-menu.png" id="1_1co8j"]
+[ext_resource type="PackedScene" uid="uid://b8abnqqvhhok3" path="res://scenes/menus/volume_bar.tscn" id="2_wab6s"]
+
+[node name="OptionsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_top = -15.0
+offset_right = 151.0
+offset_bottom = 116.0
+
+[node name="OptionsMenu" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -75.5
+offset_top = -116.0
+offset_right = 75.5
+grow_horizontal = 2
+grow_vertical = 0
+texture = ExtResource("1_1co8j")
+
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+tab_alignment = 1
+current_tab = 0
+
+[node name="Sound" type="TabBar" parent="TabContainer"]
+custom_minimum_size = Vector2(151, 116)
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Sound"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VolSliders" type="VBoxContainer" parent="TabContainer/Sound/MarginContainer"]
+layout_mode = 2
+
+[node name="Master" type="HBoxContainer" parent="TabContainer/Sound/MarginContainer/VolSliders"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Sound/MarginContainer/VolSliders/Master"]
+layout_mode = 2
+text = "Master "
+
+[node name="VolumeBar" parent="TabContainer/Sound/MarginContainer/VolSliders/Master" instance=ExtResource("2_wab6s")]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+
+[node name="Music" type="HBoxContainer" parent="TabContainer/Sound/MarginContainer/VolSliders"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/Sound/MarginContainer/VolSliders/Music"]
+custom_minimum_size = Vector2(41, 0)
+layout_mode = 2
+text = "Music"
+
+[node name="VolumeBar2" parent="TabContainer/Sound/MarginContainer/VolSliders/Music" instance=ExtResource("2_wab6s")]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+bus_name = "Music"
+
+[node name="SFX" type="HBoxContainer" parent="TabContainer/Sound/MarginContainer/VolSliders"]
+layout_mode = 2
+
+[node name="SFX" type="Label" parent="TabContainer/Sound/MarginContainer/VolSliders/SFX"]
+custom_minimum_size = Vector2(41, 0)
+layout_mode = 2
+text = "SFX"
+
+[node name="VolumeBar3" parent="TabContainer/Sound/MarginContainer/VolSliders/SFX" instance=ExtResource("2_wab6s")]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+bus_name = "SFX"
+
+[node name="Other" type="TabBar" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Stats" type="TabBar" parent="TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
