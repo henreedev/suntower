@@ -1,10 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://c7w06rdclh4r0"]
+[gd_scene load_steps=29 format=3 uid="uid://c7w06rdclh4r0"]
 
 [ext_resource type="Script" path="res://scenes/menus/menu.gd" id="1_5r3os"]
 [ext_resource type="Theme" uid="uid://cn83a0xrk33ty" path="res://scenes/menus/themes/menu_theme.tres" id="1_lakh0"]
 [ext_resource type="Texture2D" uid="uid://chqddb8lndj24" path="res://assets/image/menu/title-screen-bg.png" id="2_t0ayx"]
 [ext_resource type="Shader" path="res://scenes/environment/bigclouds.gdshader" id="3_deo1s"]
-[ext_resource type="Texture2D" uid="uid://dr33adajhwsi0" path="res://assets/image/environment/gwj66-small-clouds.png" id="4_0lpyl"]
+[ext_resource type="Texture2D" uid="uid://c7e11237n0hy6" path="res://assets/image/environment/small-clouds.png" id="4_nox1h"]
 [ext_resource type="Script" path="res://scenes/environment/scrolling_sprite_2d.gd" id="5_l53r8"]
 [ext_resource type="Texture2D" uid="uid://vsdswacwte5t" path="res://assets/image/menu/tower.png" id="6_ab6qd"]
 [ext_resource type="PackedScene" uid="uid://b8abnqqvhhok3" path="res://scenes/menus/volume_bar.tscn" id="7_dbh4w"]
@@ -15,6 +15,14 @@
 [ext_resource type="Texture2D" uid="uid://dhgc7u0k7jo2q" path="res://assets/image/menu/peek4.png" id="11_xrgpq"]
 [ext_resource type="Texture2D" uid="uid://dxc5gail5ovht" path="res://assets/image/menu/peek5.png" id="12_ckrw5"]
 [ext_resource type="Texture2D" uid="uid://xy23xhrse02r" path="res://assets/image/menu/peek6.png" id="13_a6mmo"]
+[ext_resource type="Texture2D" uid="uid://cb6urwyj6av2m" path="res://assets/image/menu/title-blur.png" id="14_iptvx"]
+[ext_resource type="Texture2D" uid="uid://cnh3cclx3l4wf" path="res://assets/image/menu/title.png" id="15_2ogof"]
+[ext_resource type="Texture2D" uid="uid://dhpsn88s4c82f" path="res://assets/image/menu/play-button1.png" id="17_bopym"]
+[ext_resource type="Texture2D" uid="uid://bwlwsquxtw0i4" path="res://assets/image/menu/play-button2.png" id="18_j6vk4"]
+[ext_resource type="Texture2D" uid="uid://c772bkakpgayg" path="res://assets/image/menu/options-button2.png" id="19_xhi6b"]
+[ext_resource type="Texture2D" uid="uid://brpgvpkaimgn1" path="res://assets/image/menu/options-button1.png" id="20_g5e5y"]
+[ext_resource type="Texture2D" uid="uid://p2o6gk44vlvl" path="res://assets/image/menu/quit-button1.png" id="21_wce5n"]
+[ext_resource type="Texture2D" uid="uid://brb4f51lxrv4i" path="res://assets/image/menu/quit-button2.png" id="22_gowm8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dotrv"]
 shader = ExtResource("3_deo1s")
@@ -29,7 +37,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 5.0
+"speed": 0.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -47,7 +55,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("12_ckrw5")
 }, {
-"duration": 2.0,
+"duration": 5.0,
 "texture": ExtResource("13_a6mmo")
 }, {
 "duration": 1.0,
@@ -67,13 +75,47 @@ animations = [{
 }],
 "loop": false,
 "name": &"peek",
-"speed": 5.0
+"speed": 10.0
 }]
 
-[sub_resource type="LabelSettings" id="LabelSettings_lvt62"]
-font_size = 108
-font_color = Color(1, 1, 0.8, 1)
-shadow_size = 5
+[sub_resource type="GDScript" id="GDScript_1n124"]
+script/source = "extends AnimatedSprite2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	animation_finished.connect(_on_animation_finished)
+	await Timing.create_timer(self, 2.5)
+	peek()
+
+func peek():
+	animation = \"peek\"
+	play()
+	await Timing.create_timer(self, randf_range(2, 20))
+	peek()
+
+func _on_animation_finished():
+	animation = \"default\"
+"
+
+[sub_resource type="GDScript" id="GDScript_f5rk7"]
+script/source = "extends VBoxContainer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	create_tween().tween_property(self, \"modulate:a\", 1.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+"
+
+[sub_resource type="GDScript" id="GDScript_4vqcu"]
+script/source = "extends Camera2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	create_tween().tween_property(self, \"zoom\", Vector2(3,3), 1.7).set_trans(Tween.TRANS_CUBIC)\\
+	.set_ease(Tween.EASE_OUT)
+"
 
 [node name="Menu" type="Control"]
 process_mode = 3
@@ -83,18 +125,21 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = -576.0
+offset_top = -324.0
+offset_right = -576.0
+offset_bottom = -324.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_5r3os")
 
 [node name="Background" type="Sprite2D" parent="."]
-scale = Vector2(3, 3)
 texture = ExtResource("2_t0ayx")
 
 [node name="SmallClouds" type="Sprite2D" parent="Background"]
 material = SubResource("ShaderMaterial_dotrv")
-position = Vector2(0, 52.785)
-texture = ExtResource("4_0lpyl")
+position = Vector2(0, -73.5483)
+texture = ExtResource("4_nox1h")
 script = ExtResource("5_l53r8")
 
 [node name="Tower" type="Sprite2D" parent="Background"]
@@ -102,21 +147,45 @@ texture = ExtResource("6_ab6qd")
 
 [node name="Window" type="AnimatedSprite2D" parent="Background/Tower"]
 sprite_frames = SubResource("SpriteFrames_vrgvc")
+script = SubResource("GDScript_1n124")
+
+[node name="TitleBlur" type="Sprite2D" parent="Background"]
+texture = ExtResource("14_iptvx")
+
+[node name="Title" type="Sprite2D" parent="Background"]
+texture = ExtResource("15_2ogof")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
-offset_left = -181.0
-offset_top = -103.0
-offset_right = 184.0
-offset_bottom = 101.0
+offset_left = -131.0
+offset_top = -16.0
+offset_right = 29.0
+offset_bottom = 181.0
 theme = ExtResource("1_lakh0")
-theme_override_constants/separation = 30
+theme_override_constants/separation = 5
 alignment = 1
+script = SubResource("GDScript_f5rk7")
 
-[node name="StartButton" type="Button" parent="VBoxContainer"]
+[node name="StartButton" type="TextureButton" parent="VBoxContainer"]
 layout_mode = 2
-text = "Start"
-expand_icon = true
+size_flags_horizontal = 0
+texture_normal = ExtResource("17_bopym")
+texture_pressed = ExtResource("18_j6vk4")
+texture_hover = ExtResource("18_j6vk4")
+
+[node name="OptionsButton" type="TextureButton" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture_normal = ExtResource("20_g5e5y")
+texture_pressed = ExtResource("19_xhi6b")
+texture_hover = ExtResource("19_xhi6b")
+
+[node name="QuitButton" type="TextureButton" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture_normal = ExtResource("21_wce5n")
+texture_pressed = ExtResource("22_gowm8")
+texture_hover = ExtResource("22_gowm8")
 
 [node name="VolumeBar" parent="VBoxContainer" instance=ExtResource("7_dbh4w")]
 layout_mode = 2
@@ -129,27 +198,10 @@ bus_name = "Music"
 layout_mode = 2
 bus_name = "SFX"
 
-[node name="QuitButton" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "Quit"
-
-[node name="Title" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -163.5
-offset_top = -250.0
-offset_right = 163.5
-offset_bottom = -164.0
-grow_horizontal = 2
-grow_vertical = 0
-rotation = 0.00349066
-pivot_offset = Vector2(163, 43)
-text = "Suntower"
-label_settings = SubResource("LabelSettings_lvt62")
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(4, 4)
+script = SubResource("GDScript_4vqcu")
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

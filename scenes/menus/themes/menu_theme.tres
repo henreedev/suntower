@@ -1,103 +1,68 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://cn83a0xrk33ty"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://cn83a0xrk33ty"]
 
 [ext_resource type="FontFile" uid="uid://07upkyw5b3yx" path="res://assets/font/m5x7.ttf" id="1_0lvj4"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ww13c"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.509804, 0.509804, 0.509804, 1)
-border_color = Color(0.8, 0.8, 0.803922, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2vi4u"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.509804, 0.509804, 0.509804, 1)
-draw_center = false
-border_color = Color(0.8, 0.8, 0.803922, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iyhd3"]
-content_margin_left = 4.0
-content_margin_top = 6.0
-content_margin_right = 5.0
-content_margin_bottom = 4.0
-bg_color = Color(0.509804, 0.509804, 0.509804, 1)
-border_width_top = 5
-border_width_right = 5
-border_color = Color(0.8, 0.8, 0.803922, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
+[ext_resource type="Texture2D" uid="uid://qdu6uk8xcqan" path="res://assets/image/menu/flower-head-only.png" id="2_qr0js"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvkwd"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.509804, 0.509804, 0.509804, 1)
-border_width_top = 3
-border_width_right = 3
-border_color = Color(0.8, 0.8, 0.803922, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
+bg_color = Color(0.51, 0.51, 0.51, 0)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ok3qw"]
+[sub_resource type="Image" id="Image_6csn3"]
+data = {
+"data": PackedByteArray(255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 64, 255, 255, 255, 64, 255, 255, 255, 0),
+"format": "RGBA8",
+"height": 16,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_hasv8"]
+image = SubResource("Image_6csn3")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0gj85"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
 content_margin_bottom = 4.0
-bg_color = Color(0.509804, 0.509804, 0.509804, 1)
-border_color = Color(0.8, 0.8, 0.803922, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-corner_detail = 5
+bg_color = Color(0.270588, 0.466667, 0.12549, 1)
+corner_detail = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a0u1q"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.243137, 0.537255, 0.0431373, 1)
+corner_detail = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_escdb"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.101961, 0.101961, 0.101961, 0.698039)
+corner_detail = 6
 
 [resource]
 default_font = ExtResource("1_0lvj4")
 /fonts/font = ExtResource("1_0lvj4")
-Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+Button/colors/font_color = Color(0.581034, 0.581033, 0.581033, 1)
 Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
 Button/colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
 Button/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
 Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
 Button/colors/font_outline_color = Color(1, 1, 1, 1)
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
-Button/colors/icon_disabled_color = Color(1, 1, 1, 0.4)
-Button/colors/icon_focus_color = Color(1, 1, 1, 1)
-Button/colors/icon_hover_color = Color(1, 1, 1, 1)
-Button/colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
-Button/colors/icon_normal_color = Color(1, 1, 1, 1)
-Button/colors/icon_pressed_color = Color(1, 1, 1, 1)
 Button/constants/h_separation = 4
 Button/constants/icon_max_width = 0
-Button/constants/outline_size = 0
-Button/font_sizes/font_size = 35
+Button/font_sizes/font_size = 48
 Button/fonts/font = ExtResource("1_0lvj4")
-Button/styles/disabled = SubResource("StyleBoxFlat_ww13c")
-Button/styles/focus = SubResource("StyleBoxFlat_2vi4u")
-Button/styles/hover = SubResource("StyleBoxFlat_iyhd3")
 Button/styles/normal = SubResource("StyleBoxFlat_kvkwd")
-Button/styles/pressed = SubResource("StyleBoxFlat_ok3qw")
+HSlider/constants/center_grabber = 0
+HSlider/constants/grabber_offset = 0
+HSlider/icons/grabber = ExtResource("2_qr0js")
+HSlider/icons/grabber_disabled = ExtResource("2_qr0js")
+HSlider/icons/grabber_highlight = ExtResource("2_qr0js")
+HSlider/icons/tick = SubResource("ImageTexture_hasv8")
+HSlider/styles/grabber_area = SubResource("StyleBoxFlat_0gj85")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_a0u1q")
+HSlider/styles/slider = SubResource("StyleBoxFlat_escdb")
