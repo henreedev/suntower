@@ -54,11 +54,11 @@ func _process(delta):
 
 func menu_to_game():
 	tween_transition([remove_child.bind(start_menu), add_child.bind(game), \
-		switch_bgm.bind("Sun"), reduce_if_paused])
+		switch_bgm.bind("Sun"), reduce_if_paused, game.pause_menu.options_menu.refresh])
 
 func game_to_menu():
 	tween_transition([remove_child.bind(game), add_child.bind(start_menu), \
-	 switch_bgm.bind("Menu"), reset_music_volume])
+	 switch_bgm.bind("Menu"), reset_music_volume, start_menu.options_menu.refresh])
 
 func restart_game():
 	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy])

@@ -1,9 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://dklv0cnm5yyfk"]
+[gd_scene load_steps=10 format=3 uid="uid://dklv0cnm5yyfk"]
 
 [ext_resource type="Texture2D" uid="uid://bf5fgabairksk" path="res://assets/image/menu/options-menu.png" id="1_1co8j"]
 [ext_resource type="Script" path="res://scenes/menus/options_menu.gd" id="1_241lg"]
 [ext_resource type="PackedScene" uid="uid://b8abnqqvhhok3" path="res://scenes/menus/volume_bar.tscn" id="2_wab6s"]
 [ext_resource type="Theme" uid="uid://cn83a0xrk33ty" path="res://scenes/menus/themes/menu_theme.tres" id="2_x5up3"]
+[ext_resource type="Texture2D" uid="uid://b85wn1ecollk5" path="res://assets/image/menu/storm-section-icon.png" id="5_1e028"]
+[ext_resource type="Texture2D" uid="uid://1e26mqxvlw5i" path="res://assets/image/menu/sunny-section-icon.png" id="5_k75rh"]
+[ext_resource type="Texture2D" uid="uid://dmyjaoden5644" path="res://assets/image/menu/wind-section-icon.png" id="6_7yvux"]
+[ext_resource type="Texture2D" uid="uid://61g3v1x4p1mu" path="res://assets/image/menu/peace-section-icon.png" id="7_hbp4d"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_jywmd"]
 
 [node name="OptionsMenu" type="Control"]
 custom_minimum_size = Vector2(178, 0)
@@ -152,49 +158,54 @@ layout_mode = 2
 [node name="Height" type="HBoxContainer" parent="TabContainer/Stats/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Best Time" type="Label" parent="TabContainer/Stats/MarginContainer/VBoxContainer/Height"]
+[node name="BestHeight2" type="Label" parent="TabContainer/Stats/MarginContainer/VBoxContainer/Height"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Best height:"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TabContainer/Stats/MarginContainer/VBoxContainer/Height"]
+[node name="BestHeight" type="RichTextLabel" parent="TabContainer/Stats/MarginContainer/VBoxContainer/Height"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+bbcode_enabled = true
 text = "5493.23 sec."
 fit_content = true
 
 [node name="Section" type="HBoxContainer" parent="TabContainer/Stats/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Best Time" type="Label" parent="TabContainer/Stats/MarginContainer/VBoxContainer/Section"]
+[node name="BestSec" type="Label" parent="TabContainer/Stats/MarginContainer/VBoxContainer/Section"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Best section:"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TabContainer/Stats/MarginContainer/VBoxContainer/Section"]
-custom_minimum_size = Vector2(80, 0)
+[node name="BestSectionIcon" type="TextureRect" parent="TabContainer/Stats/MarginContainer/VBoxContainer/Section"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "5493.23 sec."
-fit_content = true
+texture = ExtResource("5_k75rh")
 
 [node name="BeatGame" type="HBoxContainer" parent="TabContainer/Stats/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Best Time" type="Label" parent="TabContainer/Stats/MarginContainer/VBoxContainer/BeatGame"]
+[node name="BeatGame2" type="Label" parent="TabContainer/Stats/MarginContainer/VBoxContainer/BeatGame"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Beat the game:"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TabContainer/Stats/MarginContainer/VBoxContainer/BeatGame"]
+[node name="BeatGame" type="RichTextLabel" parent="TabContainer/Stats/MarginContainer/VBoxContainer/BeatGame"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "5493.23 sec."
+bbcode_enabled = true
+text = "not yet"
 fit_content = true
 
 [node name="Congratulations" type="RichTextLabel" parent="TabContainer/Stats/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
-text = "Good job!"
+bbcode_enabled = true
+text = "[wave amp=10.0 freq=4connected=1][rainbow freq=1.0 sat=.4 val=1][center]Stormy out there...[/center][/rainbow][/wave]"
 fit_content = true
 
 [node name="Speedrun" type="TabBar" parent="TabContainer"]
@@ -209,6 +220,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_x5up3")
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -217,64 +229,94 @@ theme_override_constants/margin_bottom = 10
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Speedrun/MarginContainer"]
 layout_mode = 2
 
-[node name="Splits" type="Label" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Best Splits "
-horizontal_alignment = 1
+theme_override_constants/separation = 19
+alignment = 1
+
+[node name="Splits" type="Label" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Best Splits"
+
+[node name="Splits2" type="Label" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "PR's Splits"
+label_settings = SubResource("LabelSettings_jywmd")
 
 [node name="StormSplit" type="HBoxContainer" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Best Time" type="Label" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit"]
-custom_minimum_size = Vector2(80, 0)
+[node name="TextureRect" type="TextureRect" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit"]
 layout_mode = 2
-text = "Stormy: "
+texture = ExtResource("5_k75rh")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit"]
-custom_minimum_size = Vector2(80, 0)
+[node name="StormSplit" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit"]
+custom_minimum_size = Vector2(73.405, 0)
 layout_mode = 2
+bbcode_enabled = true
+text = "5493.23 sec."
+fit_content = true
+
+[node name="PRStormSplit" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit"]
+custom_minimum_size = Vector2(73.405, 0)
+layout_mode = 2
+bbcode_enabled = true
 text = "5493.23 sec."
 fit_content = true
 
 [node name="WindSplit" type="HBoxContainer" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Best Time" type="Label" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit"]
-custom_minimum_size = Vector2(80, 0)
+[node name="TextureRect" type="TextureRect" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit"]
 layout_mode = 2
-text = "Windy: "
+texture = ExtResource("5_1e028")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit"]
-custom_minimum_size = Vector2(80, 0)
+[node name="WindSplit" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit"]
+custom_minimum_size = Vector2(73.405, 0)
 layout_mode = 2
+bbcode_enabled = true
+text = "5493.23 sec."
+fit_content = true
+
+[node name="PRWindSplit" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit"]
+custom_minimum_size = Vector2(73.405, 0)
+layout_mode = 2
+bbcode_enabled = true
 text = "5493.23 sec."
 fit_content = true
 
 [node name="PeaceSplit" type="HBoxContainer" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Best Time" type="Label" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit"]
-custom_minimum_size = Vector2(80, 0)
+[node name="TextureRect" type="TextureRect" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit"]
 layout_mode = 2
-text = "Peaceful: "
+texture = ExtResource("6_7yvux")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit"]
-custom_minimum_size = Vector2(80, 0)
+[node name="PeaceSplit" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit"]
+custom_minimum_size = Vector2(73.405, 0)
 layout_mode = 2
+bbcode_enabled = true
+text = "5493.23 sec."
+fit_content = true
+
+[node name="PRPeaceSplit" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit"]
+custom_minimum_size = Vector2(73.405, 0)
+layout_mode = 2
+bbcode_enabled = true
 text = "5493.23 sec."
 fit_content = true
 
 [node name="EscapeSplit" type="HBoxContainer" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Best Time" type="Label" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit"]
-custom_minimum_size = Vector2(80, 0)
+[node name="TextureRect" type="TextureRect" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit"]
 layout_mode = 2
-text = "Escape: "
+texture = ExtResource("7_hbp4d")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit"]
-custom_minimum_size = Vector2(80, 0)
+[node name="EscapeSplit" type="RichTextLabel" parent="TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit"]
+custom_minimum_size = Vector2(73.405, 0)
 layout_mode = 2
+bbcode_enabled = true
 text = "5493.23 sec."
 fit_content = true
 

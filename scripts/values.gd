@@ -14,6 +14,7 @@ static var speedrun_mode = false
 # user stats
 static var best_time := -1.0
 static var best_section_time_splits : Array[float] = [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
+static var pr_section_time_splits : Array[float] = [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
 static var max_section_reached : Tower.Weather = Tower.Weather.SUNNY
 static var max_height_reached := 0
 static var victory_count := 0
@@ -26,7 +27,7 @@ static var won := false
 
 static func toggle_speedrun_mode(on : bool):
 	speedrun_mode = on
-	skip_cutscene = skip_cutscene and on # turn off if on
+	skip_cutscene = skip_cutscene and on # turn off if speedrun mode on
 
 static func increment_time(delta : float):
 	if not won:
@@ -52,9 +53,14 @@ static func reach_section(section : Tower.Weather):
 
 static func win():
 	won = true
+	reach_section(Tower.Weather.VICTORY)
 	# update best time if this time is better
 	if time < best_time or best_time == -1:
+		# new PR
 		best_time = time
+		# copy over splits for this PR
+		for i in range(len(best_section_time_splits)):
+			pr_section_time_splits[i] = best_section_time_splits[i]
 	victory_count += 1
 	save_user_data()
 
@@ -71,6 +77,7 @@ static func save_user_data():
 	config.set_value("settings", "sfx_volume", VolumeBar.sfx_volume)
 	config.set_value("stats", "best_time", best_time)
 	config.set_value("stats", "best_section_time_splits", best_section_time_splits)
+	config.set_value("stats", "pr_section_time_splits", pr_section_time_splits)
 	config.set_value("stats", "max_section_reached", max_section_reached)
 	config.set_value("stats", "max_height_reached", max_height_reached)
 	config.set_value("stats", "victory_count", victory_count)
@@ -103,6 +110,8 @@ static func load_user_data():
 					best_time = value
 				"best_section_time_splits":
 					best_section_time_splits = value
+				"pr_section_time_splits":
+					pr_section_time_splits = value
 				"max_section_reached":
 					max_section_reached = value
 				"max_height_reached":

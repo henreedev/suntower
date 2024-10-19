@@ -109,6 +109,7 @@ corner_detail = 1
 
 [resource]
 default_font = ExtResource("1_0lvj4")
+default_font_size = 16
 /fonts/font = ExtResource("1_0lvj4")
 Button/colors/font_color = Color(0.581034, 0.581033, 0.581033, 1)
 Button/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)

@@ -85,6 +85,7 @@ func start_sunny():
 		modulate_tween.tween_property($CanvasModulate, "color", sunny_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_sun_bar()
 		SceneManager.instance.switch_bgm("Sun")
+		Values.reach_section(weather)
 
 func start_stormy():
 	if not weather == Weather.STORMY:
@@ -99,6 +100,7 @@ func start_stormy():
 		SceneManager.instance.switch_bgm("Storm")
 		_player.disable_wind_particles()
 		_lights.set_wind_mode(false)
+		Values.reach_section(weather)
 
 
 func start_windy():
@@ -115,10 +117,10 @@ func start_windy():
 		SceneManager.instance.switch_bgm("Wind")
 		_player.enable_wind_particles()
 		_lights.set_wind_mode(true)
+		Values.reach_section(weather)
 
 func start_peaceful():
 	if not weather == Weather.PEACEFUL:
-		print("STARTED PEACEFUL")
 		weather = Weather.PEACEFUL
 		if modulate_tween:
 			modulate_tween.kill()
@@ -130,6 +132,7 @@ func start_peaceful():
 		SceneManager.instance.switch_bgm("Peaceful")
 		_player.disable_wind_particles()
 		_lights.set_wind_mode(false)
+		Values.reach_section(weather)
 
 func win():
 	if not Values.won:
