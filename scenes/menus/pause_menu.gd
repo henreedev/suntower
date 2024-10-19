@@ -2,6 +2,8 @@ extends CanvasLayer
 
 var just_unpaused = false
 
+@onready var options_menu : OptionsMenu = %OptionsMenu
+
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		unpause()
@@ -31,4 +33,4 @@ func _on_menu_button_pressed():
 
 
 func _on_options_button_pressed():
-	pass # Replace with function body.
+	options_menu.toggle()

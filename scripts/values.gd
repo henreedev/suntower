@@ -5,6 +5,7 @@ static var config : ConfigFile = ConfigFile.new()
 static var ENCRYPTION_KEY = PackedByteArray([1, 2, 3, 69, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 						   17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32])
 const SAVE_PATH = "user://user-data.cfg"
+static var initialized = false
 
 # user settings 
 static var skip_cutscene = false
@@ -73,16 +74,16 @@ static func save_user_data():
 	config.set_value("stats", "max_section_reached", max_section_reached)
 	config.set_value("stats", "max_height_reached", max_height_reached)
 	config.set_value("stats", "victory_count", victory_count)
-	var err = config.save(SAVE_PATH)
-	#var err = config.save_encrypted(SAVE_PATH, ENCRYPTION_KEY)
+	#var err = config.save(SAVE_PATH)
+	var err = config.save_encrypted(SAVE_PATH, ENCRYPTION_KEY)
 	if err != OK:
 		print("ERROR SAVING DATA: " + str(err))
 	else:
 		print("SAVING SUCCESSFUL")
 
 static func load_user_data():
-	#var err = config.load_encrypted(SAVE_PATH, ENCRYPTION_KEY)
-	var err = config.load(SAVE_PATH)
+	var err = config.load_encrypted(SAVE_PATH, ENCRYPTION_KEY)
+	#var err = config.load(SAVE_PATH)
 	if err != OK:
 		print("ERROR LOADING DATA: " + str(err))
 	else:
@@ -114,3 +115,4 @@ static func load_user_data():
 					VolumeBar.music_volume = value
 				"sfx_volume": 
 					VolumeBar.sfx_volume = value
+	initialized = true

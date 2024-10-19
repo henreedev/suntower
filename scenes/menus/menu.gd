@@ -5,6 +5,7 @@ var alternate := false
 var rate = 0.652 * 2
 
 @onready var title_blur = $Background/TitleBlur
+@onready var options_menu : OptionsMenu = $OptionsMenu
 
 
 # Called when the node enters the scene tree for the first time.
@@ -23,7 +24,7 @@ func _on_start_button_pressed():
 	SceneManager.instance.menu_to_game()
 
 func _on_options_button_pressed():
-	pass # Replace with function body.
+	options_menu.toggle()
 
 func _on_quit_button_pressed():
 	SceneManager.instance.quit_game()

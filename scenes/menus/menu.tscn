@@ -194,6 +194,7 @@ zoom = Vector2(4, 4)
 script = SubResource("GDScript_4vqcu")
 
 [node name="OptionsMenu" parent="." instance=ExtResource("23_q2bfs")]
+layout_mode = 1
 offset_left = 3.0
 offset_top = -26.0
 offset_right = 154.0
