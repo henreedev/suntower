@@ -21,6 +21,7 @@ var level_switch_tween : Tween
 @onready var audio_stream_player: AudioStreamPlayer = $AudioStreamPlayer
 @onready var game : Main = $Main
 @onready var start_menu = $Menu
+@onready var victory_sequence : VictorySequence = $VictorySequence
 @onready var color_rect: ColorRect = $CanvasLayer/ColorRect
 @onready var animated_sprite_2d: AnimatedSprite2D = $CanvasLayer/AnimatedSprite2D
 
@@ -33,10 +34,11 @@ func _ready():
 	playback = audio_stream_player.get_stream_playback()
 	stream = audio_stream_player.stream
 	base_volume = audio_stream_player.volume_db
-	_setup_game()
+	_setup()
 
 
-func _setup_game():
+func _setup():
+	remove_child(victory_sequence)
 	remove_child(game)
 	game.flower_head.play_animation_on_start = should_play_cutscene
 	should_play_cutscene = false
@@ -60,6 +62,14 @@ func game_to_menu():
 	tween_transition([remove_child.bind(game), add_child.bind(start_menu), \
 	 switch_bgm.bind("Menu"), reset_music_volume, start_menu.options_menu.refresh])
 
+func game_to_victory():
+	tween_transition([remove_child.bind(start_menu), add_child.bind(game), \
+		switch_bgm.bind("VictoryLeadIn"), victory_sequence.play_sequence], 0)
+
+func victory_to_menu():
+	tween_transition([remove_child.bind(victory_sequence), add_child.bind(start_menu), \
+	 switch_bgm.bind("Menu"), start_menu.options_menu.refresh])
+
 func restart_game():
 	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy, Values.reset])
 
@@ -74,22 +84,24 @@ func switch_bgm(clip_name : String):
 	playback.switch_to_clip_by_name(clip_name)
 
 
-func tween_transition(method_calls : Array[Callable]):
+func tween_transition(method_calls : Array[Callable], dur := 0.75, victory_to_menu := false):
 	if level_switch_tween:
 		level_switch_tween.kill()
 	level_switch_tween = create_tween()
-	level_switch_tween.tween_property(color_rect, "modulate:a", 1.0, 0.75)\
+	if victory_to_menu:
+		print("TODO custom transition from victory to menu")
+	level_switch_tween.tween_property(color_rect, "modulate:a", 1.0, dur)\
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	level_switch_tween.parallel().tween_property(animated_sprite_2d, "modulate:a", 1.0, 0.75)\
+	level_switch_tween.parallel().tween_property(animated_sprite_2d, "modulate:a", 1.0, dur)\
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	for callable : Callable in method_calls:
 		level_switch_tween.tween_callback(callable)
-	level_switch_tween.tween_property(color_rect, "modulate:a", 0.0, 0.5)\
+	level_switch_tween.tween_property(color_rect, "modulate:a", 0.0, dur * 0.67)\
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)\
-		.set_delay(0.25)
-	level_switch_tween.parallel().tween_property(animated_sprite_2d, "modulate:a", 0.0, 0.5)\
+		.set_delay(dur * 0.33)
+	level_switch_tween.parallel().tween_property(animated_sprite_2d, "modulate:a", 0.0, dur * 0.67)\
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)\
-		.set_delay(0.25)
+		.set_delay(dur * 0.33)
 
 func reduce_music_volume(duration := 0.75):
 	if volume_tween:

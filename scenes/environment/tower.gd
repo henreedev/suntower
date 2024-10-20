@@ -136,11 +136,14 @@ func start_peaceful():
 
 func win():
 	if not Values.won:
-		var win_tween := create_tween()
-		win_tween.tween_property(_player.camera_2d, "zoom", Vector2(4, 4), 2.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-		win_tween.tween_property(main.color_rect, "color:a", 1.0, 2.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT) 
+		_player.freeze = true
 		Values.update_height(_player.get_height())
 		Values.win()
+		# fade out and switch to victory sequence
+		var win_tween := create_tween().set_parallel()
+		win_tween.tween_property(_player.camera_2d, "zoom", Vector2(6, 6), 2.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		win_tween.tween_property(main.color_rect, "color:a", 1.0, 2.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT) 
+		win_tween.tween_callback(SceneManager.instance.game_to_victory).set_delay(2.5)
 
 
 

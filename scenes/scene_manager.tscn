@@ -1,8 +1,9 @@
-[gd_scene load_steps=23 format=3 uid="uid://jvuqketuhc3e"]
+[gd_scene load_steps=24 format=3 uid="uid://jvuqketuhc3e"]
 
 [ext_resource type="Script" path="res://scenes/scene_manager.gd" id="1_du78n"]
 [ext_resource type="PackedScene" uid="uid://cjl7hh0kgvrb8" path="res://scenes/main.tscn" id="2_axfdj"]
 [ext_resource type="PackedScene" uid="uid://c7w06rdclh4r0" path="res://scenes/menus/menu.tscn" id="2_sf0c0"]
+[ext_resource type="PackedScene" uid="uid://qaj6su1qqv6p" path="res://scenes/victory_sequence.tscn" id="4_ssjer"]
 [ext_resource type="AudioStream" uid="uid://bfw5tgtp7tefi" path="res://assets/sound/menu-bgm.mp3" id="5_21kdo"]
 [ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/sun-bgm.mp3" id="6_0ik4c"]
 [ext_resource type="AudioStream" uid="uid://dmb7q4tmk1afv" path="res://assets/sound/gwj-test2.mp3" id="7_6xiwy"]
@@ -11,7 +12,7 @@
 [ext_resource type="AudioStream" uid="uid://yycwfoeimnw7" path="res://assets/sound/wind-bgm.mp3" id="9_10mur"]
 
 [sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_hcqxd"]
-clip_count = 12
+clip_count = 13
 clip_0/name = &"Menu"
 clip_0/stream = ExtResource("5_21kdo")
 clip_0/auto_advance = 0
@@ -45,8 +46,13 @@ clip_9/next_clip = 10
 clip_10/name = &"Peaceful"
 clip_10/stream = ExtResource("7_6xiwy")
 clip_10/auto_advance = 0
-clip_11/name = &"Victory"
-clip_11/auto_advance = 0
+clip_11/name = &"VictoryLeadIn"
+clip_11/stream = ExtResource("6_0ik4c")
+clip_11/auto_advance = 1
+clip_11/next_clip = 12
+clip_12/name = &"Victory"
+clip_12/stream = ExtResource("9_10mur")
+clip_12/auto_advance = 0
 _transitions = {
 Vector2i(1, 1): {
 "fade_beats": 1,
@@ -210,6 +216,8 @@ offset_top = 324.0
 offset_right = 576.0
 offset_bottom = 324.0
 grow_vertical = 0
+
+[node name="VictorySequence" parent="." instance=ExtResource("4_ssjer")]
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamInteractive_hcqxd")
