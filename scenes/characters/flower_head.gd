@@ -8,10 +8,10 @@ const GRAVITY = -0.2
 const vine_root_offset := Vector2(0, 5)
 @export var vine_seg : PackedScene
 @export var play_animation_on_start := false
-#@export var max_extended_len := 125.0
-#const BASE_MAX_EXTENDED_LEN := 125.0
-@export var max_extended_len := 1250.0
-const BASE_MAX_EXTENDED_LEN := 1250.0
+@export var max_extended_len := 125.0
+const BASE_MAX_EXTENDED_LEN := 125.0
+#@export var max_extended_len := 1250.0
+#const BASE_MAX_EXTENDED_LEN := 1250.0
 #const EXTEND_SPEED = 90.0
 const EXTEND_SPEED = 110.0
 var extend_speed_mod = 1.0
@@ -100,7 +100,7 @@ var wind_dot : float # Used in speed calculation in beam, and for bar modulate
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# NOTE uncomment this to view entire level 
-	create_tween().set_loops().tween_property(self, "position", Vector2(0, -4000), 5.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	#create_tween().set_loops().tween_property(self, "position", Vector2(0, -4000), 5.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	_spawn_vine()
 	add_collision_exception_with(_player)
 	if scene_manager.should_play_cutscene:
