@@ -3,7 +3,8 @@ class_name VictorySequence
 
 const LEAD_IN_ZOOM := Vector2(6, 6)
 const FINAL_ZOOM := Vector2(9, 9)
-const FADE_DURATION := 0.5
+const FADE_DURATION := 1.0
+const LONG_FADE_DURATION := 3.0
 
 var fade_tween : Tween
 
@@ -17,8 +18,8 @@ var loops_until_jump := 4
 @onready var color_rect : ColorRect = $ColorRect
 @onready var menu_button : TextureButton = $MenuButton
 
-@onready var peek_anim_dur = lead_in_anims.sprite_frames.get_frame_count("peek") * 1.0 / lead_in_anims.sprite_frames.get_animation_speed("peek")
-@onready var throw_anim_dur = lead_in_anims.sprite_frames.get_frame_count("throw") * 1.0 / lead_in_anims.sprite_frames.get_animation_speed("throw")
+@onready var peek_anim_dur = _get_anim_dur(lead_in_anims.sprite_frames, "peek")
+@onready var throw_anim_dur = _get_anim_dur(lead_in_anims.sprite_frames, "throw")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -44,6 +45,9 @@ func play_sequence():
 	on_final_splash = false
 	final_splash_loops = 0
 	
+	# wait initial delay
+	await Timing.create_timer(self, 4.0)
+	
 	# show first animation
 	fade(false)
 	lead_in_anims.play()
@@ -51,7 +55,7 @@ func play_sequence():
 	fade(true)
 	
 	# wait
-	await Timing.create_timer(self, 2.0)
+	await Timing.create_timer(self, 3.0)
 	
 	# show second animation
 	fade(false)
@@ -61,8 +65,9 @@ func play_sequence():
 	fade(true)
 	
 	# wait
-	await Timing.create_timer(self, 2.0)
+	await Timing.create_timer(self, 4.0)
 	# show final splash. allow this class to begin affecting final splash animations
+	fade(false, LONG_FADE_DURATION)
 	lead_in_anims.visible = false
 	final_splash.visible = true
 	cam.zoom = FINAL_ZOOM
@@ -85,6 +90,13 @@ func fade(to_opaque : bool, dur := FADE_DURATION):
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 
 
+func _get_anim_dur(sprite_frames : SpriteFrames, anim_name : String):
+	var anim_len := sprite_frames.get_frame_count(anim_name)
+	var anim_speed := 1.0 / sprite_frames.get_animation_speed(anim_name)
+	var total_dur := 0.0
+	for i in range(anim_len):
+		total_dur += anim_speed * sprite_frames.get_frame_duration(anim_name, i)
+	return total_dur
 func _on_menu_button_pressed():
 	SceneManager.instance.victory_to_menu()
 
@@ -108,5 +120,5 @@ func _on_final_splash_animation_looped():
 func _on_final_splash_animation_finished():
 	match final_splash.animation:
 		"growing", "jumping":
-			final_splash.animation = "growing_done"
+			final_splash.animation = "grown"
 			final_splash.play()

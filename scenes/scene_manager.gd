@@ -6,7 +6,6 @@ class_name SceneManager
 const GAME_SCENE = preload("res://scenes/main.tscn")
 
 static var instance : SceneManager
-@export var should_play_cutscene = false
 
 var base_volume : float
 var player_volume_offset := 0.0
@@ -40,8 +39,6 @@ func _ready():
 func _setup():
 	remove_child(victory_sequence)
 	remove_child(game)
-	game.flower_head.play_animation_on_start = should_play_cutscene
-	should_play_cutscene = false
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -63,7 +60,7 @@ func game_to_menu():
 	 switch_bgm.bind("Menu"), reset_music_volume, start_menu.options_menu.refresh])
 
 func game_to_victory():
-	tween_transition([remove_child.bind(start_menu), add_child.bind(game), \
+	tween_transition([remove_child.bind(game), add_child.bind(victory_sequence), \
 		switch_bgm.bind("VictoryLeadIn"), victory_sequence.play_sequence], 0)
 
 func victory_to_menu():
@@ -78,7 +75,8 @@ func _set_game_to_new_copy():
 	remove_child(game)
 	game = GAME_SCENE.instantiate()
 	add_child(game)
-	game.flower_head.play_animation_on_start = should_play_cutscene
+	game.flower_head.play_animation_on_start = not Values.skip_cutscene
+	Values.skip_cutscene = false
 
 func switch_bgm(clip_name : String):
 	playback.switch_to_clip_by_name(clip_name)

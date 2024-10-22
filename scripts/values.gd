@@ -27,7 +27,7 @@ static var won := false
 
 static func toggle_speedrun_mode(on : bool):
 	speedrun_mode = on
-	skip_cutscene = skip_cutscene and on # turn off if speedrun mode on
+	skip_cutscene = not on
 
 static func increment_time(delta : float):
 	if not won:
@@ -62,6 +62,7 @@ static func win():
 		for i in range(len(best_section_time_splits)):
 			pr_section_time_splits[i] = best_section_time_splits[i]
 	victory_count += 1
+	skip_cutscene = not speedrun_mode
 	save_user_data()
 
 static func reset():

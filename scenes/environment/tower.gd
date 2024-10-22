@@ -136,7 +136,7 @@ func start_peaceful():
 
 func win():
 	if not Values.won:
-		_player.freeze = true
+		_player.set_deferred("freeze", true)
 		Values.update_height(_player.get_height())
 		Values.win()
 		# fade out and switch to victory sequence
