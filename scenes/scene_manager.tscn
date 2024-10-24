@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://jvuqketuhc3e"]
+[gd_scene load_steps=25 format=3 uid="uid://jvuqketuhc3e"]
 
 [ext_resource type="Script" path="res://scenes/scene_manager.gd" id="1_du78n"]
 [ext_resource type="PackedScene" uid="uid://cjl7hh0kgvrb8" path="res://scenes/main.tscn" id="2_axfdj"]
@@ -10,6 +10,7 @@
 [ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/storm-bgm.mp3" id="8_xc61x"]
 [ext_resource type="Texture2D" uid="uid://dfrbet6fuea5a" path="res://assets/image/flower/flower-spritesheet.png" id="9_7p0hk"]
 [ext_resource type="AudioStream" uid="uid://yycwfoeimnw7" path="res://assets/sound/wind-bgm.mp3" id="9_10mur"]
+[ext_resource type="Texture2D" uid="uid://b264wep2a0c6p" path="res://assets/image/menu/victory-transition.png" id="11_usj0q"]
 
 [sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_hcqxd"]
 clip_count = 13
@@ -245,3 +246,19 @@ scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_x1nxh")
 animation = &"idle"
 autoplay = "idle"
+
+[node name="VictoryColorRect" type="ColorRect" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.933333, 0.713726, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(576, 342)
+scale = Vector2(4, 4)
+texture = ExtResource("11_usj0q")

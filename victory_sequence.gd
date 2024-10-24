@@ -3,7 +3,8 @@ class_name VictorySequence
 
 const LEAD_IN_ZOOM := Vector2(6, 6)
 const FINAL_ZOOM := Vector2(9, 9)
-const FADE_DURATION := 1.0
+const FADE_IN_DURATION := 1.5
+const FADE_OUT_DURATION := 1.0
 const LONG_FADE_DURATION := 3.0
 
 var fade_tween : Tween
@@ -46,12 +47,12 @@ func play_sequence():
 	final_splash_loops = 0
 	
 	# wait initial delay
-	await Timing.create_timer(self, 4.0)
+	await Timing.create_timer(self, 2.75)
 	
 	# show first animation
 	fade(false)
 	lead_in_anims.play()
-	await Timing.create_timer(self, peek_anim_dur - FADE_DURATION)
+	await Timing.create_timer(self, peek_anim_dur - FADE_OUT_DURATION)
 	fade(true)
 	
 	# wait
@@ -61,8 +62,8 @@ func play_sequence():
 	fade(false)
 	lead_in_anims.animation = "throw"
 	lead_in_anims.play()
-	await Timing.create_timer(self, throw_anim_dur - FADE_DURATION)
-	fade(true)
+	await Timing.create_timer(self, throw_anim_dur - LONG_FADE_DURATION)
+	fade(true, LONG_FADE_DURATION)
 	
 	# wait
 	await Timing.create_timer(self, 4.0)
@@ -83,7 +84,10 @@ func play_sequence():
 	
 
 
-func fade(to_opaque : bool, dur := FADE_DURATION):
+func fade(to_opaque : bool, dur := -1):
+	if dur == -1:
+		# no custom duration
+		dur = FADE_OUT_DURATION if to_opaque else FADE_IN_DURATION
 	if fade_tween: fade_tween.kill()
 	fade_tween = create_tween()
 	fade_tween.tween_property(color_rect, "modulate:a", 1.0 if to_opaque else 0.0, dur)\
@@ -97,6 +101,7 @@ func _get_anim_dur(sprite_frames : SpriteFrames, anim_name : String):
 	for i in range(anim_len):
 		total_dur += anim_speed * sprite_frames.get_frame_duration(anim_name, i)
 	return total_dur
+
 func _on_menu_button_pressed():
 	SceneManager.instance.victory_to_menu()
 
@@ -110,12 +115,14 @@ func _on_final_splash_animation_looped():
 				final_splash.play()
 			else:
 				final_splash_loops += 1
-		"growing_done":
+		"grown":
 			if final_splash_loops == loops_until_jump:
 				final_splash_loops = 0
-				loops_until_jump = randi_range(3, 8)
+				loops_until_jump = randi_range(1, 6)
 				final_splash.animation = "jumping"
 				final_splash.play()
+			else:
+				final_splash_loops += 1
 
 func _on_final_splash_animation_finished():
 	match final_splash.animation:

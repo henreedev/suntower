@@ -97,10 +97,10 @@ func _refresh_labels():
 	
 	var congrats = "Good luck!"
 	var congrats_color = ColorSetting.NONE
-	match Values.victory_count:
-		10:
+	if Values.victory_count > 9:
 			congrats = "you won."
 			congrats_color = ColorSetting.RAINBOW
+	match Values.victory_count:
 		9:
 			congrats = "you must be andre. if not ill pay you $15"
 			congrats_color = ColorSetting.RAINBOW

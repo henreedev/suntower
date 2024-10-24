@@ -23,7 +23,10 @@ var level_switch_tween : Tween
 @onready var victory_sequence : VictorySequence = $VictorySequence
 @onready var color_rect: ColorRect = $CanvasLayer/ColorRect
 @onready var animated_sprite_2d: AnimatedSprite2D = $CanvasLayer/AnimatedSprite2D
+@onready var victory_color_rect: ColorRect = $CanvasLayer/VictoryColorRect
+@onready var sprite_2d: Sprite2D = $CanvasLayer/Sprite2D
 
+var can_transition := true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -65,7 +68,7 @@ func game_to_victory():
 
 func victory_to_menu():
 	tween_transition([remove_child.bind(victory_sequence), add_child.bind(start_menu), \
-	 switch_bgm.bind("Menu"), start_menu.options_menu.refresh])
+	 switch_bgm.bind("Menu"), start_menu.options_menu.refresh], 1.0, true)
 
 func restart_game():
 	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy, Values.reset])
@@ -83,23 +86,34 @@ func switch_bgm(clip_name : String):
 
 
 func tween_transition(method_calls : Array[Callable], dur := 0.75, victory_to_menu := false):
-	if level_switch_tween:
-		level_switch_tween.kill()
-	level_switch_tween = create_tween()
-	if victory_to_menu:
-		print("TODO custom transition from victory to menu")
-	level_switch_tween.tween_property(color_rect, "modulate:a", 1.0, dur)\
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	level_switch_tween.parallel().tween_property(animated_sprite_2d, "modulate:a", 1.0, dur)\
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	for callable : Callable in method_calls:
-		level_switch_tween.tween_callback(callable)
-	level_switch_tween.tween_property(color_rect, "modulate:a", 0.0, dur * 0.67)\
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)\
-		.set_delay(dur * 0.33)
-	level_switch_tween.parallel().tween_property(animated_sprite_2d, "modulate:a", 0.0, dur * 0.67)\
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)\
-		.set_delay(dur * 0.33)
+	if can_transition:
+		can_transition = false
+		if level_switch_tween:
+			level_switch_tween.kill()
+		level_switch_tween = create_tween()
+		
+		var fade_rect := color_rect
+		var sprite = animated_sprite_2d
+		if victory_to_menu:
+			fade_rect = victory_color_rect
+			sprite = sprite_2d
+		
+		level_switch_tween.tween_property(fade_rect, "modulate:a", 1.0, dur)\
+			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		level_switch_tween.parallel().tween_property(sprite, "modulate:a", 1.0, dur)\
+			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+			
+		for callable : Callable in method_calls:
+			level_switch_tween.tween_callback(callable)
+			
+		level_switch_tween.tween_property(fade_rect, "modulate:a", 0.0, dur * 0.67)\
+			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)\
+			.set_delay(dur * 0.33)
+		level_switch_tween.parallel().tween_property(sprite, "modulate:a", 0.0, dur * 0.67)\
+			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)\
+			.set_delay(dur * 0.33)
+		
+		level_switch_tween.tween_property(self, "can_transition", true, 0.0)
 
 func reduce_music_volume(duration := 0.75):
 	if volume_tween:
