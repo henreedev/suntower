@@ -50,10 +50,10 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-position = Vector2(0, 6)
+position = Vector2(41, -3578)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-position = Vector2(0, -44)
+position = Vector2(41, -3628)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 offset = Vector2(0, -100)
@@ -139,6 +139,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 0.933333, 0.713726, 0)
+metadata/_edit_lock_ = true
 
 [node name="PauseMenu" parent="." instance=ExtResource("11_swgty")]
 

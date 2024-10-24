@@ -50,7 +50,7 @@ polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -1
 size = Vector2(453, 724.999)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j7jso"]
-size = Vector2(452.999, 450)
+size = Vector2(452.999, 634)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bd455"]
 polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -166.935, -2727)
@@ -211,7 +211,7 @@ gravity_direction = Vector2(1, 0)
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PeacefulArea"]
-position = Vector2(-0.430507, -2953)
+position = Vector2(-0.430507, -2861)
 shape = SubResource("RectangleShape2D_j7jso")
 debug_color = Color(0.92549, 0.521569, 0.32549, 0)
 
