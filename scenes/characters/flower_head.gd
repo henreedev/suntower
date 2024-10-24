@@ -97,12 +97,16 @@ var wind_dot : float # Used in speed calculation in beam, and for bar modulate
 @onready var beam_particles: GPUParticles2D = %BeamParticles
 @onready var beam_particles_mat: ParticleProcessMaterial = beam_particles.process_material
 
+@export var skip_game := false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# NOTE uncomment this to view entire level 
-	create_tween().set_loops().tween_property(self, "position", Vector2(0, -4000), 5.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	if skip_game:
+		create_tween().set_loops().tween_property(self, "position", Vector2(0, -4000), 5.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	_spawn_vine()
 	add_collision_exception_with(_player)
+	camera_2d.limit_top = tower.cam_max_marker.global_position.y
 	if play_animation_on_start:
 		_animating = true
 	begin_inactive()

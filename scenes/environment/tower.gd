@@ -40,6 +40,7 @@ var modulate_tween : Tween
 var lightning_striking = false
 var lock_lights = false
 
+
 # Wind variables
 const BASE_WIND_STRENGTH := 70.0 # px/s^2
 const WIND_STRENGTH_HIGH_PASS = 0.5 # wind strength value under which wind strength becomes 0
@@ -61,6 +62,7 @@ var swap_tween : Tween
 
 @onready var _sunrays : SunRays = $SunRays
 @onready var main : Main = get_tree().get_first_node_in_group("main")
+@onready var cam_max_marker : Marker2D = $CamMaxMarker
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
