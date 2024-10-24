@@ -23,7 +23,6 @@ func _enter_tree() -> void:
 	_update_all_bars()
 
 func update_self():
-	print("master = ", master_volume)
 	match bus_name:
 		"Master": 
 			value = master_volume
@@ -38,7 +37,6 @@ func _update_all_bars():
 		bar.update_self()
 
 func _on_value_changed(value : float):
-	print("value changed to ", value)
 	AudioServer.set_bus_volume_db(bus_index, linear_to_db(lerpf(0.0, 1.25, value)))
 	match bus_name:
 		"Master": 

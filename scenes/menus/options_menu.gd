@@ -97,9 +97,7 @@ func _refresh_labels():
 	
 	var congrats = "Good luck!"
 	var congrats_color = ColorSetting.NONE
-	if Values.victory_count > 9:
-			congrats = "you won."
-			congrats_color = ColorSetting.RAINBOW
+	
 	match Values.victory_count:
 		9:
 			congrats = "you must be andre. if not ill pay you $15"
@@ -129,22 +127,26 @@ func _refresh_labels():
 			congrats = "Good job!"
 			congrats_color = ColorSetting.RAINBOW
 		_:
-			match Values.max_section_reached:
-				Tower.Weather.STORMY:
-					congrats = "Stormy out there..."
-				Tower.Weather.WINDY:
-					congrats = "Windy out there..."
-				Tower.Weather.PEACEFUL:
-					congrats = "So close..."
-				Tower.Weather.VICTORY:
-					congrats = "Good job!"
-				_:
-					if Values.max_height_reached < 500 and Values.max_height_reached > 0:
-						congrats = "you just got started... don't give up"
-						congrats_color = ColorSetting.PULSE_RED
-					else:
-						congrats = "Keep going!"
-						congrats_color = ColorSetting.PULSE_GREEN
+			if Values.victory_count > 9:
+				congrats = "you won."
+				congrats_color = ColorSetting.RAINBOW
+			else:
+				match Values.max_section_reached:
+					Tower.Weather.STORMY:
+						congrats = "Stormy out there..."
+					Tower.Weather.WINDY:
+						congrats = "Windy out there..."
+					Tower.Weather.PEACEFUL:
+						congrats = "So close..."
+					Tower.Weather.VICTORY:
+						congrats = "Good job!"
+					_:
+						if Values.max_height_reached < 500 and Values.max_height_reached > 0:
+							congrats = "you just got started... don't give up"
+							congrats_color = ColorSetting.PULSE_RED
+						else:
+							congrats = "Keep going!"
+							congrats_color = ColorSetting.PULSE_GREEN
 	_set_rich_text_label(congratulations, \
 		congrats, \
 		"", true, congrats_color, true)

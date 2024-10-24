@@ -3,7 +3,6 @@ extends Node2D
 class_name Main
 
 var hud_offset := Vector2(0,-50)
-var win = false
 var shake_strength = 0.0
 const SHAKE_DECAY_RATE = 20.0
 const RANDOM_SHAKE_STRENGTH = 30.0
@@ -108,13 +107,6 @@ func _process(delta):
 	# Shake bar if necessary
 	if shake_strength:
 		$CanvasLayer.offset = get_random_offset()
-	# Check for win
-	if flower_head.position.y <= -4000.0:
-		win = true
-	if win:
-		$CanvasLayer/Label.text = str($Stopwatch.time).pad_decimals(2)
-		$CanvasLayer/Label.visible = true
-		$Stopwatch.stop()
 
 func shake():
 	shake_strength = RANDOM_SHAKE_STRENGTH

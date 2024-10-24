@@ -112,7 +112,6 @@ func _ready():
 		no_cutscene_setup()
 
 func no_cutscene_setup():
-	get_tree().get_first_node_in_group("stopwatch").start()
 	create_tween().tween_property($Camera2D,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property($Camera2D, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
 	_set_electricity(0)
@@ -168,7 +167,6 @@ func play_spawn_animation():
 	await Timing.create_timer(self, 0.5)
 	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC)
 	_animating = false
-	get_tree().get_first_node_in_group("stopwatch").start()
 	get_tree().set_group("vine", "linear_damp", 1.0)
 
 func _connect_sunrays():

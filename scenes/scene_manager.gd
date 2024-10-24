@@ -55,8 +55,12 @@ func _process(delta):
 
 
 func menu_to_game():
-	tween_transition([remove_child.bind(start_menu), add_child.bind(game), \
-		switch_bgm.bind("Sun"), reduce_if_paused, game.pause_menu.options_menu.refresh])
+	if Values.won:
+		tween_transition([remove_child.bind(start_menu), add_child.bind(game), _set_game_to_new_copy, \
+			switch_bgm.bind("Sun"), reduce_if_paused, game.pause_menu.options_menu.refresh])
+	else:
+		tween_transition([remove_child.bind(start_menu), add_child.bind(game), \
+			switch_bgm.bind("Sun"), reduce_if_paused, game.pause_menu.options_menu.refresh])
 
 func game_to_menu():
 	tween_transition([remove_child.bind(game), add_child.bind(start_menu), \
@@ -71,9 +75,10 @@ func victory_to_menu():
 	 switch_bgm.bind("Menu"), start_menu.options_menu.refresh], 1.0, true)
 
 func restart_game():
-	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy, Values.reset])
+	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy])
 
 func _set_game_to_new_copy():
+	Values.reset()
 	game.queue_free()
 	remove_child(game)
 	game = GAME_SCENE.instantiate()

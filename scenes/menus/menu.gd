@@ -10,6 +10,7 @@ var rate = 0.652 * 2
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	create_tween().tween_property(self, "modulate", Color.WHITE, 2.0).from(Color.BLACK).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	animate_title()
 
 func animate_title():

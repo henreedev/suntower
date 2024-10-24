@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cjl7hh0kgvrb8"]
+[gd_scene load_steps=22 format=3 uid="uid://cjl7hh0kgvrb8"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_7xsfy"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
@@ -10,7 +10,6 @@
 [ext_resource type="Texture2D" uid="uid://bsy6qum2c4ub5" path="res://assets/image/ui/growbar-lightningbar.png" id="9_kkmna"]
 [ext_resource type="Texture2D" uid="uid://dr8bxndhr0tm5" path="res://assets/image/ui/growbar-sun.png" id="9_xggyo"]
 [ext_resource type="Texture2D" uid="uid://ca2w6exe7r1ed" path="res://assets/image/ui/growbar-lightning.png" id="10_iut7u"]
-[ext_resource type="Script" path="res://scenes/Stopwatch.gd" id="10_v3nai"]
 [ext_resource type="Texture2D" uid="uid://do1nlubiugans" path="res://assets/image/ui/wind-under.png" id="11_dw3tv"]
 [ext_resource type="PackedScene" uid="uid://b574p0trbhj2o" path="res://scenes/menus/pause_menu.tscn" id="11_swgty"]
 [ext_resource type="Texture2D" uid="uid://oob82gi6ut36" path="res://assets/image/ui/wind-over.png" id="12_fsejr"]
@@ -140,9 +139,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 0.933333, 0.713726, 0)
-
-[node name="Stopwatch" type="Node" parent="." groups=["stopwatch"]]
-script = ExtResource("10_v3nai")
 
 [node name="PauseMenu" parent="." instance=ExtResource("11_swgty")]
 

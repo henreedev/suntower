@@ -24,6 +24,28 @@ static var time := 0.0
 static var section_time_splits : Array[float] = [-1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
 static var won := false
 
+static func _print(
+	arg0:Variant=null,
+	arg1 :Variant=null,\
+	arg2 :Variant=null,\
+	arg3 :Variant=null,\
+	arg4 :Variant=null,\
+	arg5 :Variant=null,\
+	arg6 :Variant=null,\
+	arg7 :Variant=null,\
+	arg8 :Variant=null,\
+	arg9 :Variant=null) -> void:
+	
+	const verbose := false
+	if verbose: 
+		var args: Array[Variant] = [
+		arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9
+	  ].filter(func(value:Variant) -> bool: return value != null)
+
+		var string:String = "%s ".repeat(args.size()).strip_edges() % args
+
+		print(string)
+
 
 static func toggle_speedrun_mode(on : bool):
 	speedrun_mode = on
@@ -85,26 +107,25 @@ static func save_user_data():
 	#var err = config.save(SAVE_PATH)
 	var err = config.save_encrypted(SAVE_PATH, ENCRYPTION_KEY)
 	if err != OK:
-		print("ERROR SAVING DATA: " + str(err))
+		_print("ERROR SAVING DATA: " + str(err))
 	else:
-		print("SAVING SUCCESSFUL")
+		_print("SAVING SUCCESSFUL")
 
 static func load_user_data():
-	#return # FIXME remove
 	var err = config.load_encrypted(SAVE_PATH, ENCRYPTION_KEY)
 	#var err = config.load(SAVE_PATH)
 	if err != OK:
-		print("ERROR LOADING DATA: " + str(err))
+		_print("ERROR LOADING DATA: " + str(err))
 	else:
-		print("LOADING SUCCESSFUL")
+		_print("LOADING SUCCESSFUL")
 	for section: String in config.get_sections():
-		print(section, ":")
+		_print(section, ":")
 		for key: String in config.get_section_keys(section):
 			var value = config.get_value(section, key)
 			if value == null:
-				print("INVALID LOAD VALUE: " + section + ", " + key)
+				_print("INVALID LOAD VALUE: " + section + ", " + key)
 			else:
-				print("  ", key, ": ", value)
+				_print("  ", key, ": ", value)
 			match key:
 				"speedrun_mode":
 					speedrun_mode = value

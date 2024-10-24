@@ -1,4 +1,4 @@
-[gd_scene load_steps=83 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=85 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="1_700xu"]
@@ -191,6 +191,12 @@ height = 128
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_a4mkl"]
+polygon = PackedVector2Array(-190, -338, -190, -322, 189, -320, 189, -340)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_g7b60"]
+polygon = PackedVector2Array(-198, 210, -198, 237, 217, 242, 216, 212)
 
 [sub_resource type="Curve" id="Curve_qje61"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0733333, 0.428571), 0.0, 0.0, 0, 0, Vector2(0.253165, 0.262367), 0.0, 0.0, 0, 0, Vector2(0.607595, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -539,7 +545,16 @@ wait_time = 4.0
 
 [node name="Occluders" type="Node" parent="."]
 
+[node name="Node2D" type="Node2D" parent="Occluders"]
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Occluders/Node2D"]
+occluder = SubResource("OccluderPolygon2D_a4mkl")
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="Occluders/Node2D"]
+occluder = SubResource("OccluderPolygon2D_g7b60")
+
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
+remote_path = NodePath("../Occluders/Node2D")
 update_rotation = false
 
 [node name="Node" type="Node" parent="."]
