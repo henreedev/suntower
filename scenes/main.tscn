@@ -50,10 +50,10 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-position = Vector2(41, -3578)
+position = Vector2(0, 6)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-position = Vector2(41, -3628)
+position = Vector2(0, -44)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 offset = Vector2(0, -100)

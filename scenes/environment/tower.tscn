@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=28 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Script" path="res://scenes/environment/tower.gd" id="2_bq5o6"]
 [ext_resource type="Script" path="res://scenes/environment/Lights.gd" id="3_6s52w"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://d0r7row0y7nes" path="res://assets/image/environment/big-clouds.png" id="8_vofri"]
 [ext_resource type="PackedScene" uid="uid://cxiyhj8bmeppa" path="res://scenes/environment/level-chunks/sun/sun_chunk_1.tscn" id="11_uwevu"]
 [ext_resource type="PackedScene" uid="uid://c66ux8dtsf1vd" path="res://scenes/environment/level-chunks/storm/storm_chunk_1.tscn" id="12_effwr"]
+[ext_resource type="PackedScene" uid="uid://bmodcpfd7ap0y" path="res://scenes/environment/level-chunks/sun/tutorial_chunk.tscn" id="12_ihp26"]
 [ext_resource type="PackedScene" uid="uid://dvdi8qi1lsl6c" path="res://scenes/environment/level-chunks/wind/wind_chunk_1.tscn" id="13_cl4ft"]
 [ext_resource type="PackedScene" uid="uid://ca4fvc73x8ydq" path="res://scenes/environment/wind_burst_area.tscn" id="13_ptelv"]
 [ext_resource type="PackedScene" uid="uid://dh7b3um8nnq1j" path="res://scenes/environment/level-chunks/peaceful/peaceful_chunk_1.tscn" id="14_ne0fo"]
@@ -142,6 +143,9 @@ position = Vector2(180, 0)
 [node name="Sun" type="Node2D" parent="LevelChunks"]
 
 [node name="SunChunk1" parent="LevelChunks/Sun" instance=ExtResource("11_uwevu")]
+position = Vector2(-500, 0)
+
+[node name="TutorialChunk" parent="LevelChunks/Sun" instance=ExtResource("12_ihp26")]
 
 [node name="Storm" type="Node2D" parent="LevelChunks"]
 

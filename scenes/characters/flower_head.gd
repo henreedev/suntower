@@ -103,7 +103,7 @@ var wind_dot : float # Used in speed calculation in beam, and for bar modulate
 func _ready():
 	# NOTE uncomment this to view entire level 
 	if skip_game:
-		create_tween().set_loops().tween_property(self, "position", Vector2(0, -4000), 5.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		create_tween().set_loops().tween_property(self, "position", Vector2(0, -4000), 10.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	_spawn_vine()
 	add_collision_exception_with(_player)
 	camera_2d.limit_top = tower.cam_max_marker.global_position.y
