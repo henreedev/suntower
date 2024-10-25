@@ -171,6 +171,7 @@ func play_spawn_animation():
 	await Timing.create_timer(self, 0.5)
 	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC)
 	_animating = false
+	tower.tutorial_chunk.start_tutorial()
 	get_tree().set_group("vine", "linear_damp", 1.0)
 
 func _connect_sunrays():

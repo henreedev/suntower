@@ -54,6 +54,7 @@ var wind_burst_tween : Tween
 var wind_strength_anchor_height := 0.0 
 var swap_tween : Tween
 
+@onready var tutorial_chunk : Tutorial = $LevelChunks/Sun/TutorialChunk
 @onready var wind_area: Area2D = $WindArea
 @onready var _bg : Background = $ParallaxBackground
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
@@ -68,7 +69,7 @@ var swap_tween : Tween
 func _ready():
 	instance = self
 	create_tween().set_loops().tween_callback(do_lightning).set_delay(5.0)
-
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	_change_weather_on_progress()
