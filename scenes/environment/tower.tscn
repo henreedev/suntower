@@ -151,99 +151,100 @@ position = Vector2(-500, 0)
 
 [node name="StormChunk1" parent="LevelChunks/Storm" instance=ExtResource("12_effwr")]
 
-[node name="Wind" type="Node2D" parent="LevelChunks"]
-
-[node name="WindChunk1" parent="LevelChunks/Wind" instance=ExtResource("13_cl4ft")]
-
-[node name="Peaceful" type="Node2D" parent="LevelChunks"]
-
-[node name="PeacefulChunk1" parent="LevelChunks/Peaceful" instance=ExtResource("14_ne0fo")]
-
-[node name="StormArea" type="Area2D" parent="."]
+[node name="StormArea" type="Area2D" parent="LevelChunks/Storm"]
 monitorable = false
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StormArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LevelChunks/Storm/StormArea"]
 position = Vector2(0.0485694, -2045.5)
 shape = SubResource("RectangleShape2D_1ol0a")
 debug_color = Color(0.627451, 0.27451, 1, 0)
 
-[node name="StormCover" type="Polygon2D" parent="StormArea"]
+[node name="StormCover" type="Polygon2D" parent="LevelChunks/Storm/StormArea"]
 visible = false
 texture_repeat = 3
 texture = SubResource("GradientTexture2D_30wd8")
 polygon = PackedVector2Array(-176, -1369, -167, -1366, 167, -1366, 176, -1375, 176, -1522, -176, -1522)
 
-[node name="LightOccluder2D" type="LightOccluder2D" parent="StormArea"]
+[node name="LightOccluder2D" type="LightOccluder2D" parent="LevelChunks/Storm/StormArea"]
 position = Vector2(-2.37417e-05, 1)
 occluder = SubResource("OccluderPolygon2D_kmt2p")
 
-[node name="WindArea" type="Area2D" parent="."]
-monitorable = false
-gravity_point_center = Vector2(1, 0)
-gravity_direction = Vector2(1, 0)
-metadata/_edit_group_ = true
+[node name="Wind" type="Node2D" parent="LevelChunks"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WindArea"]
-position = Vector2(-0.426628, -3090.5)
-shape = SubResource("RectangleShape2D_5g0xp")
-debug_color = Color(0.282353, 0.27451, 0.282353, 0)
+[node name="WindChunk1" parent="LevelChunks/Wind" instance=ExtResource("13_cl4ft")]
 
-[node name="LightOccluder2D" type="LightOccluder2D" parent="WindArea"]
-position = Vector2(-2.37417e-05, 1)
-occluder = SubResource("OccluderPolygon2D_kmt2p")
+[node name="WindBursts" type="Node2D" parent="LevelChunks/Wind/WindChunk1"]
 
-[node name="WindBursts" type="Node2D" parent="."]
-
-[node name="WindBurstArea" parent="WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
 position = Vector2(0.067, -2805.11)
 scale = Vector2(1, 0.03)
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea2" parent="WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea2" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
 position = Vector2(0.067, -3007)
 burst_direction = 1
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="PeacefulArea" type="Area2D" parent="."]
+[node name="WindArea" type="Area2D" parent="LevelChunks/Wind"]
+unique_name_in_owner = true
+monitorable = false
+gravity_point_center = Vector2(1, 0)
+gravity_direction = Vector2(1, 0)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LevelChunks/Wind/WindArea"]
+position = Vector2(-0.426628, -3090.5)
+shape = SubResource("RectangleShape2D_5g0xp")
+debug_color = Color(0.282353, 0.27451, 0.282353, 0)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="LevelChunks/Wind/WindArea"]
+position = Vector2(-2.37417e-05, 1)
+occluder = SubResource("OccluderPolygon2D_kmt2p")
+
+[node name="Peaceful" type="Node2D" parent="LevelChunks"]
+
+[node name="PeacefulChunk1" parent="LevelChunks/Peaceful" instance=ExtResource("14_ne0fo")]
+
+[node name="PeacefulArea" type="Area2D" parent="LevelChunks/Peaceful"]
 position = Vector2(0.0172127, -725)
 monitorable = false
 gravity_point_center = Vector2(1, 0)
 gravity_direction = Vector2(1, 0)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PeacefulArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LevelChunks/Peaceful/PeacefulArea"]
 position = Vector2(-0.430507, -2861)
 shape = SubResource("RectangleShape2D_j7jso")
 debug_color = Color(0.92549, 0.521569, 0.32549, 0)
 
-[node name="LightOccluder2D" type="LightOccluder2D" parent="PeacefulArea"]
+[node name="LightOccluder2D" type="LightOccluder2D" parent="LevelChunks/Peaceful/PeacefulArea"]
 position = Vector2(-2.37417e-05, 1)
 occluder = SubResource("OccluderPolygon2D_bd455")
 
-[node name="CamMaxMarker" type="Marker2D" parent="."]
-position = Vector2(0.0921652, -3882)
-
-[node name="VictoryArea" type="Area2D" parent="."]
+[node name="VictoryArea" type="Area2D" parent="LevelChunks/Peaceful"]
 position = Vector2(0.017, -731.1)
 monitorable = false
 gravity_point_center = Vector2(1, 0)
 gravity_direction = Vector2(1, 0)
 metadata/_edit_group_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="VictoryArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LevelChunks/Peaceful/VictoryArea"]
 position = Vector2(0.0747312, -3168.5)
 shape = SubResource("RectangleShape2D_gn4dx")
 debug_color = Color(0.45098, 0, 0.254902, 0)
 
-[connection signal="body_entered" from="StormArea" to="." method="_on_storm_area_body_entered"]
-[connection signal="body_exited" from="StormArea" to="." method="_on_storm_area_body_exited"]
-[connection signal="body_entered" from="WindArea" to="." method="_on_wind_area_body_entered"]
-[connection signal="body_exited" from="WindArea" to="." method="_on_wind_area_body_exited"]
-[connection signal="body_exited" from="WindBursts/WindBurstArea" to="." method="_on_wind_burst_area_body_exited"]
-[connection signal="body_exited" from="WindBursts/WindBurstArea2" to="." method="_on_wind_burst_area_body_exited"]
-[connection signal="body_entered" from="PeacefulArea" to="." method="_on_peaceful_area_body_entered"]
-[connection signal="body_exited" from="PeacefulArea" to="." method="_on_peaceful_area_body_exited"]
-[connection signal="body_entered" from="VictoryArea" to="." method="_on_victory_area_body_entered"]
+[node name="CamMaxMarker" type="Marker2D" parent="."]
+position = Vector2(0.0921652, -3882)
+
+[connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
+[connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]
+[connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea" to="." method="_on_wind_burst_area_body_exited"]
+[connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea2" to="." method="_on_wind_burst_area_body_exited"]
+[connection signal="body_entered" from="LevelChunks/Wind/WindArea" to="." method="_on_wind_area_body_entered"]
+[connection signal="body_exited" from="LevelChunks/Wind/WindArea" to="." method="_on_wind_area_body_exited"]
+[connection signal="body_entered" from="LevelChunks/Peaceful/PeacefulArea" to="." method="_on_peaceful_area_body_entered"]
+[connection signal="body_exited" from="LevelChunks/Peaceful/PeacefulArea" to="." method="_on_peaceful_area_body_exited"]
+[connection signal="body_entered" from="LevelChunks/Peaceful/VictoryArea" to="." method="_on_victory_area_body_entered"]

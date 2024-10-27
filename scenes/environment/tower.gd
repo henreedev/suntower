@@ -55,7 +55,7 @@ var wind_strength_anchor_height := 0.0
 var swap_tween : Tween
 
 @onready var tutorial_chunk : Tutorial = $LevelChunks/Sun/TutorialChunk
-@onready var wind_area: Area2D = $WindArea
+@onready var wind_area: Area2D = %WindArea
 @onready var _bg : Background = $ParallaxBackground
 @onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
 @onready var _pot : Player2 = get_tree().get_first_node_in_group("player2")
