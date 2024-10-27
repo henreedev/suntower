@@ -92,13 +92,12 @@ dev_teleport={
 
 [physics]
 
-common/physics_ticks_per_second=90
-common/max_physics_steps_per_frame=12
 2d/default_gravity=500.0
 
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
 textures/canvas_textures/default_texture_repeat=1
+renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 viewport/hdr_2d=true
