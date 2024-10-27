@@ -107,7 +107,7 @@ func start_stormy():
 
 
 func start_windy():
-	if not weather == Weather.WINDY:
+	if not weather == Weather.WINDY:       
 		var old_weather = weather 
 		weather = Weather.WINDY
 		if modulate_tween:
