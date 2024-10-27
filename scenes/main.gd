@@ -87,23 +87,27 @@ func _process(delta):
 	if shake_strength:
 		shake_strength = lerp(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
 	# Set hud progress bar values
+	var goal_alpha := 1.0
 	if flower_head.can_extend:
 		if flower_head.extra_len_display == flower_head.BASE_MAX_EXTENDED_LEN:
 			_sun_bar.value = flower_head.BASE_MAX_EXTENDED_LEN
-		const STR = 10.0
-		var diff 
-		diff = abs(flower_head.vine_len_display - _vines_bar.value)
-		_vines_bar.value = move_toward(_vines_bar.value, flower_head.vine_len_display, diff * STR * delta)
-		diff = abs(flower_head.extra_len_display - _sun_bar.value)
-		_sun_bar.value =move_toward(_sun_bar.value, flower_head.extra_len_display, diff * STR * delta)
-		diff = abs(flower_head.lightning_buff_amount - _lightning_bar.value)
-		_lightning_bar.value =move_toward(_lightning_bar.value, flower_head.lightning_buff_amount, diff * STR * 2.0 * delta)
-		diff = abs(flower_head.wind_extra_len_display - _wind_bar.value)
-		_wind_bar.value =move_toward(_wind_bar.value, flower_head.wind_extra_len_display, diff * STR * delta)
+		goal_alpha = 1.0
 	else: 
 		if Input.is_action_just_pressed("extend"):
 			shake()
-	
+		goal_alpha = 0.2
+	const STR = 10.0
+	var diff 
+	diff = abs(flower_head.vine_len_display - _vines_bar.value)
+	_vines_bar.value = move_toward(_vines_bar.value, flower_head.vine_len_display, diff * STR * delta)
+	diff = abs(flower_head.extra_len_display - _sun_bar.value)
+	_sun_bar.value =move_toward(_sun_bar.value, flower_head.extra_len_display, diff * STR * delta)
+	diff = abs(flower_head.lightning_buff_amount - _lightning_bar.value)
+	_lightning_bar.value =move_toward(_lightning_bar.value, flower_head.lightning_buff_amount, diff * STR * 2.0 * delta)
+	diff = abs(flower_head.wind_extra_len_display - _wind_bar.value)
+	_wind_bar.value =move_toward(_wind_bar.value, flower_head.wind_extra_len_display, diff * STR * delta)
+	diff = abs(goal_alpha - _vines_bar.modulate.a)
+	_vines_bar.modulate.a = move_toward(_vines_bar.modulate.a, goal_alpha, diff * STR * delta)
 	# Shake bar if necessary
 	if shake_strength:
 		$CanvasLayer.offset = get_random_offset()

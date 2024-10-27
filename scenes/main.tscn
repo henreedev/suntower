@@ -54,6 +54,7 @@ position = Vector2(143, -1400)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
 position = Vector2(143, -1450)
+dev_mode = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 offset = Vector2(0, -100)

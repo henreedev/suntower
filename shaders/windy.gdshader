@@ -13,7 +13,7 @@ void vertex() {
 
 void fragment() {
 	vec4 color = texture(TEXTURE, UV);
-	float a = color.a;
+	float a = color.a * modulate.a;
 	vec4 windy_color = texture(windy_noise, UV + scroll_speed * TIME);
 	color = mix(color, windy_color, windiness * windiness);
 

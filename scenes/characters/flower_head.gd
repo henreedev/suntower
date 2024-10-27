@@ -9,6 +9,7 @@ const vine_root_offset := Vector2(0, 5)
 @export var vine_seg : PackedScene
 @export var play_animation_on_start := false
 @export var max_extended_len := 125.0
+@export var dev_mode := false
 const BASE_MAX_EXTENDED_LEN := 125.0
 #@export var max_extended_len := 1250.0
 #const BASE_MAX_EXTENDED_LEN := 1250.0
@@ -129,6 +130,15 @@ func _process(delta):
 		_update_lightning_buff(delta)
 		_update_wind_buff(delta)
 		time += delta
+
+func _input(event):
+	if dev_mode and event.is_action_pressed("dev_teleport"):
+		#_player.global_position = get_global_mouse_position()
+		#position = _player.global_position
+		#get_tree().set_group("vine", "global_position", _player.global_position - Vector2(0, 10))
+		#print("teleported")
+		#unstuck()
+		pass # FIXME
 
 func play_spawn_animation():
 	# Make vines and line invisible, tween fade them in
@@ -322,7 +332,10 @@ func begin_inactive():
 
 func begin_retracting():
 	_state = State.RETRACTING
-	get_tree().call_group("vine", "set_grav", 0.3)
+	if _segs > 60 and tower.weather == Tower.Weather.STORMY:
+		get_tree().call_group("vine", "set_grav", 0.15)
+	else:
+		get_tree().call_group("vine", "set_grav", 0.3)
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
 	physics_material_override.friction = 1.0
 	stuck_timer.stop()

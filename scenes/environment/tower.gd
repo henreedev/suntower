@@ -250,7 +250,7 @@ func _act_on_weather_state():
 		Weather.WINDY:
 			pass
 		Weather.PEACEFUL:
-			pass # Full sun, but hard platforming
+			pass 
 
 
 static var time = 0.0

@@ -29,7 +29,6 @@ var wind_tween_3 : Tween
 static var count := 0
 func set_energy_mult(val):
 	energy_mult = val
-	print("setting ", count)
 	count += 1
 
 func set_wind_mode(on : bool):

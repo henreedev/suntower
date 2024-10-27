@@ -193,10 +193,10 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_a4mkl"]
-polygon = PackedVector2Array(-190, -338, -190, -322, 189, -320, 189, -340)
+polygon = PackedVector2Array(-488, -345, -491, -313, 519, -305, 517, -346)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_g7b60"]
-polygon = PackedVector2Array(-198, 210, -198, 237, 217, 242, 216, 212)
+polygon = PackedVector2Array(-465, 205, -464, 233, 489, 243, 489, 215)
 
 [sub_resource type="Curve" id="Curve_qje61"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0733333, 0.428571), 0.0, 0.0, 0, 0, Vector2(0.253165, 0.262367), 0.0, 0.0, 0, 0, Vector2(0.607595, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
