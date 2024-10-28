@@ -333,7 +333,7 @@ func begin_inactive():
 func begin_retracting():
 	_state = State.RETRACTING
 	if _segs > 60 and tower.weather == Tower.Weather.STORMY:
-		get_tree().call_group("vine", "set_grav", 0.15)
+		get_tree().call_group("vine", "set_grav", 0.0)
 	else:
 		get_tree().call_group("vine", "set_grav", 0.3)
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
