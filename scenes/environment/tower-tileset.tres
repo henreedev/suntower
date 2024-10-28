@@ -830,6 +830,12 @@ texture = ExtResource("2_ml8db")
 17:4/0/material = SubResource("CanvasItemMaterial_1lked")
 17:5/0 = 0
 17:5/0/material = SubResource("CanvasItemMaterial_1lked")
+26:8/0 = 0
+8:8/0 = 0
+8:9/0 = 0
+7:9/0 = 0
+7:9/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 0, 8, 0, 8, -8)
+7:8/0 = 0
 
 [resource]
 occlusion_layer_0/light_mask = 1

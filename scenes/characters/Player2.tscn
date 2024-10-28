@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=36 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" path="res://scenes/characters/Player2.gd" id="1_u6jn4"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_46eyb"]
@@ -9,7 +9,7 @@
 friction = 12.75
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jnhsv"]
-size = Vector2(10, 11)
+size = Vector2(10, 10)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r87u0"]
 radius = 5.09902
@@ -144,6 +144,15 @@ collision_mode = 1
 collision_friction = 0.3
 collision_bounce = 0.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3x36b"]
+size = Vector2(8, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_shvhj"]
+radius = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2bfs6"]
+radius = 1.0
+
 [node name="Player2" type="RigidBody2D" groups=["player2"]]
 collision_layer = 9
 collision_mask = 9
@@ -168,12 +177,10 @@ position = Vector2(0, 5.5)
 texture = ExtResource("4_0jlhp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2(0, -0.5)
+position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_jnhsv")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
-visible = false
 position = Vector2(0, -2)
 shape = SubResource("CircleShape2D_r87u0")
 
@@ -212,6 +219,18 @@ lifetime = 0.55
 one_shot = true
 explosiveness = 1.0
 trail_lifetime = 0.2
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4.5)
+shape = SubResource("RectangleShape2D_3x36b")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
+position = Vector2(-4, 4)
+shape = SubResource("CircleShape2D_shvhj")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="."]
+position = Vector2(4, 4)
+shape = SubResource("CircleShape2D_2bfs6")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

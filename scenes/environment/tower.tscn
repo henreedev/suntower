@@ -143,9 +143,9 @@ position = Vector2(180, 0)
 [node name="Sun" type="Node2D" parent="LevelChunks"]
 
 [node name="SunChunk1" parent="LevelChunks/Sun" instance=ExtResource("11_uwevu")]
-position = Vector2(-500, 0)
 
 [node name="TutorialChunk" parent="LevelChunks/Sun" instance=ExtResource("12_ihp26")]
+position = Vector2(0, 592)
 
 [node name="Storm" type="Node2D" parent="LevelChunks"]
 

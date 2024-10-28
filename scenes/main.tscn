@@ -50,10 +50,10 @@ environment = SubResource("Environment_4vhcu")
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
 [node name="Player2" parent="." instance=ExtResource("3_k12lq")]
-position = Vector2(143, -1400)
+position = Vector2(5, -2393)
 
 [node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
-position = Vector2(143, -1450)
+position = Vector2(5, -2443)
 dev_mode = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
