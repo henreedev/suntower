@@ -177,19 +177,21 @@ occluder = SubResource("OccluderPolygon2D_kmt2p")
 [node name="WindBursts" type="Node2D" parent="LevelChunks/Wind/WindChunk1"]
 
 [node name="WindBurstArea" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
-position = Vector2(0.067, -2805.11)
+position = Vector2(0.067, -2772.27)
 scale = Vector2(1, 0.03)
 burst_overall_duration = 1.0
 disable_duration = 0
 
 [node name="WindBurstArea2" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
-position = Vector2(0.067, -3007)
+position = Vector2(0.067, -2963.58)
+scale = Vector2(1, 0.07)
 burst_direction = 1
 burst_overall_duration = 1.0
 disable_duration = 0
 
 [node name="WindArea" type="Area2D" parent="LevelChunks/Wind"]
 unique_name_in_owner = true
+position = Vector2(3, 7.12251e-05)
 monitorable = false
 gravity_point_center = Vector2(1, 0)
 gravity_direction = Vector2(1, 0)

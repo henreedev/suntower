@@ -37,10 +37,10 @@ var sun_buff_tween : Tween
 # Lightning buff
 var _has_lightning_buff := false
 var lightning_buff_tween : Tween
-const MAX_LIGHTNING_BUFF = BASE_MAX_EXTENDED_LEN / 2.0
+const MAX_LIGHTNING_BUFF = BASE_MAX_EXTENDED_LEN / 1.5
 var lightning_buff_amount = 0.0
 var lightning_buff_display = 0.0
-const LIGHTNING_SPEED = 2.5
+const LIGHTNING_SPEED = 2.0
 var lightning_speed_mod = 1.0
 const base := Color(0.5, 1.0, 1.0, 1.0)
 
@@ -349,12 +349,16 @@ func begin_retracting():
 
 func enable_wind_particles():
 	wind_particles.emitting = true
+	wind_particles.visible = true
 	wind_gust_particles.emitting = true
+	wind_gust_particles.visible = true
 	beam_particles.visible = true
 
 func disable_wind_particles():
 	wind_particles.emitting = false
+	wind_particles.visible = false
 	wind_gust_particles.emitting = false
+	wind_gust_particles.visible = false
 	beam_particles.visible = false
 
 func show_active_wind_particles():
