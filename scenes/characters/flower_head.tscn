@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=86 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/characters/flower_head.gd" id="1_13r3v"]
 [ext_resource type="Shader" path="res://scenes/characters/flower_head.gdshader" id="1_700xu"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/environment/suntower-lightning-particle.png" id="4_14gk3"]
 [ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/flower/flower-extend.png" id="4_ski6y"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="5_kbo6i"]
+[ext_resource type="Script" path="res://scenes/characters/track_flower_head.gd" id="8_d0kbc"]
 [ext_resource type="Texture2D" uid="uid://d2hoycvv7ngsl" path="res://assets/image/environment/wind-gust.png" id="8_p6u3c"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
@@ -193,10 +194,10 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_a4mkl"]
-polygon = PackedVector2Array(-488, -345, -491, -313, 519, -305, 517, -346)
+polygon = PackedVector2Array(-198, -348, -197, -310, 197, -306, 193, -345)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_g7b60"]
-polygon = PackedVector2Array(-465, 205, -464, 233, 489, 243, 489, 215)
+polygon = PackedVector2Array(-193, 208, -193, 233, 196, 238, 194, 213)
 
 [sub_resource type="Curve" id="Curve_qje61"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0733333, 0.428571), 0.0, 0.0, 0, 0, Vector2(0.253165, 0.262367), 0.0, 0.0, 0, 0, Vector2(0.607595, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -546,16 +547,13 @@ wait_time = 4.0
 [node name="Occluders" type="Node" parent="."]
 
 [node name="Node2D" type="Node2D" parent="Occluders"]
+script = ExtResource("8_d0kbc")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Occluders/Node2D"]
 occluder = SubResource("OccluderPolygon2D_a4mkl")
 
 [node name="LightOccluder2D2" type="LightOccluder2D" parent="Occluders/Node2D"]
 occluder = SubResource("OccluderPolygon2D_g7b60")
-
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
-remote_path = NodePath("../Occluders/Node2D")
-update_rotation = false
 
 [node name="Node" type="Node" parent="."]
 

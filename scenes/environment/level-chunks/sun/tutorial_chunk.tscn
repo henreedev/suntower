@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=4 uid="uid://bmodcpfd7ap0y"]
+[gd_scene load_steps=6 format=4 uid="uid://bmodcpfd7ap0y"]
 
 [ext_resource type="TileSet" uid="uid://r7paxto5gyud" path="res://scenes/environment/tower-tileset.tres" id="1_yayyj"]
 [ext_resource type="Script" path="res://scenes/environment/level-chunks/sun/tutorial.gd" id="1_ydp82"]
 [ext_resource type="PackedScene" uid="uid://d1a5vtc8o4kcd" path="res://scenes/environment/tutorial/tutorial_manager.tscn" id="2_6fxdc"]
 [ext_resource type="Script" path="res://scenes/environment/tutorial/tutorial_inscription.gd" id="3_q7u7n"]
+[ext_resource type="PackedScene" uid="uid://g26y1heavh30" path="res://scenes/environment/sun_reset_point.tscn" id="5_cg3ho"]
 
 [node name="TutorialChunk" type="Node2D"]
 script = ExtResource("1_ydp82")
@@ -40,3 +41,9 @@ script = ExtResource("3_q7u7n")
 
 [node name="HoldRight" type="AnimatedSprite2D" parent="TutorialManager"]
 script = ExtResource("3_q7u7n")
+
+[node name="SunResetPoint" parent="." instance=ExtResource("5_cg3ho")]
+position = Vector2(0, -578.446)
+
+[node name="SunResetPoint2" parent="." instance=ExtResource("5_cg3ho")]
+position = Vector2(0, 16.075)

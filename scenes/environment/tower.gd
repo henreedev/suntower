@@ -12,6 +12,9 @@ var in_peaceful = false
 static var instance : Tower
 
 var _progress = 0.0
+var _prog_height_offset = 0.0
+var progress_update_timer = 0.0
+
 const MAX_PROG = 3.5
 const MAX_PROG_HEIGHT = -2268.0 # 3 screens of height 216 for the 3.5 sections
 const INITIAL_DAY_OFFSET = 0.12
@@ -64,18 +67,46 @@ var swap_tween : Tween
 @onready var _sunrays : SunRays = $SunRays
 @onready var main : Main = get_tree().get_first_node_in_group("main")
 @onready var cam_max_marker : Marker2D = $CamMaxMarker
+@onready var sun_reset_points : Array[SunResetPoint] = _get_reset_points()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	instance = self
 	create_tween().set_loops().tween_callback(do_lightning).set_delay(5.0)
-	
+	print(sun_reset_points)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	_update_progress_offset(delta)
 	_change_weather_on_progress()
 	_act_on_weather_state()
 	_lerp_lights_towards_goal(delta)
 	_sunrays.set_rotate($Lights.rotation)
+
+func _update_progress_offset(delta):
+	if progress_update_timer <= 0.0:
+		progress_update_timer = 0.5
+		const MAX = 999999.0
+		var min_offset_height = MAX
+		for reset_point : SunResetPoint in sun_reset_points:
+			var y = reset_point.global_position.y
+			if y < min_offset_height and \
+			_player.global_position.y < y:
+				min_offset_height = y
+		if min_offset_height == MAX:
+			return 0.0
+		else:
+			return min_offset_height
+	else:
+		progress_update_timer -= delta
+	
+
+func _get_reset_points(node : Node = self):
+	var points : Array[SunResetPoint] = []
+	for child in node.get_children():
+		if child is SunResetPoint:
+			points.append(child)
+		else: points.append_array(_get_reset_points(child))
+	return points
 
 func start_sunny():
 	if not weather == Weather.SUNNY:
@@ -149,9 +180,14 @@ func win():
 		win_tween.tween_callback(SceneManager.instance.game_to_victory).set_delay(2.5)
 
 
+func _get_progress_height():
+	return _player.position.y - _prog_height_offset
+
+func _get_progress():
+	return _get_progress_height() / MAX_PROG_HEIGHT
 
 func _change_weather_on_progress():
-	_progress = _player.position.y / MAX_PROG_HEIGHT
+	_progress = _get_progress()
 	if in_peaceful: 
 		start_peaceful()
 	elif in_wind:
