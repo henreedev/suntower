@@ -194,10 +194,10 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 1)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_a4mkl"]
-polygon = PackedVector2Array(-198, -348, -197, -310, 197, -306, 193, -345)
+polygon = PackedVector2Array(-198, -424, -198, -385, 192, -382, 195, -419)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_g7b60"]
-polygon = PackedVector2Array(-193, 208, -193, 233, 196, 238, 194, 213)
+polygon = PackedVector2Array(-188, 264, -190, 298, 194, 300, 194, 267)
 
 [sub_resource type="Curve" id="Curve_qje61"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0733333, 0.428571), 0.0, 0.0, 0, 0, Vector2(0.253165, 0.262367), 0.0, 0.0, 0, 0, Vector2(0.607595, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -561,6 +561,7 @@ occluder = SubResource("OccluderPolygon2D_g7b60")
 unique_name_in_owner = true
 visible = false
 show_behind_parent = true
+emitting = false
 amount = 205
 process_material = SubResource("ParticleProcessMaterial_yiuwx")
 lifetime = 7.0
@@ -587,12 +588,12 @@ unique_name_in_owner = true
 visible = false
 show_behind_parent = true
 material = SubResource("CanvasItemMaterial_g0rad")
+emitting = false
 amount = 1
 process_material = SubResource("ParticleProcessMaterial_njwcs")
 texture = ExtResource("8_p6u3c")
 lifetime = 3.0
 explosiveness = 0.45
-trail_sections = 28
 script = SubResource("GDScript_68qa0")
 
 [connection signal="animation_finished" from="Smoothing2D/Sprite2D" to="." method="_on_sprite_2d_animation_finished"]

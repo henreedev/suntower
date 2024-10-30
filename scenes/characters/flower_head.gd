@@ -22,6 +22,8 @@ var wind_extra_len_display = BASE_MAX_EXTENDED_LEN
 var vine_len_display = BASE_MAX_EXTENDED_LEN
 var time = 0.0
 
+
+
 var spiked_hitbox_tween : Tween
 
 var music_tween : Tween
@@ -74,6 +76,7 @@ var wind_direction : Vector2
 var active_wind_beam_strength_mod := 0.0
 var wind_tween : Tween
 var wind_dot : float # Used in speed calculation in beam, and for bar modulate
+var wind_particles_tween : Tween
 
 # Onready references to other nodes
 @onready var _last_pos : Vector2 = position
@@ -344,18 +347,37 @@ func begin_retracting():
 	_extended_len = 0
 
 func enable_wind_particles():
+	const DUR = 1.0
 	wind_particles.emitting = true
 	wind_particles.visible = true
 	wind_gust_particles.emitting = true
 	wind_gust_particles.visible = true
 	beam_particles.visible = true
+	if wind_particles_tween: wind_particles_tween.kill()
+	wind_particles_tween = create_tween().set_parallel()
+	wind_particles_tween.tween_property(wind_particles, "modulate:a", 1.0, DUR).set_trans(Tween.TRANS_CUBIC).from(0.0)
+	wind_particles_tween.tween_property(wind_gust_particles, "modulate:a", 1.0, DUR).set_trans(Tween.TRANS_CUBIC).from(0.0)
+	wind_particles_tween.tween_property(beam_particles, "modulate:a", 1.0, DUR).set_trans(Tween.TRANS_CUBIC).from(0.0)
+
 
 func disable_wind_particles():
-	wind_particles.emitting = false
-	wind_particles.visible = false
-	wind_gust_particles.emitting = false
-	wind_gust_particles.visible = false
-	beam_particles.visible = false
+	const DUR = 1.0
+	wind_particles.emitting = true
+	wind_particles.visible = true
+	wind_gust_particles.emitting = true
+	wind_gust_particles.visible = true
+	beam_particles.visible = true
+	if wind_particles_tween: wind_particles_tween.kill()
+	wind_particles_tween = create_tween().set_parallel()
+	wind_particles_tween.tween_property(wind_particles, "modulate:a", 0.0, DUR).set_trans(Tween.TRANS_CUBIC)
+	wind_particles_tween.tween_property(wind_gust_particles, "modulate:a", 0.0, DUR).set_trans(Tween.TRANS_CUBIC)
+	wind_particles_tween.tween_property(beam_particles, "modulate:a", 0.0, DUR).set_trans(Tween.TRANS_CUBIC)
+	
+	wind_particles_tween.tween_property(wind_particles, "emitting", false, 0.0).set_delay(DUR)
+	wind_particles_tween.tween_property(wind_gust_particles, "emitting", false, 0.0).set_delay(DUR)
+	wind_particles_tween.tween_property(wind_particles, "visible", false, 0.0).set_delay(DUR)
+	wind_particles_tween.tween_property(wind_gust_particles, "visible", false, 0.0).set_delay(DUR)
+	wind_particles_tween.tween_property(beam_particles, "visible", false, 0.0).set_delay(DUR)
 
 func show_active_wind_particles():
 	_spawn_wind_particle(randi_range(5, 20), wind_direction)
@@ -450,15 +472,9 @@ func _display_sun_buff():
 	sun_particles.amount = 125
 
 func get_height():
-	return -int(global_position.y)
+	return -int(global_position.y - tower.start_height)
 
 func _physics_process(delta):
-	if should_teleport:
-		should_teleport = false
-		_player.global_position = get_global_mouse_position()
-		position = _player.global_position
-		get_tree().set_group("vine", "global_position", _player.global_position - Vector2(0, 10))
-		print("teleported")
 	if not _animating:
 		can_extend = _player.touching and _player.linear_velocity.length_squared() < 2.0 or _state == State.EXTENDING
 		var pos = position
@@ -527,6 +543,11 @@ func _physics_process(delta):
 			State.INACTIVE:
 				pass
 		_last_pos = pos
+		if dev_mode and should_teleport:
+			should_teleport = false
+			_player.global_position = get_global_mouse_position()
+			position = _player.global_position
+			get_tree().set_group("vine", "global_position", _player.global_position - Vector2(0, 10))
 
 
 func _fix_gap(state):

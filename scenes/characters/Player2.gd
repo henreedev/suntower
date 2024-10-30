@@ -59,6 +59,8 @@ func _act_on_state(state : FlowerHead.State):
 		FlowerHead.State.RETRACTING:
 			linear_damp = 1.0
 			angular_damp = 2
+		FlowerHead.State.INACTIVE:
+			linear_damp = 1.03
 
 func _check_inputs():
 	if Input.is_action_just_pressed("extend"):
@@ -72,7 +74,7 @@ func _physics_process(delta):
 			prev_vel_sqrd < 0.01 and abs(prev_avel) < 0.01:
 		touching = true 
 
-func _play_sound(sound, volume_offset := 0):
+func _play_sound(sound, volume_offset := 0.0):
 	if !playback: playback = sound_effect_player.get_stream_playback()
 	var volume = _get_volume(sound) + volume_offset
 	var rand_pitch = randf_range(0.8, 1.1)

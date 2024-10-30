@@ -66,9 +66,9 @@ var swap_tween : Tween
 
 @onready var _sunrays : SunRays = $SunRays
 @onready var main : Main = get_tree().get_first_node_in_group("main")
-@onready var cam_max_marker : Marker2D = $CamMaxMarker
+@onready var cam_max_marker : Marker2D = %CamMaxMarker
 @onready var sun_reset_points : Array[SunResetPoint] = _get_reset_points()
-
+@onready var start_height = int(%StartHeightMarker.global_position.y)
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	instance = self
@@ -249,7 +249,8 @@ func _change_weather_on_progress():
 					_swap_lights_instantly(_right)
 				else:
 					_goal_rotation = lerp(_left_day_start_angle_wind, _left_day_end_angle_wind, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
-			
+		elif weather == Weather.PEACEFUL:
+			_goal_rotation = 0.0
 
 func _swap_lights_instantly(right_side):
 	_right = not right_side

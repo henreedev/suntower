@@ -209,6 +209,38 @@ burst_direction = 1
 burst_overall_duration = 1.0
 disable_duration = 0
 
+[node name="WindBurstArea6" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+position = Vector2(0.067, -3718.5)
+scale = Vector2(1, 0.07)
+burst_overall_duration = 1.0
+disable_duration = 0
+
+[node name="WindBurstArea7" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+position = Vector2(0.067, -4036.44)
+scale = Vector2(1, 0.07)
+burst_direction = 1
+burst_overall_duration = 1.0
+disable_duration = 0
+
+[node name="WindBurstArea8" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+position = Vector2(0.067, -4292.65)
+scale = Vector2(1, 0.07)
+burst_overall_duration = 1.0
+disable_duration = 0
+
+[node name="WindBurstArea9" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+position = Vector2(0.067, -4530.06)
+scale = Vector2(1, 0.07)
+burst_direction = 1
+burst_overall_duration = 1.0
+disable_duration = 0
+
+[node name="WindBurstArea10" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+position = Vector2(0.067, -4755.58)
+scale = Vector2(1, 0.07)
+burst_overall_duration = 1.0
+disable_duration = 0
+
 [node name="WindArea" type="Area2D" parent="LevelChunks/Wind"]
 unique_name_in_owner = true
 position = Vector2(3, 7.12251e-05)
@@ -232,6 +264,7 @@ occluder = SubResource("OccluderPolygon2D_kmt2p")
 position = Vector2(0, -1600)
 
 [node name="CamMaxMarker" type="Marker2D" parent="LevelChunks/Peaceful"]
+unique_name_in_owner = true
 position = Vector2(0.130105, -5480)
 
 [node name="PeacefulArea" type="Area2D" parent="LevelChunks/Peaceful"]
@@ -247,7 +280,7 @@ shape = SubResource("RectangleShape2D_j7jso")
 debug_color = Color(0.92549, 0.521569, 0.32549, 0)
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="LevelChunks/Peaceful/PeacefulArea"]
-position = Vector2(-2.37417e-05, 1)
+position = Vector2(0, 188)
 occluder = SubResource("OccluderPolygon2D_bd455")
 
 [node name="VictoryArea" type="Area2D" parent="LevelChunks/Peaceful"]
@@ -262,6 +295,10 @@ position = Vector2(0.0747312, -3168.5)
 shape = SubResource("RectangleShape2D_gn4dx")
 debug_color = Color(0.45098, 0, 0.254902, 0)
 
+[node name="StartHeightMarker" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(-0.0142213, 599)
+
 [connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]
 [connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea" to="." method="_on_wind_burst_area_body_exited"]
@@ -269,6 +306,11 @@ debug_color = Color(0.45098, 0, 0.254902, 0)
 [connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea3" to="." method="_on_wind_burst_area_body_exited"]
 [connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea4" to="." method="_on_wind_burst_area_body_exited"]
 [connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea5" to="." method="_on_wind_burst_area_body_exited"]
+[connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea6" to="." method="_on_wind_burst_area_body_exited"]
+[connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea7" to="." method="_on_wind_burst_area_body_exited"]
+[connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea8" to="." method="_on_wind_burst_area_body_exited"]
+[connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea9" to="." method="_on_wind_burst_area_body_exited"]
+[connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea10" to="." method="_on_wind_burst_area_body_exited"]
 [connection signal="body_entered" from="LevelChunks/Wind/WindArea" to="." method="_on_wind_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Wind/WindArea" to="." method="_on_wind_area_body_exited"]
 [connection signal="body_entered" from="LevelChunks/Peaceful/PeacefulArea" to="." method="_on_peaceful_area_body_entered"]
