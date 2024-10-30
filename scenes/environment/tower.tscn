@@ -171,6 +171,14 @@ polygon = PackedVector2Array(-176, -1369, -167, -1366, 167, -1366, 176, -1375, 1
 position = Vector2(-2.37417e-05, 1)
 occluder = SubResource("OccluderPolygon2D_kmt2p")
 
+[node name="LightningStriker" type="Node" parent="LevelChunks/Storm"]
+unique_name_in_owner = true
+
+[node name="StopDelayTimer" type="Timer" parent="LevelChunks/Storm/LightningStriker"]
+unique_name_in_owner = true
+wait_time = 0.349
+one_shot = true
+
 [node name="Wind" type="Node2D" parent="LevelChunks"]
 
 [node name="WindChunk1" parent="LevelChunks/Wind" instance=ExtResource("13_cl4ft")]
@@ -308,6 +316,7 @@ position = Vector2(-0.0142213, 599)
 
 [connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]
+[connection signal="timeout" from="LevelChunks/Storm/LightningStriker/StopDelayTimer" to="." method="_on_stop_delay_timer_timeout"]
 [connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea" to="." method="_on_wind_burst_area_body_exited"]
 [connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea2" to="." method="_on_wind_burst_area_body_exited"]
 [connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea3" to="." method="_on_wind_burst_area_body_exited"]

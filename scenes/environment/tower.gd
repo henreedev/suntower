@@ -15,9 +15,12 @@ var _progress = 0.0
 var _prog_height_offset = 0.0
 var progress_update_timer = 0.0
 
+
+
 const MAX_PROG = 3.5
 const MAX_PROG_HEIGHT = -2268.0 # 3 screens of height 216 for the 3.5 sections
 const INITIAL_DAY_OFFSET = 0.12
+const STORM_DAY_OFFSET = 0.12
 var _day_cycle_dur = 0.5
 var _half_day_cycle_dur = _day_cycle_dur / 2.0
 var _day_cycle = 0.0
@@ -40,9 +43,13 @@ var storm_modulate := Color(0.0, 0.0, 0.0, 1.0)
 var windy_modulate := Color.WHITE
 var peaceful_modulate := Color(1.05, 1.05, 1.05, 1.0)
 var modulate_tween : Tween 
+
+# Storm variables
 var lightning_striking = false
 var lock_lights = false
-
+var lightning_strike_tween : Tween
+const STORM_MUSIC_8_BARS_DUR := 2.790696
+const STORM_MUSIC_BEAT_DUR := .348837
 
 # Wind variables
 const BASE_WIND_STRENGTH := 70.0 # px/s^2
@@ -70,10 +77,13 @@ var swap_tween : Tween
 @onready var sun_reset_points : Array[SunResetPoint] = _get_reset_points()
 @onready var start_height = int(%StartHeightMarker.global_position.y)
 @onready var disable_occluders_marker = %DisableOccludersMarker
+@onready var lightning_striker = %LightningStriker
+@onready var stop_delay_timer : Timer = %StopDelayTimer
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	instance = self
-	create_tween().set_loops().tween_callback(do_lightning).set_delay(5.0)
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	_update_progress_offset(delta)
@@ -120,6 +130,7 @@ func start_sunny():
 		main.switch_to_sun_bar()
 		SceneManager.instance.switch_bgm("Sun")
 		Values.reach_section(weather)
+		stop_lightning()
 
 func start_stormy():
 	if not weather == Weather.STORMY:
@@ -131,6 +142,12 @@ func start_stormy():
 		_bg.enter_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", storm_modulate, 1.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_lightning_bar()
+		lightning_striker.process_mode = Node.PROCESS_MODE_INHERIT
+		stop_delay_timer.stop()
+		if not lightning_strike_tween:
+			# TODO await duration of storm intro 
+			lightning_strike_tween = create_tween().set_loops().bind_node(lightning_striker)
+			lightning_strike_tween.tween_callback(do_lightning).set_delay(STORM_MUSIC_8_BARS_DUR)
 		SceneManager.instance.switch_bgm("Storm")
 		_player.disable_wind_particles()
 		_lights.set_wind_mode(false)
@@ -146,6 +163,7 @@ func start_windy():
 		modulate_tween = create_tween().set_parallel()
 		_player.show_active_wind_particles()
 		_bg.enter_windy(modulate_tween, 3.0)
+		stop_lightning()
 		modulate_tween.tween_property($CanvasModulate, "color", windy_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
 		main.switch_to_wind_bar()
 		SceneManager.instance.switch_bgm("Wind")
@@ -169,13 +187,17 @@ func start_peaceful():
 		_lights.set_wind_mode(false)
 		Values.reach_section(weather)
 
+func stop_lightning():
+	stop_delay_timer.start(STORM_MUSIC_BEAT_DUR)
+
 func win():
 	if not Values.won:
 		# animate the flower going up into the hole
 		_player.set_deferred("freeze", true)
+		_player._animating = true
 		var flower_head_tween = create_tween().set_parallel().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 		flower_head_tween.tween_property(_player, "rotation", 0.0, 1.0)
-		flower_head_tween.tween_property(_player, "global_position:y", _player.global_position.y - _player.EXTEND_SPEED, 1.0)
+		flower_head_tween.tween_property(_player, "global_position:y", _player.global_position.y - _player.EXTEND_SPEED * 2.0, 2.5)
 		flower_head_tween.tween_property(_player, "global_position:x", 0.0, 1.0)
 		
 		# indicate victory to Values 
@@ -225,7 +247,7 @@ func _change_weather_on_progress():
 					_goal_rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 		elif weather == Weather.STORMY:
 			var mult = 0.5
-			_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET, _day_cycle_dur * mult)
+			_day_cycle = fmod(_progress + INITIAL_DAY_OFFSET + STORM_DAY_OFFSET, _day_cycle_dur * mult)
 			_half_day_cycle_dur = _day_cycle_dur / 2 * mult
 			
 			if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: 
@@ -409,3 +431,7 @@ func _on_peaceful_area_body_exited(body):
 
 func _on_victory_area_body_entered(body):
 	win()
+
+
+func _on_stop_delay_timer_timeout():
+	lightning_striker.process_mode = Node.PROCESS_MODE_DISABLED
