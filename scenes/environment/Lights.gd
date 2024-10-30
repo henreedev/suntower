@@ -65,7 +65,8 @@ func set_wind_mode(on : bool):
 		wind_tween = create_tween()
 		wind_tween.set_parallel()
 		const DUR = 1.6
-		wind_tween.tween_property(light_1, "shadow_filter", Light2D.ShadowFilter.SHADOW_FILTER_NONE, DUR)
+		if Tower.instance.weather != Tower.Weather.PEACEFUL:
+			wind_tween.tween_property(light_1, "shadow_filter", Light2D.ShadowFilter.SHADOW_FILTER_NONE, DUR)
 		wind_tween.tween_property(light_1, "rotation", base_light_1_rot, DUR).set_trans(Tween.TRANS_CUBIC)
 		wind_tween.tween_property(light_2, "rotation", base_light_2_rot, DUR).set_trans(Tween.TRANS_CUBIC)
 		wind_tween.tween_property(light_3, "rotation", base_light_3_rot, DUR).set_trans(Tween.TRANS_CUBIC)

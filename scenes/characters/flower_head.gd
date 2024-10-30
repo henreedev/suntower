@@ -101,6 +101,7 @@ var wind_particles_tween : Tween
 @onready var wind_gust_particles_mat: ParticleProcessMaterial = wind_gust_particles.process_material
 @onready var beam_particles: GPUParticles2D = %BeamParticles
 @onready var beam_particles_mat: ParticleProcessMaterial = beam_particles.process_material
+@onready var occluders : Node2D = $Occluders/Node2D
 
 @export var skip_game := false
 
@@ -419,6 +420,12 @@ func update_wind_particles(new_dir : Vector2i, new_strength : float, color_mod :
 	wind_gust_particles_mat.linear_accel_min = new_strength * MOD * 0.5
 	wind_gust_particles_mat.linear_accel_max = new_strength * MOD 
 
+func enable_occluders():
+	occluders.visible = true
+	
+func disable_occluders():
+	occluders.visible = false
+
 func _integrate_forces(state):
 	if not _animating:
 		var pos = state.transform.get_origin()
@@ -547,6 +554,7 @@ func _physics_process(delta):
 			should_teleport = false
 			_player.global_position = get_global_mouse_position()
 			position = _player.global_position
+			_player.rotation = 0
 			get_tree().set_group("vine", "global_position", _player.global_position - Vector2(0, 10))
 
 

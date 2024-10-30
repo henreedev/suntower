@@ -69,11 +69,11 @@ var swap_tween : Tween
 @onready var cam_max_marker : Marker2D = %CamMaxMarker
 @onready var sun_reset_points : Array[SunResetPoint] = _get_reset_points()
 @onready var start_height = int(%StartHeightMarker.global_position.y)
+@onready var disable_occluders_marker = %DisableOccludersMarker
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	instance = self
 	create_tween().set_loops().tween_callback(do_lightning).set_delay(5.0)
-	print(sun_reset_points)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	_update_progress_offset(delta)
@@ -150,6 +150,7 @@ func start_windy():
 		main.switch_to_wind_bar()
 		SceneManager.instance.switch_bgm("Wind")
 		_player.enable_wind_particles()
+		_player.enable_occluders()
 		_lights.set_wind_mode(true)
 		Values.reach_section(weather)
 
@@ -170,9 +171,17 @@ func start_peaceful():
 
 func win():
 	if not Values.won:
+		# animate the flower going up into the hole
 		_player.set_deferred("freeze", true)
+		var flower_head_tween = create_tween().set_parallel().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
+		flower_head_tween.tween_property(_player, "rotation", 0.0, 1.0)
+		flower_head_tween.tween_property(_player, "global_position:y", _player.global_position.y - _player.EXTEND_SPEED, 1.0)
+		flower_head_tween.tween_property(_player, "global_position:x", 0.0, 1.0)
+		
+		# indicate victory to Values 
 		Values.update_height(_player.get_height())
 		Values.win()
+		
 		# fade out and switch to victory sequence
 		var win_tween := create_tween().set_parallel()
 		win_tween.tween_property(_player.camera_2d, "zoom", Vector2(6, 6), 2.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
@@ -287,7 +296,10 @@ func _act_on_weather_state():
 		Weather.WINDY:
 			pass
 		Weather.PEACEFUL:
-			pass 
+			if _player.global_position.y < disable_occluders_marker.global_position.y:
+				_player.disable_occluders()
+			else:
+				_player.enable_occluders()
 
 
 static var time = 0.0
@@ -362,6 +374,7 @@ func _lerp_lights_towards_goal(delta):
 	var rotation_strength = 1.5 
 	if weather == Weather.STORMY: rotation_strength = 5.0
 	if weather == Weather.WINDY: rotation_strength = 2.0
+	if weather == Weather.PEACEFUL: rotation_strength = 10.0
 	$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
 
 func _on_storm_area_body_entered(body):

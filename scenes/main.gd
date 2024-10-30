@@ -100,7 +100,6 @@ func _process(delta):
 	var diff 
 	diff = abs(flower_head.vine_len_display - _vines_bar.value)
 	_vines_bar.value = move_toward(_vines_bar.value, flower_head.vine_len_display, max(diff * STR * delta, 1))
-	print(_vines_bar.value)
 	diff = abs(flower_head.extra_len_display - _sun_bar.value)
 	_sun_bar.value =move_toward(_sun_bar.value, flower_head.extra_len_display, max(diff * STR * delta, 1))
 	diff = abs(flower_head.lightning_buff_amount - _lightning_bar.value)
@@ -108,7 +107,7 @@ func _process(delta):
 	diff = abs(flower_head.wind_extra_len_display - _wind_bar.value)
 	_wind_bar.value =move_toward(_wind_bar.value, flower_head.wind_extra_len_display, max(diff * STR * delta, 1))
 	diff = abs(goal_alpha - _vines_bar.modulate.a)
-	_vines_bar.modulate.a = move_toward(_vines_bar.modulate.a, goal_alpha, max(diff * STR * delta, 1))
+	_vines_bar.modulate.a = move_toward(_vines_bar.modulate.a, goal_alpha, diff * STR * delta)
 	# Shake bar if necessary
 	if shake_strength:
 		$CanvasLayer.offset = get_random_offset()

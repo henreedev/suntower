@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=29 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Script" path="res://scenes/environment/tower.gd" id="2_bq5o6"]
 [ext_resource type="Script" path="res://scenes/environment/Lights.gd" id="3_6s52w"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://dvdi8qi1lsl6c" path="res://scenes/environment/level-chunks/wind/wind_chunk_1.tscn" id="13_cl4ft"]
 [ext_resource type="PackedScene" uid="uid://ca4fvc73x8ydq" path="res://scenes/environment/wind_burst_area.tscn" id="13_ptelv"]
 [ext_resource type="PackedScene" uid="uid://dh7b3um8nnq1j" path="res://scenes/environment/level-chunks/peaceful/peaceful_chunk_1.tscn" id="14_ne0fo"]
+[ext_resource type="PackedScene" uid="uid://dx72kt582x8cg" path="res://scenes/environment/level-chunks/peaceful/peaceful_chunk_end.tscn" id="17_n405p"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ivn7p"]
 
@@ -50,14 +51,14 @@ polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -1
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5g0xp"]
 size = Vector2(453, 2154)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gn4dx"]
+size = Vector2(78.0001, 19.0001)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j7jso"]
-size = Vector2(452.999, 634)
+size = Vector2(452.999, 1447.9)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bd455"]
 polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -166.935, -2727)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_gn4dx"]
-size = Vector2(78.0001, 19.0001)
 
 [node name="Tower" type="Node2D" groups=["tower"]]
 material = SubResource("ShaderMaterial_ivn7p")
@@ -263,37 +264,43 @@ occluder = SubResource("OccluderPolygon2D_kmt2p")
 [node name="PeacefulChunk1" parent="LevelChunks/Peaceful" instance=ExtResource("14_ne0fo")]
 position = Vector2(0, -1600)
 
-[node name="CamMaxMarker" type="Marker2D" parent="LevelChunks/Peaceful"]
+[node name="PeacefulChunkEnd" parent="LevelChunks/Peaceful" instance=ExtResource("17_n405p")]
+position = Vector2(0, -1600)
+
+[node name="CamMaxMarker" type="Marker2D" parent="LevelChunks/Peaceful/PeacefulChunkEnd"]
 unique_name_in_owner = true
-position = Vector2(0.130105, -5480)
+position = Vector2(0.145489, -4528)
+
+[node name="VictoryArea" type="Area2D" parent="LevelChunks/Peaceful/PeacefulChunkEnd"]
+position = Vector2(0.017, -1371)
+monitorable = false
+gravity_point_center = Vector2(1, 0)
+gravity_direction = Vector2(1, 0)
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LevelChunks/Peaceful/PeacefulChunkEnd/VictoryArea"]
+position = Vector2(0.0747312, -3168.5)
+shape = SubResource("RectangleShape2D_gn4dx")
+debug_color = Color(0.45098, 0, 0.254902, 0)
+
+[node name="DisableOccludersMarker" type="Marker2D" parent="LevelChunks/Peaceful/PeacefulChunkEnd"]
+unique_name_in_owner = true
+position = Vector2(0.281, -4284)
 
 [node name="PeacefulArea" type="Area2D" parent="LevelChunks/Peaceful"]
 position = Vector2(0.0172127, -2331.1)
 monitorable = false
 gravity_point_center = Vector2(1, 0)
 gravity_direction = Vector2(1, 0)
-metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LevelChunks/Peaceful/PeacefulArea"]
-position = Vector2(-0.430507, -2861)
+position = Vector2(-0.430507, -3267.95)
 shape = SubResource("RectangleShape2D_j7jso")
 debug_color = Color(0.92549, 0.521569, 0.32549, 0)
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="LevelChunks/Peaceful/PeacefulArea"]
 position = Vector2(0, 188)
 occluder = SubResource("OccluderPolygon2D_bd455")
-
-[node name="VictoryArea" type="Area2D" parent="LevelChunks/Peaceful"]
-position = Vector2(0.017, -2331.1)
-monitorable = false
-gravity_point_center = Vector2(1, 0)
-gravity_direction = Vector2(1, 0)
-metadata/_edit_group_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LevelChunks/Peaceful/VictoryArea"]
-position = Vector2(0.0747312, -3168.5)
-shape = SubResource("RectangleShape2D_gn4dx")
-debug_color = Color(0.45098, 0, 0.254902, 0)
 
 [node name="StartHeightMarker" type="Marker2D" parent="."]
 unique_name_in_owner = true
@@ -313,6 +320,6 @@ position = Vector2(-0.0142213, 599)
 [connection signal="body_exited" from="LevelChunks/Wind/WindChunk1/WindBursts/WindBurstArea10" to="." method="_on_wind_burst_area_body_exited"]
 [connection signal="body_entered" from="LevelChunks/Wind/WindArea" to="." method="_on_wind_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Wind/WindArea" to="." method="_on_wind_area_body_exited"]
+[connection signal="body_entered" from="LevelChunks/Peaceful/PeacefulChunkEnd/VictoryArea" to="." method="_on_victory_area_body_entered"]
 [connection signal="body_entered" from="LevelChunks/Peaceful/PeacefulArea" to="." method="_on_peaceful_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Peaceful/PeacefulArea" to="." method="_on_peaceful_area_body_exited"]
-[connection signal="body_entered" from="LevelChunks/Peaceful/VictoryArea" to="." method="_on_victory_area_body_entered"]
