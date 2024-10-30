@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=34 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" path="res://scenes/characters/Player2.gd" id="1_u6jn4"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_46eyb"]
@@ -144,14 +144,9 @@ collision_mode = 1
 collision_friction = 0.3
 collision_bounce = 0.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3x36b"]
-size = Vector2(8, 1)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_shvhj"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_akl3y"]
 radius = 1.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_2bfs6"]
-radius = 1.0
+height = 10.0
 
 [node name="Player2" type="RigidBody2D" groups=["player2"]]
 collision_layer = 9
@@ -220,17 +215,10 @@ one_shot = true
 explosiveness = 1.0
 trail_lifetime = 0.2
 
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
-position = Vector2(0, 4.5)
-shape = SubResource("RectangleShape2D_3x36b")
-
 [node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
-position = Vector2(-4, 4)
-shape = SubResource("CircleShape2D_shvhj")
-
-[node name="CollisionShape2D5" type="CollisionShape2D" parent="."]
-position = Vector2(4, 4)
-shape = SubResource("CircleShape2D_2bfs6")
+position = Vector2(0, 4)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_akl3y")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

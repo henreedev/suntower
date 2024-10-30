@@ -63,6 +63,7 @@ var _first_seg : Vine
 var _retracting_seg : Vine
 var can_extend := true
 var _can_nudge = false
+var should_teleport := false
 
 var _len_per_seg_adj
 
@@ -133,12 +134,7 @@ func _process(delta):
 
 func _input(event):
 	if dev_mode and event.is_action_pressed("dev_teleport"):
-		#_player.global_position = get_global_mouse_position()
-		#position = _player.global_position
-		#get_tree().set_group("vine", "global_position", _player.global_position - Vector2(0, 10))
-		#print("teleported")
-		#unstuck()
-		pass # FIXME
+		should_teleport = true
 
 func play_spawn_animation():
 	# Make vines and line invisible, tween fade them in
@@ -457,6 +453,12 @@ func get_height():
 	return -int(global_position.y)
 
 func _physics_process(delta):
+	if should_teleport:
+		should_teleport = false
+		_player.global_position = get_global_mouse_position()
+		position = _player.global_position
+		get_tree().set_group("vine", "global_position", _player.global_position - Vector2(0, 10))
+		print("teleported")
 	if not _animating:
 		can_extend = _player.touching and _player.linear_velocity.length_squared() < 2.0 or _state == State.EXTENDING
 		var pos = position

@@ -23,12 +23,14 @@ func _make_rays(count):
 		ray.add_to_group("rays")
 		ray.collision_mask = 1 + 2 + 32
 		 #Visualization line
-		#var line = Line2D.new()
-		#ray.add_child(line)
-		#line.add_point(Vector2(0, 0))
-		#line.add_point(ray.target_position)
-		#line.width = 1
-		#line.z_index = 99
+		#if i % 5 == 0:
+			#var line = Line2D.new()
+			#ray.add_child(line)
+			#line.add_point(Vector2(0, 0))
+			#line.add_point(ray.target_position)
+			#line.width = 1
+			#line.z_index = 99
+			#line.modulate.a = 0.1
 
 func set_rotate(angle):
 	get_tree().set_group("rays", "rotation", angle)
@@ -56,10 +58,12 @@ func _check_player_hit():
 					var tween : Tween = create_tween()
 					tween.tween_property(hit.sprite, "modulate", Color(1.0, 5.0, 1.0), 0.25)
 					tween.tween_property(hit.sprite, "modulate", Color(1.0, 1.0, 1.0), 0.25)
+				
 				return true
 		return false
 	elif _tower.weather == Tower.Weather.WINDY:
 		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
+			ray.collision_mask = 1 + 32 # Exclude vine s egs
 			var hit = ray.get_collider()
 			if hit is FlowerHead or (hit.is_in_group("flowerhead") if hit else false):
 				return true

@@ -93,9 +93,9 @@ func _update_progress_offset(delta):
 			_player.global_position.y < y:
 				min_offset_height = y
 		if min_offset_height == MAX:
-			return 0.0
+			_prog_height_offset = 0.0
 		else:
-			return min_offset_height
+			_prog_height_offset = min_offset_height
 	else:
 		progress_update_timer -= delta
 	
@@ -279,7 +279,7 @@ func _update_wind_strength():
 func _act_on_weather_state():
 	match weather:
 		Weather.SUNNY:
-			var triangle = (-abs(_day_cycle - _half_day_cycle_dur) / _half_day_cycle_dur + 1)
+			var triangle = (-abs(_day_cycle - _half_day_cycle_dur) / _half_day_cycle_dur) + 1
 			_lights.set_energy_mult(triangle * 2.5)
 		Weather.STORMY:
 			pass
