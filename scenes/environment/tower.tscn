@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=31 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Script" path="res://scenes/environment/tower.gd" id="2_bq5o6"]
 [ext_resource type="Script" path="res://scenes/environment/Lights.gd" id="3_6s52w"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://scenes/environment/ParallaxBackground.gd" id="3_iw85s"]
 [ext_resource type="Texture2D" uid="uid://cm88pnpk4lv5y" path="res://assets/image/environment/gwj66-trees.png" id="4_2s5cd"]
 [ext_resource type="Shader" path="res://scenes/environment/bigclouds.gdshader" id="5_lbjnr"]
+[ext_resource type="Texture2D" uid="uid://cg7jutptx5j3u" path="res://assets/image/environment/huge-clouds.png" id="6_ifl30"]
 [ext_resource type="Texture2D" uid="uid://c7e11237n0hy6" path="res://assets/image/environment/small-clouds.png" id="6_vk0hv"]
 [ext_resource type="Script" path="res://scenes/environment/clouds.gd" id="7_dv22i"]
 [ext_resource type="Texture2D" uid="uid://d0r7row0y7nes" path="res://assets/image/environment/big-clouds.png" id="8_vofri"]
@@ -19,6 +20,11 @@
 [ext_resource type="PackedScene" uid="uid://dx72kt582x8cg" path="res://scenes/environment/level-chunks/peaceful/peaceful_chunk_end.tscn" id="17_n405p"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ivn7p"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_41ibw"]
+shader = ExtResource("5_lbjnr")
+shader_parameter/scroll_offset = 0.0
+shader_parameter/brightness = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m5nt1"]
 shader = ExtResource("5_lbjnr")
@@ -72,9 +78,9 @@ color = Color(0.88644, 0.89, 0.8722, 1)
 script = ExtResource("3_iw85s")
 
 [node name="Background" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_scale = Vector2(1, 0.095)
-motion_offset = Vector2(-181.965, 197.12)
-motion_mirroring = Vector2(384, 648)
+motion_scale = Vector2(1, 0.065)
+motion_offset = Vector2(-192, 242)
+motion_mirroring = Vector2(0, 648)
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Background"]
@@ -83,13 +89,24 @@ texture = ExtResource("3_a67q3")
 centered = false
 
 [node name="Forest" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_scale = Vector2(1, 0.25)
-motion_offset = Vector2(-195, -312)
+motion_scale = Vector2(1, 0.13)
+motion_offset = Vector2(-207.495, -180.79)
 motion_mirroring = Vector2(384, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Forest"]
 texture = ExtResource("4_2s5cd")
 centered = false
+
+[node name="ThickClouds" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(1, 0.03)
+motion_offset = Vector2(-192, 82.125)
+motion_mirroring = Vector2(384, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ThickClouds"]
+modulate = Color(1, 1, 1, 0)
+material = SubResource("ShaderMaterial_41ibw")
+texture = ExtResource("6_ifl30")
+script = ExtResource("7_dv22i")
 
 [node name="SmallClouds" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.11)
@@ -168,7 +185,7 @@ texture = SubResource("GradientTexture2D_30wd8")
 polygon = PackedVector2Array(-176, -1369, -167, -1366, 167, -1366, 176, -1375, 176, -1522, -176, -1522)
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="LevelChunks/Storm/StormArea"]
-position = Vector2(-2.37417e-05, 1)
+position = Vector2(0, 1361)
 occluder = SubResource("OccluderPolygon2D_kmt2p")
 
 [node name="LightningStriker" type="Node" parent="LevelChunks/Storm"]
@@ -313,6 +330,10 @@ occluder = SubResource("OccluderPolygon2D_bd455")
 [node name="StartHeightMarker" type="Marker2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(-0.0142213, 599)
+
+[node name="ShowCloudsMarker" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(-21.9953, -199.001)
 
 [connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]

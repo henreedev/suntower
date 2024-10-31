@@ -48,7 +48,7 @@ var modulate_tween : Tween
 var lightning_striking = false
 var lock_lights = false
 var lightning_strike_tween : Tween
-const STORM_MUSIC_8_BARS_DUR := 2.790696
+const STORM_MUSIC_8_BARS_DUR := 2.790696 * 2
 const STORM_MUSIC_BEAT_DUR := .348837
 
 # Wind variables
@@ -79,6 +79,7 @@ var swap_tween : Tween
 @onready var disable_occluders_marker = %DisableOccludersMarker
 @onready var lightning_striker = %LightningStriker
 @onready var stop_delay_timer : Timer = %StopDelayTimer
+@onready var show_clouds_marker = %ShowCloudsMarker
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -313,6 +314,10 @@ func _act_on_weather_state():
 		Weather.SUNNY:
 			var triangle = (-abs(_day_cycle - _half_day_cycle_dur) / _half_day_cycle_dur) + 1
 			_lights.set_energy_mult(triangle * 2.5)
+			if _player.global_position.y < show_clouds_marker.global_position.y:
+				_bg.big_clouds.visible = true
+			else:
+				_bg.big_clouds.visible = false
 		Weather.STORMY:
 			pass
 		Weather.WINDY:
@@ -350,8 +355,9 @@ func do_wind_burst(dir : Vector2i, strength := 2.0, duration := 1.5):
 	wind_direction = dir
 	reset_wind_anchor()
 	
-	const CLOUD_SPEED = 1.0
+	const CLOUD_SPEED = 3.0
 	_bg.set_speed_mult(CLOUD_SPEED * dir.x, true, CLOUD_SPEED * strength * dir.x)
+	_bg.set_speed_mult(0.5 * CLOUD_SPEED * dir.x, false, 0.5 * CLOUD_SPEED * strength * dir.x)
 	
 	if wind_burst_tween: 
 		wind_burst_tween.kill()
@@ -373,22 +379,25 @@ func reset_wind_anchor(reset_to_head := false):
 func do_lightning():
 	if weather == Weather.STORMY:
 		lock_lights = true
-		const cloud_brighten = 0.4
-		const windup_duration = 1.0
+		const cloud_brighten = 0.25
+		const windup_duration = 1.1
+		var rand_windup_dur = windup_duration * randf_range(0.8, 1.2)
 		create_tween().tween_method(_lights.set_energy_mult, 0.04, 1.0, windup_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_IN)
-		create_tween().tween_method(_bg.set_cloud_brightness, _bg.brightness, _bg.brightness + cloud_brighten, windup_duration).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_IN)
+		create_tween().tween_method(_bg.set_cloud_brightness, _bg.brightness, _bg.brightness + cloud_brighten, windup_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_IN)
 		await Timing.create_timer(self, windup_duration + 0.05)
 		
-		const lightning_duration = 0.3
+		const lightning_duration = 0.25
+		var rand_lightning_dur = lightning_duration * randf_range(0.8, 1.2)
 		_lights.set_energy_mult(20.0)
 		_bg.set_cloud_brightness(_bg.brightness + cloud_brighten)
 		lightning_striking = true
 		await Timing.create_timer(self, lightning_duration)
 		lightning_striking = false
 		
-		const winddown_duration = 0.5
+		const winddown_duration = 1.0
+		var rand_winddown_dur = winddown_duration * randf_range(0.8, 1.2)
 		create_tween().tween_method(_lights.set_energy_mult, 1.0, 0.04, winddown_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
-		create_tween().tween_method(_bg.set_cloud_brightness, _bg.brightness + cloud_brighten, _bg.brightness, winddown_duration).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+		create_tween().tween_method(_bg.set_cloud_brightness, _bg.brightness + cloud_brighten, _bg.brightness, winddown_duration).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 		await Timing.create_timer(self, winddown_duration)
 		lock_lights = false
 

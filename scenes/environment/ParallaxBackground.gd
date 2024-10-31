@@ -8,6 +8,7 @@ const brightness = 0.4
 @onready var big_clouds : ScrollingSprite2D = $BigClouds/Sprite2D
 @onready var bg : Sprite2D = $Background/Sprite2D
 @onready var forest : Sprite2D = $Forest/Sprite2D
+@onready var thick_clouds : ScrollingSprite2D = $ThickClouds/Sprite2D
 
 
 func enter_storm(tween : Tween, duration : float):
@@ -21,6 +22,8 @@ func enter_storm(tween : Tween, duration : float):
 	tween.tween_property(big_clouds, "brightness", brightness, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "scale", Vector2(5.0, 5.0), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "brightness", brightness, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(thick_clouds, "brightness", brightness * 0.8, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(thick_clouds, "modulate:a", 1 - storm_modulate.a, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 
 func enter_sunny(tween : Tween, duration : float):
 	tween.tween_property(bg, "modulate", default_modulate, duration)
@@ -33,6 +36,7 @@ func enter_sunny(tween : Tween, duration : float):
 	tween.tween_property(small_clouds, "scale", Vector2(1.0, 1.0), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "brightness", 1.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "modulate", Color.WHITE, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(thick_clouds, "modulate:a", 0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 
 func enter_windy(tween : Tween, duration : float):
 	const wind_cloud_modulate = Color.WEB_GRAY
@@ -41,11 +45,13 @@ func enter_windy(tween : Tween, duration : float):
 	set_speed_mult(1.0, true, -5.8)
 	set_speed_mult(-2.5, false, -20.5)
 	tween.tween_property(big_clouds, "scale", Vector2(1.8, 1.8), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(big_clouds, "brightness", 1.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(big_clouds, "brightness", 3.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(big_clouds, "modulate", wind_cloud_modulate, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "scale", Vector2(3.5, 3.5), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(small_clouds, "brightness", 1.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(small_clouds, "brightness", 3.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "modulate", wind_cloud_modulate, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(thick_clouds, "brightness", 0.5, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(thick_clouds, "modulate:a", 0.3, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 
 func enter_peaceful(tween : Tween, duration : float):
 	const peaceful_cloud_modulate = Color.TRANSPARENT
@@ -59,21 +65,26 @@ func enter_peaceful(tween : Tween, duration : float):
 	tween.tween_property(small_clouds, "scale", Vector2(1.0, 1.0), duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "brightness", 1.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(small_clouds, "modulate", peaceful_cloud_modulate, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(thick_clouds, "brightness", 1.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(thick_clouds, "modulate:a", 0.0, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 
 
 
 func set_cloud_brightness(val):
 	big_clouds.set_brightness(val)
 	small_clouds.set_brightness(val)
+	thick_clouds.set_brightness(val * 0.8)
 
 func set_speed_mult(val : float, is_big, trans_val := val):
 	if is_big:
 		big_clouds.switch_scroll_speed(val, trans_val)
+		thick_clouds.switch_scroll_speed(val* 0.3, trans_val * 0.3)
 	else:
 		small_clouds.switch_scroll_speed(val, trans_val)
 
 func set_darken(val, is_big):
 	if is_big:
 		big_clouds.switch_brightness(val)
+		big_clouds.switch_brightness(val * 0.8)
 	else:
 		small_clouds.switch_brightness(val)

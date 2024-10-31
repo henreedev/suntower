@@ -126,6 +126,7 @@ func no_cutscene_setup():
 	create_tween().tween_property($Camera2D, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
 	_set_electricity(0)
 	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
+	tower.tutorial_chunk.start_tutorial()
 
 func _process(delta):
 	_draw_line()

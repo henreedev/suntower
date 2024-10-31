@@ -40,6 +40,7 @@ func _pos_within_radius(actual_pos : Vector2, target_pos : Vector2, radius : flo
 	return actual_pos.distance_squared_to(target_pos) <= radius * radius
 
 func _check_if_inscription_satisfied():
+	const VALID_RADIUS = 8.0
 	match curr_inscription:
 		InscriptionType.LEFT_CLICK:
 			# left clicked at all, and held left click long enough
@@ -48,10 +49,10 @@ func _check_if_inscription_satisfied():
 		InscriptionType.FIRST_EXTENSION:
 			# check if flower and pot are in correct spots
 			if !satisfied_conds[0] and \
-					_pos_within_radius(flower_head.global_position, first_extension_flower_marker.global_position, 16.0):
+					_pos_within_radius(flower_head.global_position, first_extension_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(0)
 			if !satisfied_conds[1] and \
-					_pos_within_radius(pot.global_position, first_extension_pot_marker.global_position, 16.0):
+					_pos_within_radius(pot.global_position, first_extension_pot_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(1)
 			# flower pos correct, pot pos correct
 			if satisfied_conds[0] and satisfied_conds[1]:
@@ -59,10 +60,10 @@ func _check_if_inscription_satisfied():
 		InscriptionType.FIRST_HOOK:
 			# check if flower and pot are in correct spots
 			if !satisfied_conds[0] and \
-					_pos_within_radius(flower_head.global_position, first_hook_flower_marker.global_position, 16.0):
+					_pos_within_radius(flower_head.global_position, first_hook_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(0)
 			if !satisfied_conds[1] and \
-					_pos_within_radius(pot.global_position, first_hook_pot_marker.global_position, 16.0):
+					_pos_within_radius(pot.global_position, first_hook_pot_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(1)
 			# flower pos correct, pot pos correct
 			if satisfied_conds[0] and satisfied_conds[1]:
@@ -70,10 +71,10 @@ func _check_if_inscription_satisfied():
 		InscriptionType.HOLD_LEFT:
 			# check if flower and pot are in correct spots
 			if !satisfied_conds[1] and \
-					_pos_within_radius(flower_head.global_position, hold_left_flower_marker.global_position, 16.0):
+					_pos_within_radius(flower_head.global_position, hold_left_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(1)
 			if !satisfied_conds[2] and \
-					_pos_within_radius(pot.global_position, hold_left_pot_marker.global_position, 16.0):
+					_pos_within_radius(pot.global_position, hold_left_pot_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(2)
 			# flower pos correct, pot pos correct
 			if satisfied_conds[0] and satisfied_conds[1] and satisfied_conds[2]:
@@ -81,10 +82,10 @@ func _check_if_inscription_satisfied():
 		InscriptionType.HOLD_RIGHT:
 			# check if flower and pot are in correct spots
 			if !satisfied_conds[1] and \
-					_pos_within_radius(flower_head.global_position, hold_right_flower_marker.global_position, 16.0):
+					_pos_within_radius(flower_head.global_position, hold_right_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(1)
 			if !satisfied_conds[2] and \
-					_pos_within_radius(pot.global_position, hold_right_pot_marker.global_position, 16.0):
+					_pos_within_radius(pot.global_position, hold_right_pot_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(2)
 			# flower pos correct, pot pos correct
 			if satisfied_conds[0] and satisfied_conds[1] and satisfied_conds[2]:
@@ -104,8 +105,8 @@ func _satisfy_cond(index : int):
 
 func _satisfy_inscription():
 	inscriptions[curr_inscription].deactivate()
-	inscriptions[curr_inscription].activate()
 	curr_inscription = curr_inscription + 1
+	inscriptions[curr_inscription].activate()
 	_clear_satisfied()
 
 func _input(event):
@@ -120,6 +121,5 @@ func _input(event):
 			if event.is_action_pressed("move_left") and flower_head._state == FlowerHead.State.RETRACTING:
 				_satisfy_cond(0)
 		InscriptionType.HOLD_RIGHT:
-			if event.is_action_released("move_right") and flower_head._state == FlowerHead.State.RETRACTING:
+			if event.is_action_pressed("move_right") and flower_head._state == FlowerHead.State.RETRACTING:
 				_satisfy_cond(0)
-		
