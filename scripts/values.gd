@@ -122,7 +122,7 @@ static func clear_user_data():
 
 # saving and loading
 static func save_user_data():
-	#if cheated: return # Don't save any data from a run with dev tools involved
+	if cheated: return # Don't save any data from a run with dev tools involved
 	config.set_value("settings", "finished_tutorial", finished_tutorial)
 	config.set_value("settings", "speedrun_mode", speedrun_mode)
 	config.set_value("settings", "master_volume", VolumeBar.master_volume)
