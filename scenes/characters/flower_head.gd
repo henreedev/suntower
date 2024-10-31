@@ -7,7 +7,7 @@ const ROTATE_SPEED = PI
 const GRAVITY = -0.2
 const vine_root_offset := Vector2(0, 5)
 @export var vine_seg : PackedScene
-@export var play_animation_on_start := false
+var play_animation_on_start : bool
 @export var max_extended_len := 125.0
 @export var dev_mode := false
 const BASE_MAX_EXTENDED_LEN := 125.0
@@ -92,7 +92,7 @@ var wind_particles_tween : Tween
 @onready var storm_light : PointLight2D = $StormLight
 @onready var lightning_particles : GPUParticles2D = $Lightning
 @onready var sun_particles : GPUParticles2D = $Sparkles
-@onready var scene_manager = get_tree().get_first_node_in_group("scenemanager")
+@onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 @onready var camera_2d = $Camera2D
 @onready var spiked_hitbox: CollisionPolygon2D = $SpikedHitbox
 @onready var wind_particles: GPUParticles2D = %WindParticles
@@ -110,9 +110,10 @@ func _ready():
 	# NOTE uncomment this to view entire level 
 	if skip_game:
 		create_tween().set_loops().tween_property(self, "position", Vector2(0, -4000), 10.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	camera_2d.limit_top = tower.cam_max_marker.global_position.y
 	_spawn_vine()
 	add_collision_exception_with(_player)
-	camera_2d.limit_top = tower.cam_max_marker.global_position.y
+	play_animation_on_start = not Values.skip_cutscene
 	if play_animation_on_start:
 		_animating = true
 	begin_inactive()
@@ -125,8 +126,27 @@ func no_cutscene_setup():
 	create_tween().tween_property($Camera2D,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property($Camera2D, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
 	_set_electricity(0)
-	create_tween().tween_property(get_tree().get_first_node_in_group("ui"), "offset", Vector2(0, 0), 1.0).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
-	tower.tutorial_chunk.start_tutorial()
+	if not scene_manager.is_initialized: await scene_manager.initialized
+	if Values.speedrun_mode:
+		_animating = true
+		var speedrun_intro_tween := create_tween()
+		if not main.is_initialized: await main.initialized
+		main.switch_to_sun_bar()
+		var initial_pos = main.speedrun_timers.position
+		var initial_tracker_pos = main.time_trackers[0].position
+		var initial_tracker_scale = main.time_trackers[0].scale
+		main.time_trackers[0].position = Vector2.ZERO   # center screen
+		main.time_trackers[0].scale = Vector2.ONE * 3   # center screen
+		main.speedrun_timers.position = Vector2(576, 342) - main.time_trackers[0].size / 2  # center screen
+		speedrun_intro_tween.tween_property(main.speedrun_timers, "position", initial_pos, 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN).set_delay(1.0)
+		speedrun_intro_tween.parallel().tween_property(main.time_trackers[0], "position", initial_tracker_pos, 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN).set_delay(1.0)
+		speedrun_intro_tween.parallel().tween_property(main.time_trackers[0], "scale", initial_tracker_scale, 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN).set_delay(1.0)
+		speedrun_intro_tween.tween_property(self, "_animating", false, 0.0)
+		speedrun_intro_tween.tween_callback(main.shake.bind(2.0))
+	else:
+		if not main.is_initialized: await main.initialized
+		tower.tutorial_chunk.start_tutorial()
+		main.switch_to_sun_bar()
 
 func _process(delta):
 	_draw_line()
@@ -138,10 +158,17 @@ func _process(delta):
 		time += delta
 
 func _input(event):
+	if event.is_action_pressed("clear_user_data"):
+		Values.clear_user_data()
+	if event.is_action_pressed("toggle_dev_mode"):
+		dev_mode = not dev_mode
 	if dev_mode and event.is_action_pressed("dev_teleport"):
 		should_teleport = true
+		Values.cheated = true
 
 func play_spawn_animation():
+	Values.skip_cutscene = true
+	
 	# Make vines and line invisible, tween fade them in
 	get_tree().set_group("vine", "modulate", Color(1.0, 1.0, 1.0, 0.0))
 	get_tree().set_group("vine", "linear_damp", 100.0)
@@ -184,6 +211,8 @@ func play_spawn_animation():
 	_animating = false
 	tower.tutorial_chunk.start_tutorial()
 	get_tree().set_group("vine", "linear_damp", 1.0)
+	main.switch_to_sun_bar()
+
 
 func _connect_sunrays():
 	for sunrays in get_tree().get_nodes_in_group("sunrays"):

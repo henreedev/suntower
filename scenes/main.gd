@@ -2,9 +2,14 @@ extends Node2D
 
 class_name Main
 
+signal initialized 
+var is_initialized := false
+
+static var instance : Main
+
 var hud_offset := Vector2(0,-50)
 var shake_strength = 0.0
-const SHAKE_DECAY_RATE = 20.0
+const SHAKE_DECAY_RATE = 200.0
 const RANDOM_SHAKE_STRENGTH = 30.0
 var switch_bars_tween : Tween
 
@@ -16,6 +21,8 @@ var switch_bars_tween : Tween
 @onready var _cam : Camera2D = $FlowerHead/Camera2D
 @onready var pause_menu = $PauseMenu
 @onready var color_rect : ColorRect = $CanvasLayer/ColorRect
+@onready var time_trackers : Array[TimeTracker] = [%SunTime, %StormTime, %WindTime, %PeacefulTime]
+@onready var speedrun_timers = $CanvasLayer/SpeedrunTimers
 
 func _ready():
 	_vines_bar.max_value = flower_head.BASE_MAX_EXTENDED_LEN
@@ -26,6 +33,9 @@ func _ready():
 	_sun_bar.value = 0.0
 	_lightning_bar.value = 0.0
 	_wind_bar.value = flower_head.BASE_MAX_EXTENDED_LEN
+	instance = self
+	initialized.emit()
+	is_initialized = true
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause") and not pause_menu.just_unpaused:
@@ -64,7 +74,8 @@ func switch_to_sun_bar():
 	switch_bars_tween = create_tween()
 	switch_bars_tween.tween_interval(1.5)
 	switch_bars_tween.set_parallel()
-	switch_bars_tween.tween_property(_sun_bar, "position:y", 1.0, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	switch_bars_tween.tween_property(_vines_bar, "position:y", 1.0, 1.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
+	switch_bars_tween.tween_property(_sun_bar, "position:y", 1.0, 1.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
 	switch_bars_tween.tween_property(_lightning_bar, "position:y", -60.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 	switch_bars_tween.tween_property(_wind_bar, "position:y", -60.0, 0.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 	
@@ -85,7 +96,7 @@ func set_vine_windiness(windiness : float):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if shake_strength:
-		shake_strength = lerp(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
+		shake_strength = move_toward(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
 	# Set hud progress bar values
 	var goal_alpha := 1.0
 	if flower_head.can_extend:
@@ -111,9 +122,10 @@ func _process(delta):
 	# Shake bar if necessary
 	if shake_strength:
 		$CanvasLayer.offset = get_random_offset()
+	speedrun_timers.visible = Values.speedrun_mode
 
-func shake():
-	shake_strength = RANDOM_SHAKE_STRENGTH
+func shake(multiplier := 1.0):
+	shake_strength = RANDOM_SHAKE_STRENGTH * multiplier
 
 func get_random_offset():
 	return Vector2(

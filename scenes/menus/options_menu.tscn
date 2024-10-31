@@ -50,10 +50,9 @@ offset_top = -6.0
 grow_horizontal = 2
 grow_vertical = 2
 tab_alignment = 1
-current_tab = 2
+current_tab = 0
 
 [node name="Settings" type="TabBar" parent="TabContainer"]
-visible = false
 custom_minimum_size = Vector2(151, 116)
 layout_mode = 2
 metadata/_tab_index = 0
@@ -210,6 +209,7 @@ text = "[wave amp=10.0 freq=4connected=1][rainbow freq=1.0 sat=.4 val=1][center]
 fit_content = true
 
 [node name="Speedrun" type="TabBar" parent="TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 

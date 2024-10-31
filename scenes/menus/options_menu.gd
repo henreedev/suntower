@@ -9,16 +9,16 @@ class_name OptionsMenu
 
 # Rich text labels for stats
 # Best ever split labels
-@onready var storm_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit/StormSplit
-@onready var wind_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit/WindSplit
-@onready var peace_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit/PeaceSplit
-@onready var escape_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit/EscapeSplit
+@onready var sun_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit/StormSplit
+@onready var storm_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit/WindSplit
+@onready var wind_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit/PeaceSplit
+@onready var peace_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit/EscapeSplit
 
 # Personal record split labels
-@onready var pr_storm_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit/PRStormSplit
-@onready var pr_wind_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit/PRWindSplit
-@onready var pr_peace_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit/PRPeaceSplit
-@onready var pr_escape_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit/PREscapeSplit
+@onready var pr_sun_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/StormSplit/PRStormSplit
+@onready var pr_storm_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/WindSplit/PRWindSplit
+@onready var pr_wind_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/PeaceSplit/PRPeaceSplit
+@onready var pr_peace_split = $TabContainer/Speedrun/MarginContainer/VBoxContainer/EscapeSplit/PREscapeSplit
 
 @onready var best_height = %BestHeight
 @onready var beat_game = %BeatGame
@@ -37,8 +37,8 @@ var section_icons = [SUNNY_SECTION_ICON, STORM_SECTION_ICON, WIND_SECTION_ICON, 
 
 
 # Arrays for ease of population
-@onready var best_splits = [null, storm_split, wind_split, peace_split, escape_split, null, null]
-@onready var pr_splits = [null, pr_storm_split, pr_wind_split, pr_peace_split, pr_escape_split, null, null]
+@onready var best_splits = [sun_split, storm_split, wind_split, peace_split, null, null, null]
+@onready var pr_splits = [pr_sun_split, pr_storm_split, pr_wind_split, pr_peace_split, null, null, null]
 
 enum ColorSetting {PULSE_RED, PULSE_GREEN, RAINBOW, NONE}
 
@@ -145,7 +145,7 @@ func _refresh_labels():
 							congrats = "you just got started... don't give up"
 							congrats_color = ColorSetting.PULSE_RED
 						else:
-							congrats = "Keep going!"
+							congrats = "Give it a shot!"
 							congrats_color = ColorSetting.PULSE_GREEN
 	_set_rich_text_label(congratulations, \
 		congrats, \

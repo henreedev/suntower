@@ -2,6 +2,7 @@ extends Node2D
 
 class_name SceneManager
 
+signal initialized
 
 const GAME_SCENE = preload("res://scenes/main.tscn")
 
@@ -27,6 +28,7 @@ var level_switch_tween : Tween
 @onready var sprite_2d: Sprite2D = $CanvasLayer/Sprite2D
 
 var can_transition := true
+var is_initialized := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -37,10 +39,14 @@ func _ready():
 	stream = audio_stream_player.stream
 	base_volume = audio_stream_player.volume_db
 	_setup()
+	initialized.emit()
+	is_initialized = true
 
 
 func _setup():
 	remove_child(victory_sequence)
+	_set_game_to_new_copy()
+	add_child(game)
 	remove_child(game)
 
 
@@ -60,14 +66,14 @@ func menu_to_game():
 			switch_bgm.bind("Sun"), reduce_if_paused, game.pause_menu.options_menu.refresh])
 	else:
 		tween_transition([remove_child.bind(start_menu), add_child.bind(game), \
-			switch_bgm.bind("Sun"), reduce_if_paused, game.pause_menu.options_menu.refresh])
+			switch_bgm.bind("Sun"), reduce_if_paused, _call_game_options_refresh])
 
 func game_to_menu():
 	tween_transition([remove_child.bind(game), add_child.bind(start_menu), \
 	 switch_bgm.bind("Menu"), reset_music_volume, start_menu.options_menu.refresh])
 
 func game_to_victory():
-	tween_transition([remove_child.bind(game), add_child.bind(victory_sequence), \
+	tween_transition([remove_child.bind(game), _set_game_to_new_copy, add_child.bind(victory_sequence), \
 		switch_bgm.bind("VictoryLeadIn"), victory_sequence.play_sequence], 0)
 
 func victory_to_menu():
@@ -75,16 +81,21 @@ func victory_to_menu():
 	 switch_bgm.bind("Menu"), start_menu.options_menu.refresh], 1.0, true)
 
 func restart_game():
-	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy])
+	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy, _add_game_as_child])
+
+func _add_game_as_child():
+	add_child(game)
+
+func _call_game_options_refresh():
+	game.pause_menu.options_menu.refresh()
 
 func _set_game_to_new_copy():
 	Values.reset()
 	game.queue_free()
-	remove_child(game)
+	if game.get_parent() == self:
+		remove_child(game)
 	game = GAME_SCENE.instantiate()
-	add_child(game)
-	game.flower_head.play_animation_on_start = not Values.skip_cutscene
-	Values.skip_cutscene = false
+	
 
 func switch_bgm(clip_name : String):
 	playback.switch_to_clip_by_name(clip_name)

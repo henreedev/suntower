@@ -109,7 +109,12 @@ func _satisfy_inscription():
 	curr_inscription = curr_inscription + 1
 	if curr_inscription < len(inscriptions):
 		inscriptions[curr_inscription].activate()
+	else:
+		_finish_tutorial()
 	_clear_satisfied()
+
+func _finish_tutorial():
+	Values.finished_tutorial = true
 
 func _input(event):
 	match curr_inscription:

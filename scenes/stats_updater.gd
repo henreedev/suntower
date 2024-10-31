@@ -20,9 +20,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	Values.increment_time(delta)
-	_process_autosave(delta)
-	_process_height_update(delta)
+	if not player._animating:
+		Values.increment_time(delta)
+		_process_autosave(delta)
+		_process_height_update(delta)
 
 func _process_autosave(delta):
 	if autosave_time_left > 0:

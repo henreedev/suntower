@@ -182,6 +182,7 @@ text = "20000.11"
 label_settings = SubResource("LabelSettings_yh54b")
 horizontal_alignment = 1
 script = ExtResource("18_ticvr")
+section_type = null
 
 [node name="StormTime" type="Label" parent="CanvasLayer/SpeedrunTimers"]
 unique_name_in_owner = true

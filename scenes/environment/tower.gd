@@ -80,10 +80,14 @@ var swap_tween : Tween
 @onready var lightning_striker = %LightningStriker
 @onready var stop_delay_timer : Timer = %StopDelayTimer
 @onready var show_clouds_marker = %ShowCloudsMarker
+var time_trackers : Array[TimeTracker] 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	instance = self
+	await main.initialized
+	time_trackers = main.time_trackers
+	_begin_tracking(Weather.SUNNY)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -131,7 +135,16 @@ func start_sunny():
 		main.switch_to_sun_bar()
 		SceneManager.instance.switch_bgm("Sun")
 		Values.reach_section(weather)
+		_begin_tracking(weather)
+		time_trackers[weather]
+		
 		stop_lightning()
+
+func _begin_tracking(next_weather : Weather):
+	if not Values.cur_section > next_weather and int(next_weather) < len(time_trackers):
+		time_trackers[next_weather].activate()
+	if int(weather) > 0:
+		time_trackers[next_weather - 1].lock_in_time()
 
 func start_stormy():
 	if not weather == Weather.STORMY:
@@ -153,6 +166,7 @@ func start_stormy():
 		_player.disable_wind_particles()
 		_lights.set_wind_mode(false)
 		Values.reach_section(weather)
+		_begin_tracking(weather)
 
 
 func start_windy():
@@ -172,6 +186,7 @@ func start_windy():
 		_player.enable_occluders()
 		_lights.set_wind_mode(true)
 		Values.reach_section(weather)
+		_begin_tracking(weather)
 
 func start_peaceful():
 	if not weather == Weather.PEACEFUL:
@@ -187,6 +202,7 @@ func start_peaceful():
 		_player.disable_wind_particles()
 		_lights.set_wind_mode(false)
 		Values.reach_section(weather)
+		_begin_tracking(weather)
 
 func stop_lightning():
 	stop_delay_timer.start(STORM_MUSIC_BEAT_DUR)
@@ -204,6 +220,7 @@ func win():
 		# indicate victory to Values 
 		Values.update_height(_player.get_height())
 		Values.win()
+		_begin_tracking(Weather.VICTORY) # Locks in Peaceful timer
 		
 		# fade out and switch to victory sequence
 		var win_tween := create_tween().set_parallel()
