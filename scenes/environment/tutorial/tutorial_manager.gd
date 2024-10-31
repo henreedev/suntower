@@ -52,7 +52,8 @@ func _check_if_inscription_satisfied():
 					_pos_within_radius(flower_head.global_position, first_extension_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(0)
 			if !satisfied_conds[1] and \
-					_pos_within_radius(pot.global_position, first_extension_pot_marker.global_position, VALID_RADIUS):
+					_pos_within_radius(pot.global_position, first_extension_pot_marker.global_position, VALID_RADIUS) or \
+					_pos_within_radius(pot.global_position, first_hook_pot_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(1)
 			# flower pos correct, pot pos correct
 			if satisfied_conds[0] and satisfied_conds[1]:
@@ -74,7 +75,7 @@ func _check_if_inscription_satisfied():
 					_pos_within_radius(flower_head.global_position, hold_left_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(1)
 			if !satisfied_conds[2] and \
-					_pos_within_radius(pot.global_position, hold_left_pot_marker.global_position, VALID_RADIUS):
+					_pos_within_radius(pot.global_position, hold_left_pot_marker.global_position, VALID_RADIUS 	* 2):
 				_satisfy_cond(2)
 			# flower pos correct, pot pos correct
 			if satisfied_conds[0] and satisfied_conds[1] and satisfied_conds[2]:
@@ -85,7 +86,7 @@ func _check_if_inscription_satisfied():
 					_pos_within_radius(flower_head.global_position, hold_right_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(1)
 			if !satisfied_conds[2] and \
-					_pos_within_radius(pot.global_position, hold_right_pot_marker.global_position, VALID_RADIUS):
+					_pos_within_radius(pot.global_position, hold_right_pot_marker.global_position, VALID_RADIUS * 2):
 				_satisfy_cond(2)
 			# flower pos correct, pot pos correct
 			if satisfied_conds[0] and satisfied_conds[1] and satisfied_conds[2]:
@@ -99,14 +100,15 @@ func _satisfy_cond(index : int):
 	if not satisfied_conds[index]:
 		satisfied_conds[index] = true
 		var flash_tween = create_tween()
-		flash_tween.tween_property(inscriptions[curr_inscription], "modulate", Color.WHITE * 1.2, 0.3).set_trans(Tween.TRANS_CUBIC)
+		flash_tween.tween_property(inscriptions[curr_inscription], "modulate", Color.WHITE * 1.5, 0.3).set_trans(Tween.TRANS_CUBIC)
 		flash_tween.tween_property(inscriptions[curr_inscription], "modulate", Color.WHITE, 0.7).set_trans(Tween.TRANS_CUBIC)
 		# TODO play a sound
 
 func _satisfy_inscription():
 	inscriptions[curr_inscription].deactivate()
 	curr_inscription = curr_inscription + 1
-	inscriptions[curr_inscription].activate()
+	if curr_inscription < len(inscriptions):
+		inscriptions[curr_inscription].activate()
 	_clear_satisfied()
 
 func _input(event):
