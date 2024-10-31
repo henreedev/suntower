@@ -90,7 +90,7 @@ centered = false
 
 [node name="Forest" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.13)
-motion_offset = Vector2(-207.495, -180.79)
+motion_offset = Vector2(-207.495, -215.25)
 motion_mirroring = Vector2(384, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Forest"]
