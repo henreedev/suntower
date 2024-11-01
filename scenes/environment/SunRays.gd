@@ -7,7 +7,7 @@ signal sun_hit
 var num_rays = 750
 var offset_height = -num_rays / 2 - 50
 var leader = false
-@onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
+@onready var _player : Head = get_tree().get_first_node_in_group("flowerhead")
 @onready var _tower : Tower = get_tree().get_first_node_in_group("tower")
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -48,13 +48,13 @@ func _check_player_hit():
 		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
 			ray.collision_mask = 1 + 2 + 32 # Include vine segs
 			var hit = ray.get_collider()
-			if hit is FlowerHead or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
+			if hit is Head or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
 				return true
 		return false
 	elif _tower.weather == Tower.Weather.SUNNY:
 		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
 			var hit = ray.get_collider()
-			if hit is FlowerHead or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
+			if hit is Head or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
 				if not _player._animating and hit is Vine:
 					var tween : Tween = create_tween()
 					tween.tween_property(hit.sprite, "modulate", Color(1.0, 5.0, 1.0), 0.25)
@@ -66,7 +66,7 @@ func _check_player_hit():
 		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
 			ray.collision_mask = 1 + 32 # Exclude vine segs
 			var hit = ray.get_collider()
-			if hit is FlowerHead or (hit.is_in_group("flowerhead") if hit else false):
+			if hit is Head or (hit.is_in_group("flowerhead") if hit else false):
 				return true
 		return false
 	else: return false

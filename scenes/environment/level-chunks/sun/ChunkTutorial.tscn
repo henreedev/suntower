@@ -328,3 +328,6 @@ position = Vector2(0, -578.446)
 
 [node name="SunResetPoint2" parent="." instance=ExtResource("5_cg3ho")]
 position = Vector2(0, 16.075)
+
+[node name="SunResetPoint3" parent="." instance=ExtResource("5_cg3ho")]
+position = Vector2(0, -179)

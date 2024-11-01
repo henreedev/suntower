@@ -1,6 +1,6 @@
 [gd_scene load_steps=29 format=3 uid="uid://c7w06rdclh4r0"]
 
-[ext_resource type="Script" path="res://scenes/menus/Menu.gd" id="1_5r3os"]
+[ext_resource type="Script" path="res://scenes/main_scenes/Menu.gd" id="1_5r3os"]
 [ext_resource type="Theme" uid="uid://cn83a0xrk33ty" path="res://scenes/menus/themes/MenuTheme.tres" id="1_lakh0"]
 [ext_resource type="Texture2D" uid="uid://chqddb8lndj24" path="res://assets/image/menu/MenuBackground.png" id="2_t0ayx"]
 [ext_resource type="Shader" path="res://scenes/environment/Clouds.gdshader" id="3_deo1s"]

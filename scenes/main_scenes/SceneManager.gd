@@ -4,7 +4,7 @@ class_name SceneManager
 
 signal initialized
 
-const GAME_SCENE = preload("res://scenes/main.tscn")
+const GAME_SCENE = preload("res://scenes/main_scenes/Game.tscn")
 
 static var instance : SceneManager
 

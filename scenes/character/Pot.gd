@@ -1,16 +1,16 @@
 extends RigidBody2D
-class_name Player2
+class_name Pot
 
 const vine_root_offset = Vector2(0, -4)
 
 
-const POT_HIT_SMALL = preload("res://assets/sound/sfx/pot-hit-small.wav")
-const MEDIUM_BIG_HIT = preload("res://assets/sound/sfx/hit.wav")
-const MEDIUM_INTERMEDIATE_HIT = preload("res://assets/sound/sfx/hit-2.wav")
-const BIG_HIT_WHOOSH = preload("res://assets/sound/sfx/hit-3.wav")
-const WEIRD_HIT = preload("res://assets/sound/sfx/hit-4.wav")
-const SMALL_HIT = preload("res://assets/sound/sfx/hit-5.wav")
-const FAIL = preload("res://assets/sound/sfx/fail.wav")
+const POT_HIT_SMALL = preload("res://assets/sound/sfx/PotHitSmall2.wav")
+const MEDIUM_BIG_HIT = preload("res://assets/sound/sfx/PotHitMediumBig.wav")
+const MEDIUM_INTERMEDIATE_HIT = preload("res://assets/sound/sfx/PotHitMediumIntermediate.wav")
+const BIG_HIT_WHOOSH = preload("res://assets/sound/sfx/PotHitWhoosh.wav")
+const WEIRD_HIT = preload("res://assets/sound/sfx/PotHitWeird.wav")
+const SMALL_HIT = preload("res://assets/sound/sfx/PotHitSmall.wav")
+const FAIL = preload("res://assets/sound/sfx/PotFail.wav")
 
 var small_hit_can_play = true
 var medium_inter_hit_can_play = true
@@ -22,7 +22,7 @@ var velocity_diff : float
 var stream : AudioStreamPolyphonic
 var playback : AudioStreamPlaybackPolyphonic
 
-@onready var flower_head : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
+@onready var head : Head = get_tree().get_first_node_in_group("flowerhead")
 @onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 @onready var sound_effect_player : AudioStreamPlayer2D = %SoundEffectPlayer
 @onready var shadow : Sprite2D = $Smoothing2D/Pot/Shadow
@@ -37,7 +37,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	_check_inputs()
-	_act_on_state(flower_head._state)
+	_act_on_state(head._state)
 	_display_shadow()
 
 func _display_shadow():
@@ -51,26 +51,26 @@ func _enter_tree():
 	await Timing.create_timer(self, 0.05, true)
 	playback = sound_effect_player.get_stream_playback()
 
-func _act_on_state(state : FlowerHead.State):
+func _act_on_state(state : Head.State):
 	match state:
-		FlowerHead.State.EXTENDING:
+		Head.State.EXTENDING:
 			linear_damp = 250.0
 			angular_damp = 10
-		FlowerHead.State.RETRACTING:
+		Head.State.RETRACTING:
 			linear_damp = 1.0
 			angular_damp = 2
-		FlowerHead.State.INACTIVE:
+		Head.State.INACTIVE:
 			linear_damp = 1.03
 
 func _check_inputs():
 	if Input.is_action_just_pressed("extend"):
-		flower_head.begin_extending()
+		head.begin_extending()
 
 func _physics_process(delta):
 	prev_vel_sqrd = linear_velocity.length_squared()
 	prev_avel = angular_velocity
 	# Make sure touching is never false when not moving at all (must be grounded)
-	if not touching and flower_head._state == FlowerHead.State.INACTIVE and \
+	if not touching and head._state == Head.State.INACTIVE and \
 			prev_vel_sqrd < 0.01 and abs(prev_avel) < 0.01:
 		touching = true 
 
@@ -93,7 +93,7 @@ func _play_sound_on_impact():
 	var rand_pitch = randf_range(0.8, 1.1)
 	var left_or_right := Vector2(1 * ((int)(linear_velocity.rotated(rotation).x < 0) * 2 - 1), 0)
 	var volume_offset := 0.0
-	if not flower_head._animating:
+	if not head._animating:
 		if velocity_diff > 150000.0:
 			volume_offset = get_volume_adjust_by_speed(200000.0, 150000.0)
 			_play_sound(FAIL, volume_offset)
@@ -129,12 +129,6 @@ func get_volume_adjust_by_speed(upper : float, lower : float):
 	
 	var bounds_diff = upper - lower
 	var volume_adjust = lerpf(MIN_DB, MAX_DB, (velocity_diff - lower) / bounds_diff)
-	#print()
-	#print("upper = ", upper )
-	#print("lower = ", lower )
-	#print("diff = ", velocity_diff )
-	#print("t = ", (velocity_diff - lower) / bounds_diff)
-	#print("db = ", volume_adjust)
 	return clampf(volume_adjust, MIN_DB, MAX_DB)
 
 func _emit_spark(amount : int, dir : Vector2, both_sides = false):

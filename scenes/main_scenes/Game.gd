@@ -17,22 +17,22 @@ var switch_bars_tween : Tween
 @onready var _sun_bar : TextureProgressBar = $CanvasLayer/SunBar
 @onready var _lightning_bar : TextureProgressBar = $CanvasLayer/LightningBar
 @onready var _wind_bar : TextureProgressBar = $CanvasLayer/WindBar
-@onready var flower_head : FlowerHead = $FlowerHead
-@onready var _cam : Camera2D = $FlowerHead/Camera2D
+@onready var head : Head = $Head
+@onready var _cam : Camera2D = $Head/Camera2D
 @onready var pause_menu = $PauseMenu
 @onready var color_rect : ColorRect = $CanvasLayer/ColorRect
 @onready var time_trackers : Array[TimeTracker] = [%SunTime, %StormTime, %WindTime, %PeacefulTime]
 @onready var speedrun_timers = $CanvasLayer/SpeedrunTimers
 
 func _ready():
-	_vines_bar.max_value = flower_head.BASE_MAX_EXTENDED_LEN
-	_sun_bar.max_value = flower_head.BASE_MAX_EXTENDED_LEN
-	_lightning_bar.max_value = flower_head.MAX_LIGHTNING_BUFF
-	_wind_bar.max_value = flower_head.BASE_MAX_EXTENDED_LEN
+	_vines_bar.max_value = head.BASE_MAX_EXTENDED_LEN
+	_sun_bar.max_value = head.BASE_MAX_EXTENDED_LEN
+	_lightning_bar.max_value = head.MAX_LIGHTNING_BUFF
+	_wind_bar.max_value = head.BASE_MAX_EXTENDED_LEN
 	_vines_bar.value = 0.0
 	_sun_bar.value = 0.0
 	_lightning_bar.value = 0.0
-	_wind_bar.value = flower_head.BASE_MAX_EXTENDED_LEN
+	_wind_bar.value = head.BASE_MAX_EXTENDED_LEN
 	instance = self
 	initialized.emit()
 	is_initialized = true
@@ -99,9 +99,9 @@ func _process(delta):
 		shake_strength = move_toward(shake_strength, 0.0, SHAKE_DECAY_RATE * delta)
 	# Set hud progress bar values
 	var goal_alpha := 1.0
-	if flower_head.can_extend:
-		if flower_head.extra_len_display == flower_head.BASE_MAX_EXTENDED_LEN:
-			_sun_bar.value = flower_head.BASE_MAX_EXTENDED_LEN
+	if head.can_extend:
+		if head.extra_len_display == head.BASE_MAX_EXTENDED_LEN:
+			_sun_bar.value = head.BASE_MAX_EXTENDED_LEN
 		goal_alpha = 1.0
 	else: 
 		if Input.is_action_just_pressed("extend"):
@@ -109,14 +109,14 @@ func _process(delta):
 		goal_alpha = 0.2
 	const STR = 10.0
 	var diff 
-	diff = abs(flower_head.vine_len_display - _vines_bar.value)
-	_vines_bar.value = move_toward(_vines_bar.value, flower_head.vine_len_display, max(diff * STR * delta, 1))
-	diff = abs(flower_head.extra_len_display - _sun_bar.value)
-	_sun_bar.value =move_toward(_sun_bar.value, flower_head.extra_len_display, max(diff * STR * delta, 1))
-	diff = abs(flower_head.lightning_buff_amount - _lightning_bar.value)
-	_lightning_bar.value =move_toward(_lightning_bar.value, flower_head.lightning_buff_amount, max(diff * STR * 2.0 * delta, 1))
-	diff = abs(flower_head.wind_extra_len_display - _wind_bar.value)
-	_wind_bar.value =move_toward(_wind_bar.value, flower_head.wind_extra_len_display, max(diff * STR * delta, 1))
+	diff = abs(head.vine_len_display - _vines_bar.value)
+	_vines_bar.value = move_toward(_vines_bar.value, head.vine_len_display, max(diff * STR * delta, 1))
+	diff = abs(head.extra_len_display - _sun_bar.value)
+	_sun_bar.value =move_toward(_sun_bar.value, head.extra_len_display, max(diff * STR * delta, 1))
+	diff = abs(head.lightning_buff_amount - _lightning_bar.value)
+	_lightning_bar.value =move_toward(_lightning_bar.value, head.lightning_buff_amount, max(diff * STR * 2.0 * delta, 1))
+	diff = abs(head.wind_extra_len_display - _wind_bar.value)
+	_wind_bar.value =move_toward(_wind_bar.value, head.wind_extra_len_display, max(diff * STR * delta, 1))
 	diff = abs(goal_alpha - _vines_bar.modulate.a)
 	_vines_bar.modulate.a = move_toward(_vines_bar.modulate.a, goal_alpha, diff * STR * delta)
 	# Shake bar if necessary

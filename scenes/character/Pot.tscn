@@ -1,6 +1,6 @@
 [gd_scene load_steps=34 format=3 uid="uid://deoc0hgj85t7q"]
 
-[ext_resource type="Script" path="res://scenes/character/Player2.gd" id="1_u6jn4"]
+[ext_resource type="Script" path="res://scenes/character/Pot.gd" id="1_u6jn4"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_46eyb"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/character/Pot.png" id="2_dk0m0"]
 [ext_resource type="Texture2D" uid="uid://dtw0lgoge1iy1" path="res://assets/image/character/PotShadow.png" id="4_0jlhp"]
@@ -148,7 +148,7 @@ collision_bounce = 0.0
 radius = 1.0
 height = 10.0
 
-[node name="Player2" type="RigidBody2D" groups=["player2"]]
+[node name="Pot" type="RigidBody2D" groups=["pot"]]
 collision_layer = 9
 collision_mask = 9
 mass = 0.25

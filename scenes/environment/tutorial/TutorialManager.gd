@@ -17,8 +17,8 @@ var satisfied_conds : Array[bool] = [false, false, false, false, false]
 @onready var hold_right_flower_marker : Marker2D = $HoldRightFlowerMarker
 @onready var hold_right_pot_marker : Marker2D = $HoldRightPotMarker
 
-@onready var flower_head : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
-@onready var pot : Player2 = get_tree().get_first_node_in_group("player2")
+@onready var head : Head = get_tree().get_first_node_in_group("flowerhead")
+@onready var pot : Pot = get_tree().get_first_node_in_group("pot")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -49,7 +49,7 @@ func _check_if_inscription_satisfied():
 		InscriptionType.FIRST_EXTENSION:
 			# check if flower and pot are in correct spots
 			if !satisfied_conds[0] and \
-					_pos_within_radius(flower_head.global_position, first_extension_flower_marker.global_position, VALID_RADIUS):
+					_pos_within_radius(head.global_position, first_extension_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(0)
 			if !satisfied_conds[1] and \
 					_pos_within_radius(pot.global_position, first_extension_pot_marker.global_position, VALID_RADIUS) or \
@@ -61,7 +61,7 @@ func _check_if_inscription_satisfied():
 		InscriptionType.FIRST_HOOK:
 			# check if flower and pot are in correct spots
 			if !satisfied_conds[0] and \
-					_pos_within_radius(flower_head.global_position, first_hook_flower_marker.global_position, VALID_RADIUS):
+					_pos_within_radius(head.global_position, first_hook_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(0)
 			if !satisfied_conds[1] and \
 					_pos_within_radius(pot.global_position, first_hook_pot_marker.global_position, VALID_RADIUS):
@@ -72,7 +72,7 @@ func _check_if_inscription_satisfied():
 		InscriptionType.HOLD_LEFT:
 			# check if flower and pot are in correct spots
 			if !satisfied_conds[1] and \
-					_pos_within_radius(flower_head.global_position, hold_left_flower_marker.global_position, VALID_RADIUS):
+					_pos_within_radius(head.global_position, hold_left_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(1)
 			if !satisfied_conds[2] and \
 					_pos_within_radius(pot.global_position, hold_left_pot_marker.global_position, VALID_RADIUS 	* 2):
@@ -83,7 +83,7 @@ func _check_if_inscription_satisfied():
 		InscriptionType.HOLD_RIGHT:
 			# check if flower and pot are in correct spots
 			if !satisfied_conds[1] and \
-					_pos_within_radius(flower_head.global_position, hold_right_flower_marker.global_position, VALID_RADIUS):
+					_pos_within_radius(head.global_position, hold_right_flower_marker.global_position, VALID_RADIUS):
 				_satisfy_cond(1)
 			if !satisfied_conds[2] and \
 					_pos_within_radius(pot.global_position, hold_right_pot_marker.global_position, VALID_RADIUS * 2):
@@ -122,11 +122,11 @@ func _input(event):
 			if event.is_action_pressed("extend"):
 				_satisfy_cond(0)
 			# check if player has extended at least 10 segments (they know to hold the button)
-			if event.is_action_released("extend") and flower_head._segs > flower_head.base_segments + 10:
+			if event.is_action_released("extend") and head._segs > head.base_segments + 10:
 				_satisfy_cond(1)
 		InscriptionType.HOLD_LEFT:
-			if event.is_action_pressed("move_left") and flower_head._state == FlowerHead.State.RETRACTING:
+			if event.is_action_pressed("move_left") and head._state == Head.State.RETRACTING:
 				_satisfy_cond(0)
 		InscriptionType.HOLD_RIGHT:
-			if event.is_action_pressed("move_right") and flower_head._state == FlowerHead.State.RETRACTING:
+			if event.is_action_pressed("move_right") and head._state == Head.State.RETRACTING:
 				_satisfy_cond(0)

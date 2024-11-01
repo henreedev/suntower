@@ -1,10 +1,10 @@
 [gd_scene load_steps=14 format=3 uid="uid://jfxpur7d1w8n"]
 
-[ext_resource type="Script" path="res://scenes/character/vine_seg.gd" id="1_d58dt"]
+[ext_resource type="Script" path="res://scenes/character/Vine.gd" id="1_d58dt"]
 [ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/character/VineSeg.png" id="1_fkaj8"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_2cghh"]
-[ext_resource type="Shader" path="res://scenes/character/flower_head.gdshader" id="2_kpskx"]
-[ext_resource type="Shader" path="res://scenes/character/light_2.gdshader" id="5_fobon"]
+[ext_resource type="Shader" path="res://shaders/Electricity.gdshader" id="2_kpskx"]
+[ext_resource type="Shader" path="res://shaders/Light.gdshader" id="5_fobon"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_owbri"]
 friction = 0.0
@@ -43,7 +43,7 @@ shader_parameter/intensity = 10.0
 radius = 4.0
 height = 14.0
 
-[node name="VineSeg" type="RigidBody2D" groups=["vine"]]
+[node name="Vine" type="RigidBody2D" groups=["vine"]]
 collision_layer = 2
 collision_mask = 2
 mass = 0.01

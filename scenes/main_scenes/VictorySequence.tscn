@@ -1,6 +1,6 @@
 [gd_scene load_steps=130 format=3 uid="uid://qaj6su1qqv6p"]
 
-[ext_resource type="Script" path="res://scenes/VictorySequence.gd" id="1_ft4u0"]
+[ext_resource type="Script" path="res://scenes/main_scenes/VictorySequence.gd" id="1_ft4u0"]
 [ext_resource type="Texture2D" uid="uid://c22lt5ecivpw4" path="res://assets/image/environment/VictorySplashSpritesheet.png" id="2_pauhu"]
 [ext_resource type="Texture2D" uid="uid://cmya5fhhoig5k" path="res://assets/image/environment/VictoryAnimations.png" id="3_myjry"]
 [ext_resource type="Texture2D" uid="uid://d1wlejd5sjnan" path="res://assets/image/menu/ButtonMainMenu.png" id="4_bgn65"]

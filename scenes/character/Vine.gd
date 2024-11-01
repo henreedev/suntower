@@ -11,7 +11,7 @@ var detached_child : Vine
 @onready var smooth : Smoothing2D = $Smoothing2D
 @onready var last_pos : Vector2 = position
 @onready var fake_light : Sprite2D = $Smoothing2D/FakeLight
-var this_scene : PackedScene = preload("res://scenes/characters/vine_seg.tscn")
+var this_scene : PackedScene = preload("res://scenes/character/Vine.tscn")
 var _rotation_match_node
 var smoothing = false
 var frame = 0

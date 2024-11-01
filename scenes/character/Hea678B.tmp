@@ -1,14 +1,14 @@
-[gd_scene load_steps=86 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=85 format=3 uid="uid://dktse0vckd1qr"]
 
-[ext_resource type="Script" path="res://scenes/character/flower_head.gd" id="1_13r3v"]
-[ext_resource type="Shader" path="res://scenes/character/flower_head.gdshader" id="1_700xu"]
-[ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/character/FlowerHead.png" id="2_gv2se"]
-[ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/character/vine_seg.tscn" id="2_ircd2"]
-[ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/environment/ParticleLightning.png" id="4_14gk3"]
-[ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/character/FlowerHeadExtendSpritesheet.png" id="4_ski6y"]
-[ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="5_kbo6i"]
-[ext_resource type="Script" path="res://scenes/character/track_flower_head.gd" id="8_d0kbc"]
-[ext_resource type="Texture2D" uid="uid://d2hoycvv7ngsl" path="res://assets/image/environment/ParticleWindGust.png" id="8_p6u3c"]
+[ext_resource type="Script" path="res://scenes/character/Head.gd" id="1_8f5vi"]
+[ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/character/Vine.tscn" id="2_7xbpf"]
+[ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/environment/ParticleLightning.png" id="3_1yowm"]
+[ext_resource type="Shader" path="res://shaders/Electricity.gdshader" id="4_andwo"]
+[ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="5_l8j6c"]
+[ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/character/FlowerHead.png" id="6_82ggr"]
+[ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/character/FlowerHeadExtendSpritesheet.png" id="7_s0rxb"]
+[ext_resource type="Script" path="res://scenes/character/FollowHeadY.gd" id="8_isoiy"]
+[ext_resource type="Texture2D" uid="uid://d2hoycvv7ngsl" path="res://assets/image/environment/ParticleWindGust.png" id="9_i8fql"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0
@@ -92,7 +92,7 @@ fractal_weighted_strength = 1.0
 noise = SubResource("FastNoiseLite_04w2w")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_67x27"]
-shader = ExtResource("1_700xu")
+shader = ExtResource("4_andwo")
 shader_parameter/electricity = 0.0
 shader_parameter/scroll_speed = 0.307
 shader_parameter/electric_color = Color(0.458824, 1, 1, 1)
@@ -102,42 +102,42 @@ shader_parameter/noise = SubResource("NoiseTexture2D_l4c21")
 colors = PackedColorArray(0.20014, 0.451195, 0.0228207, 1, 0.262616, 0.576407, 0.0353309, 1)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rvalu"]
-atlas = ExtResource("4_ski6y")
+atlas = ExtResource("7_s0rxb")
 region = Rect2(192, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_lvdeq"]
-atlas = ExtResource("4_ski6y")
+atlas = ExtResource("7_s0rxb")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_x3m1a"]
-atlas = ExtResource("4_ski6y")
+atlas = ExtResource("7_s0rxb")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hasnf"]
-atlas = ExtResource("4_ski6y")
+atlas = ExtResource("7_s0rxb")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v0jr7"]
-atlas = ExtResource("4_ski6y")
+atlas = ExtResource("7_s0rxb")
 region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_badjk"]
-atlas = ExtResource("4_ski6y")
+atlas = ExtResource("7_s0rxb")
 region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c00s3"]
-atlas = ExtResource("4_ski6y")
+atlas = ExtResource("7_s0rxb")
 region = Rect2(128, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_larte"]
-atlas = ExtResource("4_ski6y")
+atlas = ExtResource("7_s0rxb")
 region = Rect2(192, 0, 64, 64)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_g3nl5"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_gv2se")
+"texture": ExtResource("6_82ggr")
 }],
 "loop": true,
 "name": &"normal",
@@ -268,21 +268,6 @@ turbulence_influence_min = 0.05
 turbulence_influence_max = 0.05
 turbulence_influence_over_life = SubResource("CurveTexture_fk61v")
 
-[sub_resource type="GDScript" id="GDScript_68qa0"]
-script/source = "extends GPUParticles2D
-
-@onready var flower_head: FlowerHead = $\"../..\"
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	global_position.x = 0
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	global_position.y = flower_head.global_position.y
-"
-
 [sub_resource type="Curve" id="Curve_l5qun"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0797101, 0.498516), 0.0, 0.0, 0, 0, Vector2(0.275362, 0.305638), 0.0, 0.0, 0, 0, Vector2(0.586957, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 5
@@ -366,23 +351,6 @@ turbulence_influence_min = 0.05
 turbulence_influence_max = 0.05
 turbulence_influence_over_life = SubResource("CurveTexture_utcjb")
 
-[sub_resource type="GDScript" id="GDScript_lfi6u"]
-script/source = "extends GPUParticles2D
-
-
-@onready var flower_head: FlowerHead = $\"../..\"
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	global_position.x = 0
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	global_position.x = flower_head.global_position.x
-	global_position.y = flower_head.global_position.y
-"
-
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_g0rad"]
 particles_animation = true
 particles_anim_h_frames = 13
@@ -453,6 +421,21 @@ turbulence_influence_min = 0.05
 turbulence_influence_max = 0.05
 turbulence_influence_over_life = SubResource("CurveTexture_qk2uq")
 
+[sub_resource type="GDScript" id="GDScript_68qa0"]
+script/source = "extends GPUParticles2D
+
+@onready var head: Head = $\"../..\"
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	global_position.x = 0
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	global_position.y = flower_head.global_position.y
+"
+
 [node name="FlowerHead" type="RigidBody2D" groups=["flowerhead"]]
 z_index = 1
 collision_layer = 5
@@ -464,8 +447,11 @@ center_of_mass = Vector2(0, 5)
 can_sleep = false
 freeze_mode = 1
 angular_damp = 2.0
-script = ExtResource("1_13r3v")
-vine_seg = ExtResource("2_ircd2")
+script = ExtResource("1_8f5vi")
+vine_seg = ExtResource("2_7xbpf")
+max_extended_len = null
+dev_mode = null
+skip_game = null
 
 [node name="Sparkles" type="GPUParticles2D" parent="."]
 emitting = false
@@ -480,7 +466,7 @@ material = SubResource("CanvasItemMaterial_1y40j")
 emitting = false
 amount = 20
 process_material = SubResource("ParticleProcessMaterial_fdm42")
-texture = ExtResource("4_14gk3")
+texture = ExtResource("3_1yowm")
 
 [node name="Vines" type="Node" parent="."]
 
@@ -498,7 +484,7 @@ begin_cap_mode = 2
 end_cap_mode = 1
 
 [node name="Smoothing2D" type="Node2D" parent="."]
-script = ExtResource("5_kbo6i")
+script = ExtResource("5_l8j6c")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="Smoothing2D"]
 material = SubResource("ShaderMaterial_67x27")
@@ -548,7 +534,7 @@ wait_time = 4.0
 [node name="Occluders" type="Node" parent="."]
 
 [node name="Node2D" type="Node2D" parent="Occluders"]
-script = ExtResource("8_d0kbc")
+script = ExtResource("8_isoiy")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="Occluders/Node2D"]
 occluder = SubResource("OccluderPolygon2D_a4mkl")
@@ -569,7 +555,7 @@ lifetime = 7.0
 preprocess = 3.0
 trail_enabled = true
 trail_sections = 28
-script = SubResource("GDScript_68qa0")
+script = ExtResource("8_isoiy")
 
 [node name="BeamParticles" type="GPUParticles2D" parent="Node"]
 unique_name_in_owner = true
@@ -582,7 +568,7 @@ lifetime = 3.7
 preprocess = 3.0
 trail_enabled = true
 trail_sections = 28
-script = SubResource("GDScript_lfi6u")
+script = ExtResource("8_isoiy")
 
 [node name="WindGustParticles" type="GPUParticles2D" parent="Node"]
 unique_name_in_owner = true
@@ -592,7 +578,7 @@ material = SubResource("CanvasItemMaterial_g0rad")
 emitting = false
 amount = 1
 process_material = SubResource("ParticleProcessMaterial_njwcs")
-texture = ExtResource("8_p6u3c")
+texture = ExtResource("9_i8fql")
 lifetime = 3.0
 explosiveness = 0.45
 script = SubResource("GDScript_68qa0")

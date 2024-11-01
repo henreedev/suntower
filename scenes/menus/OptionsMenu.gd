@@ -24,11 +24,12 @@ class_name OptionsMenu
 @onready var beat_game = %BeatGame
 # Best section icon showing weather of section
 @onready var best_section_icon : TextureRect = %BestSectionIcon
-const SUNNY_SECTION_ICON = preload("res://assets/image/menu/sunny-section-icon.png")
-const STORM_SECTION_ICON = preload("res://assets/image/menu/storm-section-icon.png")
-const WIND_SECTION_ICON = preload("res://assets/image/menu/wind-section-icon.png")
-const PEACE_SECTION_ICON = preload("res://assets/image/menu/peace-section-icon.png")
-const ESCAPE_SECTION_ICON = preload("res://assets/image/menu/escape-section-icon.png")
+const SUNNY_SECTION_ICON = preload("res://assets/image/menu/SectionIconSunny.png")
+const STORM_SECTION_ICON = preload("res://assets/image/menu/SectionIconStorm.png")
+const WIND_SECTION_ICON = preload("res://assets/image/menu/SectionIconWind.png")
+const PEACE_SECTION_ICON = preload("res://assets/image/menu/SectionIconPeace.png")
+const ESCAPE_SECTION_ICON = preload("res://assets/image/menu/SectionIconEscape.png")
+
 var section_icons = [SUNNY_SECTION_ICON, STORM_SECTION_ICON, WIND_SECTION_ICON, \
 	PEACE_SECTION_ICON, ESCAPE_SECTION_ICON]
 

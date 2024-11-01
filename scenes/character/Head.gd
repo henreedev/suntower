@@ -1,5 +1,5 @@
 extends RigidBody2D
-class_name FlowerHead
+class_name Head
 
 enum State {INACTIVE, EXTENDING, RETRACTING}
 
@@ -85,7 +85,7 @@ var wind_particles_tween : Tween
 @onready var stuck_timer : Timer = $StuckTimer
 @onready var dead_timer : Timer = $DeadTimer
 @onready var main : Main = get_tree().get_first_node_in_group("main")
-@onready var _player : Player2 = get_tree().get_first_node_in_group("player2")
+@onready var _player : Pot = get_tree().get_first_node_in_group("pot")
 @onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
 @onready var _sprite : AnimatedSprite2D = $Smoothing2D/Sprite2D
 @onready var tower : Tower = get_tree().get_first_node_in_group("tower")
@@ -224,7 +224,7 @@ func _draw_line():
 	vine_line.add_point($RootVinePin.global_position)
 	while(vine_seg):
 		vine_line.add_point(vine_seg.get_avg_pos())
-		vine_seg = vine_seg.get_child_seg() if not vine_seg.get_child_seg() is Player2 else null
+		vine_seg = vine_seg.get_child_seg() if not vine_seg.get_child_seg() is Pot else null
 
 var waiting_to_check = false
 func _teleport_if_stuck():

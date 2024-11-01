@@ -1,9 +1,9 @@
 [gd_scene load_steps=28 format=3 uid="uid://cjl7hh0kgvrb8"]
 
-[ext_resource type="Script" path="res://scenes/Game.gd" id="1_7xsfy"]
+[ext_resource type="Script" path="res://scenes/main_scenes/Game.gd" id="1_7xsfy"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/Tower.tscn" id="2_dc8uo"]
-[ext_resource type="PackedScene" uid="uid://dktse0vckd1qr" path="res://scenes/character/flower_head.tscn" id="3_84kx1"]
-[ext_resource type="PackedScene" uid="uid://deoc0hgj85t7q" path="res://scenes/character/Player2.tscn" id="3_k12lq"]
+[ext_resource type="PackedScene" uid="uid://dktse0vckd1qr" path="res://scenes/character/Head.tscn" id="3_84kx1"]
+[ext_resource type="PackedScene" uid="uid://deoc0hgj85t7q" path="res://scenes/character/Pot.tscn" id="3_k12lq"]
 [ext_resource type="Texture2D" uid="uid://dnn86dvj662yj" path="res://assets/image/hud/BarVinesProgress.png" id="6_vlg86"]
 [ext_resource type="Texture2D" uid="uid://85qfkjlne24r" path="res://assets/image/hud/BarSunUnder.png" id="7_8lc2f"]
 [ext_resource type="Texture2D" uid="uid://bmwo3c2dceiga" path="res://assets/image/hud/BarSun.png" id="8_al0vm"]
@@ -68,10 +68,10 @@ environment = SubResource("Environment_4vhcu")
 
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
 
-[node name="Player2" parent="." instance=ExtResource("3_k12lq")]
+[node name="Pot" parent="." instance=ExtResource("3_k12lq")]
 position = Vector2(0, 599)
 
-[node name="FlowerHead" parent="." instance=ExtResource("3_84kx1")]
+[node name="Head" parent="." instance=ExtResource("3_84kx1")]
 position = Vector2(0, 549)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]

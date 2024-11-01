@@ -67,8 +67,8 @@ var swap_tween : Tween
 @onready var tutorial_chunk : Tutorial = $LevelChunks/Sun/TutorialChunk
 @onready var wind_area: Area2D = %WindArea
 @onready var _bg : Background = $ParallaxBackground
-@onready var _player : FlowerHead = get_tree().get_first_node_in_group("flowerhead")
-@onready var _pot : Player2 = get_tree().get_first_node_in_group("player2")
+@onready var _player : Head = get_tree().get_first_node_in_group("flowerhead")
+@onready var _pot : Pot = get_tree().get_first_node_in_group("pot")
 @onready var _lights : Lights = $Lights
 
 @onready var _sunrays : SunRays = $SunRays
@@ -358,10 +358,10 @@ func _physics_process(delta: float) -> void:
 func _apply_passive_wind():
 	var wind_force = wind_direction * wind_strength * BASE_WIND_STRENGTH
 	for body : RigidBody2D in bodies_in_wind:
-		if body is FlowerHead:
+		if body is Head:
 			const MOD = 0.2;
 			body.apply_central_force(wind_force * MOD)
-		elif body is Player2:
+		elif body is Pot:
 			const MOD = 1.0;
 			body.apply_central_force(wind_force * MOD)
 		elif body is Vine: # must be a Vine
@@ -426,32 +426,32 @@ func _lerp_lights_towards_goal(delta):
 	$Lights.rotation = lerp_angle($Lights.rotation, _goal_rotation, rotation_strength * delta)
 
 func _on_storm_area_body_entered(body):
-	if body is FlowerHead:
+	if body is Head:
 		in_storm = true
 
 func _on_storm_area_body_exited(body):
-	if body is FlowerHead:
+	if body is Head:
 		in_storm = false
 
 
 func _on_wind_area_body_entered(body):
-	if body is FlowerHead:
+	if body is Head:
 		in_wind = true
 	bodies_in_wind.append(body)
 
 func _on_wind_area_body_exited(body):
-	if body is FlowerHead:
+	if body is Head:
 		in_wind = false
 	bodies_in_wind.erase(body)
 
 
 func _on_peaceful_area_body_entered(body):
-	if body is FlowerHead:
+	if body is Head:
 		in_peaceful = true
 
 
 func _on_peaceful_area_body_exited(body):
-	if body is FlowerHead:
+	if body is Head:
 		in_peaceful = false
 
 

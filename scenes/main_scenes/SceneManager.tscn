@@ -1,9 +1,9 @@
 [gd_scene load_steps=25 format=3 uid="uid://jvuqketuhc3e"]
 
-[ext_resource type="Script" path="res://scenes/SceneManager.gd" id="1_3frxe"]
-[ext_resource type="PackedScene" uid="uid://cjl7hh0kgvrb8" path="res://scenes/Game.tscn" id="2_6m11w"]
-[ext_resource type="PackedScene" uid="uid://c7w06rdclh4r0" path="res://scenes/menus/Menu.tscn" id="3_caktm"]
-[ext_resource type="PackedScene" uid="uid://qaj6su1qqv6p" path="res://scenes/VictorySequence.tscn" id="4_dxtj1"]
+[ext_resource type="Script" path="res://scenes/main_scenes/SceneManager.gd" id="1_3frxe"]
+[ext_resource type="PackedScene" uid="uid://cjl7hh0kgvrb8" path="res://scenes/main_scenes/Game.tscn" id="2_6m11w"]
+[ext_resource type="PackedScene" uid="uid://c7w06rdclh4r0" path="res://scenes/main_scenes/Menu.tscn" id="3_caktm"]
+[ext_resource type="PackedScene" uid="uid://qaj6su1qqv6p" path="res://scenes/main_scenes/VictorySequence.tscn" id="4_dxtj1"]
 [ext_resource type="AudioStream" uid="uid://bfw5tgtp7tefi" path="res://assets/sound/music/Menu.mp3" id="5_c8n2f"]
 [ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/music/SectionSun.mp3" id="6_jeqtv"]
 [ext_resource type="AudioStream" uid="uid://dmb7q4tmk1afv" path="res://assets/sound/music/SectionSunSketch.mp3" id="7_msh4p"]

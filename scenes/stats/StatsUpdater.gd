@@ -2,7 +2,7 @@ extends Node
 
 @onready var main : Main = $".."
 @onready var tower : Tower = $"../Tower"
-@onready var player : FlowerHead = $"../FlowerHead"
+@onready var player : Head = $"../Head"
 
 # update height at interval
 const UPDATE_INTERVAL = 0.5
