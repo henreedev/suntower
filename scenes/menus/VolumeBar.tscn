@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8abnqqvhhok3"]
+
+[ext_resource type="Script" path="res://scenes/menus/VolumeBar.gd" id="1_njbah"]
+
+[node name="VolumeBar" type="HSlider" groups=["volumebar"]]
+max_value = 1.0
+step = 0.01
+value = 0.75
+script = ExtResource("1_njbah")

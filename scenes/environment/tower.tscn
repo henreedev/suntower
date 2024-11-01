@@ -1,38 +1,38 @@
 [gd_scene load_steps=31 format=3 uid="uid://dmtd1mxporvjw"]
 
-[ext_resource type="Script" path="res://scenes/environment/tower.gd" id="2_bq5o6"]
-[ext_resource type="Script" path="res://scenes/environment/Lights.gd" id="3_6s52w"]
-[ext_resource type="PackedScene" uid="uid://bdaadwkyt65ag" path="res://scenes/environment/sun_rays.tscn" id="3_075b6"]
-[ext_resource type="Texture2D" uid="uid://d2cieoughn5nu" path="res://assets/image/environment/bg.png" id="3_a67q3"]
-[ext_resource type="Script" path="res://scenes/environment/ParallaxBackground.gd" id="3_iw85s"]
-[ext_resource type="Texture2D" uid="uid://cm88pnpk4lv5y" path="res://assets/image/environment/gwj66-trees.png" id="4_2s5cd"]
-[ext_resource type="Shader" path="res://scenes/environment/bigclouds.gdshader" id="5_lbjnr"]
-[ext_resource type="Texture2D" uid="uid://cg7jutptx5j3u" path="res://assets/image/environment/huge-clouds.png" id="6_ifl30"]
-[ext_resource type="Texture2D" uid="uid://c7e11237n0hy6" path="res://assets/image/environment/small-clouds.png" id="6_vk0hv"]
-[ext_resource type="Script" path="res://scenes/environment/clouds.gd" id="7_dv22i"]
-[ext_resource type="Texture2D" uid="uid://d0r7row0y7nes" path="res://assets/image/environment/big-clouds.png" id="8_vofri"]
-[ext_resource type="PackedScene" uid="uid://cxiyhj8bmeppa" path="res://scenes/environment/level-chunks/sun/sun_chunk_1.tscn" id="11_uwevu"]
-[ext_resource type="PackedScene" uid="uid://c66ux8dtsf1vd" path="res://scenes/environment/level-chunks/storm/storm_chunk_1.tscn" id="12_effwr"]
-[ext_resource type="PackedScene" uid="uid://bmodcpfd7ap0y" path="res://scenes/environment/level-chunks/sun/tutorial_chunk.tscn" id="12_ihp26"]
-[ext_resource type="PackedScene" uid="uid://dvdi8qi1lsl6c" path="res://scenes/environment/level-chunks/wind/wind_chunk_1.tscn" id="13_cl4ft"]
-[ext_resource type="PackedScene" uid="uid://ca4fvc73x8ydq" path="res://scenes/environment/wind_burst_area.tscn" id="13_ptelv"]
-[ext_resource type="PackedScene" uid="uid://dh7b3um8nnq1j" path="res://scenes/environment/level-chunks/peaceful/peaceful_chunk_1.tscn" id="14_ne0fo"]
-[ext_resource type="PackedScene" uid="uid://dx72kt582x8cg" path="res://scenes/environment/level-chunks/peaceful/peaceful_chunk_end.tscn" id="17_n405p"]
+[ext_resource type="Script" path="res://scenes/environment/Tower.gd" id="1_i47gm"]
+[ext_resource type="Script" path="res://scenes/environment/ParallaxBackground.gd" id="2_mjvvg"]
+[ext_resource type="Texture2D" uid="uid://d2cieoughn5nu" path="res://assets/image/environment/Background.png" id="3_83867"]
+[ext_resource type="Texture2D" uid="uid://cm88pnpk4lv5y" path="res://assets/image/environment/Forest.png" id="4_p61x1"]
+[ext_resource type="Shader" path="res://scenes/environment/Clouds.gdshader" id="5_qin3k"]
+[ext_resource type="Texture2D" uid="uid://cg7jutptx5j3u" path="res://assets/image/environment/CloudsThick.png" id="6_todh5"]
+[ext_resource type="Script" path="res://scenes/environment/Clouds.gd" id="7_87obv"]
+[ext_resource type="Texture2D" uid="uid://c7e11237n0hy6" path="res://assets/image/environment/CloudsSmall.png" id="8_pcrsk"]
+[ext_resource type="Texture2D" uid="uid://d0r7row0y7nes" path="res://assets/image/environment/CloudsBig.png" id="9_2xix1"]
+[ext_resource type="Script" path="res://scenes/environment/Lights.gd" id="10_1oap2"]
+[ext_resource type="PackedScene" uid="uid://bdaadwkyt65ag" path="res://scenes/environment/SunRays.tscn" id="11_0s44v"]
+[ext_resource type="PackedScene" uid="uid://cxiyhj8bmeppa" path="res://scenes/environment/level-chunks/sun/SunChunk.tscn" id="12_tpe5c"]
+[ext_resource type="PackedScene" uid="uid://bmodcpfd7ap0y" path="res://scenes/environment/level-chunks/sun/ChunkTutorial.tscn" id="13_5svu2"]
+[ext_resource type="PackedScene" uid="uid://c66ux8dtsf1vd" path="res://scenes/environment/level-chunks/storm/ChunkStorm.tscn" id="14_j1mvb"]
+[ext_resource type="PackedScene" uid="uid://dvdi8qi1lsl6c" path="res://scenes/environment/level-chunks/wind/ChunkWind.tscn" id="15_8v58s"]
+[ext_resource type="PackedScene" uid="uid://ca4fvc73x8ydq" path="res://scenes/environment/WindBurstArea.tscn" id="16_hgiwd"]
+[ext_resource type="PackedScene" uid="uid://dh7b3um8nnq1j" path="res://scenes/environment/level-chunks/peaceful/ChunkPeaceful1.tscn" id="17_bwap8"]
+[ext_resource type="PackedScene" uid="uid://dx72kt582x8cg" path="res://scenes/environment/level-chunks/peaceful/ChunkPeacefulEnd.tscn" id="18_qlfm1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ivn7p"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_41ibw"]
-shader = ExtResource("5_lbjnr")
+shader = ExtResource("5_qin3k")
 shader_parameter/scroll_offset = 0.0
 shader_parameter/brightness = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m5nt1"]
-shader = ExtResource("5_lbjnr")
+shader = ExtResource("5_qin3k")
 shader_parameter/scroll_offset = -0.05
 shader_parameter/brightness = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xdns3"]
-shader = ExtResource("5_lbjnr")
+shader = ExtResource("5_qin3k")
 shader_parameter/scroll_offset = -0.05
 shader_parameter/brightness = 1.0
 
@@ -69,13 +69,13 @@ polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -1
 [node name="Tower" type="Node2D" groups=["tower"]]
 material = SubResource("ShaderMaterial_ivn7p")
 rotation = -2.37417e-05
-script = ExtResource("2_bq5o6")
+script = ExtResource("1_i47gm")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.88644, 0.89, 0.8722, 1)
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
-script = ExtResource("3_iw85s")
+script = ExtResource("2_mjvvg")
 
 [node name="Background" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.065)
@@ -85,7 +85,7 @@ metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Background"]
 show_behind_parent = true
-texture = ExtResource("3_a67q3")
+texture = ExtResource("3_83867")
 centered = false
 
 [node name="Forest" type="ParallaxLayer" parent="ParallaxBackground"]
@@ -94,7 +94,7 @@ motion_offset = Vector2(-207.495, -215.25)
 motion_mirroring = Vector2(384, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Forest"]
-texture = ExtResource("4_2s5cd")
+texture = ExtResource("4_p61x1")
 centered = false
 
 [node name="ThickClouds" type="ParallaxLayer" parent="ParallaxBackground"]
@@ -105,8 +105,8 @@ motion_mirroring = Vector2(384, 0)
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ThickClouds"]
 modulate = Color(1, 1, 1, 0)
 material = SubResource("ShaderMaterial_41ibw")
-texture = ExtResource("6_ifl30")
-script = ExtResource("7_dv22i")
+texture = ExtResource("6_todh5")
+script = ExtResource("7_87obv")
 
 [node name="SmallClouds" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.11)
@@ -115,8 +115,8 @@ motion_mirroring = Vector2(384, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/SmallClouds"]
 material = SubResource("ShaderMaterial_m5nt1")
-texture = ExtResource("6_vk0hv")
-script = ExtResource("7_dv22i")
+texture = ExtResource("8_pcrsk")
+script = ExtResource("7_87obv")
 
 [node name="BigClouds" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(1, 0.35)
@@ -125,12 +125,12 @@ motion_mirroring = Vector2(384, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/BigClouds"]
 material = SubResource("ShaderMaterial_xdns3")
-texture = ExtResource("8_vofri")
-script = ExtResource("7_dv22i")
+texture = ExtResource("9_2xix1")
+script = ExtResource("7_87obv")
 
 [node name="Lights" type="Node2D" parent="." groups=["lights"]]
 rotation = 1.18682
-script = ExtResource("3_6s52w")
+script = ExtResource("10_1oap2")
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="Lights"]
 color = Color(1, 0.662745, 0.611765, 1)
@@ -150,24 +150,24 @@ color = Color(0, 0, 1, 1)
 energy = 0.15
 shadow_enabled = true
 
-[node name="SunRays" parent="." instance=ExtResource("3_075b6")]
+[node name="SunRays" parent="." instance=ExtResource("11_0s44v")]
 position = Vector2(-180, 0)
 
-[node name="SunRays2" parent="." instance=ExtResource("3_075b6")]
+[node name="SunRays2" parent="." instance=ExtResource("11_0s44v")]
 position = Vector2(180, 0)
 
 [node name="LevelChunks" type="Node2D" parent="."]
 
 [node name="Sun" type="Node2D" parent="LevelChunks"]
 
-[node name="SunChunk1" parent="LevelChunks/Sun" instance=ExtResource("11_uwevu")]
+[node name="SunChunk1" parent="LevelChunks/Sun" instance=ExtResource("12_tpe5c")]
 
-[node name="TutorialChunk" parent="LevelChunks/Sun" instance=ExtResource("12_ihp26")]
+[node name="TutorialChunk" parent="LevelChunks/Sun" instance=ExtResource("13_5svu2")]
 position = Vector2(0, 592)
 
 [node name="Storm" type="Node2D" parent="LevelChunks"]
 
-[node name="StormChunk1" parent="LevelChunks/Storm" instance=ExtResource("12_effwr")]
+[node name="StormChunk1" parent="LevelChunks/Storm" instance=ExtResource("14_j1mvb")]
 
 [node name="StormArea" type="Area2D" parent="LevelChunks/Storm"]
 monitorable = false
@@ -198,70 +198,70 @@ one_shot = true
 
 [node name="Wind" type="Node2D" parent="LevelChunks"]
 
-[node name="WindChunk1" parent="LevelChunks/Wind" instance=ExtResource("13_cl4ft")]
+[node name="WindChunk1" parent="LevelChunks/Wind" instance=ExtResource("15_8v58s")]
 
 [node name="WindBursts" type="Node2D" parent="LevelChunks/Wind/WindChunk1"]
 
-[node name="WindBurstArea" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -2772.27)
 scale = Vector2(1, 0.03)
 burst_direction = 1
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea2" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea2" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -2963.58)
 scale = Vector2(1, 0.07)
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea3" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea3" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -3126.89)
 scale = Vector2(1, 0.07)
 burst_direction = 1
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea4" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea4" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -3273.89)
 scale = Vector2(1, 0.07)
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea5" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea5" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -3461.66)
 scale = Vector2(1, 0.07)
 burst_direction = 1
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea6" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea6" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -3718.5)
 scale = Vector2(1, 0.07)
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea7" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea7" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -4036.44)
 scale = Vector2(1, 0.07)
 burst_direction = 1
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea8" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea8" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -4292.65)
 scale = Vector2(1, 0.07)
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea9" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea9" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -4530.06)
 scale = Vector2(1, 0.07)
 burst_direction = 1
 burst_overall_duration = 1.0
 disable_duration = 0
 
-[node name="WindBurstArea10" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("13_ptelv")]
+[node name="WindBurstArea10" parent="LevelChunks/Wind/WindChunk1/WindBursts" instance=ExtResource("16_hgiwd")]
 position = Vector2(0.067, -4755.58)
 scale = Vector2(1, 0.07)
 burst_overall_duration = 1.0
@@ -286,10 +286,10 @@ occluder = SubResource("OccluderPolygon2D_kmt2p")
 
 [node name="Peaceful" type="Node2D" parent="LevelChunks"]
 
-[node name="PeacefulChunk1" parent="LevelChunks/Peaceful" instance=ExtResource("14_ne0fo")]
+[node name="PeacefulChunk1" parent="LevelChunks/Peaceful" instance=ExtResource("17_bwap8")]
 position = Vector2(0, -1600)
 
-[node name="PeacefulChunkEnd" parent="LevelChunks/Peaceful" instance=ExtResource("17_n405p")]
+[node name="PeacefulChunkEnd" parent="LevelChunks/Peaceful" instance=ExtResource("18_qlfm1")]
 position = Vector2(0, -1600)
 
 [node name="CamMaxMarker" type="Marker2D" parent="LevelChunks/Peaceful/PeacefulChunkEnd"]

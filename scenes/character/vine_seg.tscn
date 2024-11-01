@@ -1,0 +1,90 @@
+[gd_scene load_steps=14 format=3 uid="uid://jfxpur7d1w8n"]
+
+[ext_resource type="Script" path="res://scenes/character/vine_seg.gd" id="1_d58dt"]
+[ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/character/VineSeg.png" id="1_fkaj8"]
+[ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_2cghh"]
+[ext_resource type="Shader" path="res://scenes/character/flower_head.gdshader" id="2_kpskx"]
+[ext_resource type="Shader" path="res://scenes/character/light_2.gdshader" id="5_fobon"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_owbri"]
+friction = 0.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_04w2w"]
+frequency = 0.1089
+fractal_weighted_strength = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l4c21"]
+noise = SubResource("FastNoiseLite_04w2w")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_67x27"]
+shader = ExtResource("2_kpskx")
+shader_parameter/electricity = 0.0
+shader_parameter/scroll_speed = 0.307
+shader_parameter/electric_color = Color(0.458824, 1, 1, 1)
+shader_parameter/noise = SubResource("NoiseTexture2D_l4c21")
+
+[sub_resource type="Gradient" id="Gradient_g1t54"]
+offsets = PackedFloat32Array(0, 0.67)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_cdlsb"]
+gradient = SubResource("Gradient_g1t54")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t2dxa"]
+shader = ExtResource("5_fobon")
+shader_parameter/intensity = 10.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nmj1a"]
+radius = 4.0
+height = 14.0
+
+[node name="VineSeg" type="RigidBody2D" groups=["vine"]]
+collision_layer = 2
+collision_mask = 2
+mass = 0.01
+physics_material_override = SubResource("PhysicsMaterial_owbri")
+gravity_scale = 0.0
+linear_damp = 1.0
+angular_damp = 20.0
+script = ExtResource("1_d58dt")
+
+[node name="Smoothing2D" type="Node2D" parent="."]
+script = ExtResource("2_2cghh")
+flags = 6
+
+[node name="Sprite2D" type="Sprite2D" parent="Smoothing2D"]
+material = SubResource("ShaderMaterial_67x27")
+position = Vector2(0, 0.5)
+scale = Vector2(1, 0.5)
+texture = ExtResource("1_fkaj8")
+
+[node name="StormLight" type="PointLight2D" parent="Smoothing2D"]
+visible = false
+position = Vector2(0, 0.5)
+scale = Vector2(2.72, 1.36)
+enabled = false
+color = Color(0.639216, 1, 1, 1)
+energy = 0.0
+shadow_item_cull_mask = 2
+texture = SubResource("GradientTexture2D_cdlsb")
+texture_scale = 0.02
+
+[node name="FakeLight" type="Sprite2D" parent="Smoothing2D"]
+visible = false
+material = SubResource("ShaderMaterial_t2dxa")
+position = Vector2(0, 0.5)
+scale = Vector2(0.04, 0.027)
+texture = SubResource("GradientTexture2D_cdlsb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("CapsuleShape2D_nmj1a")
+
+[node name="PinJoint2D" type="PinJoint2D" parent="."]
+position = Vector2(0, 2)
+node_a = NodePath("..")

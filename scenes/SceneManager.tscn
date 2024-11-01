@@ -1,0 +1,264 @@
+[gd_scene load_steps=25 format=3 uid="uid://jvuqketuhc3e"]
+
+[ext_resource type="Script" path="res://scenes/SceneManager.gd" id="1_3frxe"]
+[ext_resource type="PackedScene" uid="uid://cjl7hh0kgvrb8" path="res://scenes/Game.tscn" id="2_6m11w"]
+[ext_resource type="PackedScene" uid="uid://c7w06rdclh4r0" path="res://scenes/menus/Menu.tscn" id="3_caktm"]
+[ext_resource type="PackedScene" uid="uid://qaj6su1qqv6p" path="res://scenes/VictorySequence.tscn" id="4_dxtj1"]
+[ext_resource type="AudioStream" uid="uid://bfw5tgtp7tefi" path="res://assets/sound/music/Menu.mp3" id="5_c8n2f"]
+[ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/music/SectionSun.mp3" id="6_jeqtv"]
+[ext_resource type="AudioStream" uid="uid://dmb7q4tmk1afv" path="res://assets/sound/music/SectionSunSketch.mp3" id="7_msh4p"]
+[ext_resource type="AudioStream" uid="uid://yycwfoeimnw7" path="res://assets/sound/music/SectionWind.mp3" id="8_c4n5k"]
+[ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/music/SectionStorm.mp3" id="9_ox3v5"]
+[ext_resource type="Texture2D" uid="uid://dfrbet6fuea5a" path="res://assets/image/character/FlowerHeadSpritesheet.png" id="10_8410o"]
+[ext_resource type="Texture2D" uid="uid://b264wep2a0c6p" path="res://assets/image/menu/VictoryTransition.png" id="11_mhow8"]
+
+[sub_resource type="AudioStreamInteractive" id="AudioStreamInteractive_hcqxd"]
+clip_count = 13
+clip_0/name = &"Menu"
+clip_0/stream = ExtResource("5_c8n2f")
+clip_0/auto_advance = 0
+clip_1/name = &"Sun"
+clip_1/stream = ExtResource("6_jeqtv")
+clip_1/auto_advance = 0
+clip_2/name = &"StormToSun"
+clip_2/auto_advance = 1
+clip_2/next_clip = 1
+clip_3/name = &"SunToStorm"
+clip_3/auto_advance = 1
+clip_3/next_clip = 4
+clip_4/name = &"Storm"
+clip_4/stream = ExtResource("9_ox3v5")
+clip_4/auto_advance = 0
+clip_5/name = &"WindToStorm"
+clip_5/auto_advance = 1
+clip_5/next_clip = 4
+clip_6/name = &"StormToWind"
+clip_6/auto_advance = 1
+clip_6/next_clip = 7
+clip_7/name = &"Wind"
+clip_7/stream = ExtResource("8_c4n5k")
+clip_7/auto_advance = 0
+clip_8/name = &"PeacefulToWind"
+clip_8/auto_advance = 1
+clip_8/next_clip = 7
+clip_9/name = &"WindToPeaceful"
+clip_9/auto_advance = 1
+clip_9/next_clip = 10
+clip_10/name = &"Peaceful"
+clip_10/stream = ExtResource("7_msh4p")
+clip_10/auto_advance = 0
+clip_11/name = &"VictoryLeadIn"
+clip_11/stream = ExtResource("6_jeqtv")
+clip_11/auto_advance = 1
+clip_11/next_clip = 12
+clip_12/name = &"Victory"
+clip_12/stream = ExtResource("8_c4n5k")
+clip_12/auto_advance = 0
+_transitions = {
+Vector2i(1, 1): {
+"fade_beats": 1,
+"fade_mode": 4,
+"from_time": 0,
+"to_time": 1
+},
+Vector2i(1, 4): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 3,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+},
+Vector2i(4, 1): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 2,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+},
+Vector2i(4, 7): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 6,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+},
+Vector2i(7, 4): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 5,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 0,
+"use_filler_clip": true
+},
+Vector2i(7, 10): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 9,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+},
+Vector2i(10, 7): {
+"fade_beats": 1,
+"fade_mode": 4,
+"filler_clip": 8,
+"from_time": 0,
+"hold_previous": true,
+"to_time": 2,
+"use_filler_clip": true
+}
+}
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t6gae"]
+atlas = ExtResource("10_8410o")
+region = Rect2(0, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eo22y"]
+atlas = ExtResource("10_8410o")
+region = Rect2(64, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o676s"]
+atlas = ExtResource("10_8410o")
+region = Rect2(128, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tlsk0"]
+atlas = ExtResource("10_8410o")
+region = Rect2(192, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7yxma"]
+atlas = ExtResource("10_8410o")
+region = Rect2(256, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2m3ka"]
+atlas = ExtResource("10_8410o")
+region = Rect2(320, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a6qds"]
+atlas = ExtResource("10_8410o")
+region = Rect2(384, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fhnw3"]
+atlas = ExtResource("10_8410o")
+region = Rect2(448, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qfxjy"]
+atlas = ExtResource("10_8410o")
+region = Rect2(512, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yr81q"]
+atlas = ExtResource("10_8410o")
+region = Rect2(576, 192, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f5rk6"]
+atlas = ExtResource("10_8410o")
+region = Rect2(640, 192, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x1nxh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t6gae")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eo22y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o676s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tlsk0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7yxma")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2m3ka")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a6qds")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fhnw3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qfxjy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yr81q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f5rk6")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 6.67
+}]
+
+[node name="SceneManager" type="Node2D" groups=["scenemanager"]]
+process_mode = 3
+script = ExtResource("1_3frxe")
+
+[node name="Main" parent="." instance=ExtResource("2_6m11w")]
+
+[node name="Menu" parent="." instance=ExtResource("3_caktm")]
+anchors_preset = 7
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 576.0
+offset_top = 324.0
+offset_right = 576.0
+offset_bottom = 324.0
+grow_vertical = 0
+
+[node name="VictorySequence" parent="." instance=ExtResource("4_dxtj1")]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamInteractive_hcqxd")
+volume_db = -18.548
+autoplay = true
+bus = &"Music"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.129412, 0.145098, 0.196078, 1)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(576, 342)
+scale = Vector2(4, 4)
+sprite_frames = SubResource("SpriteFrames_x1nxh")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="VictoryColorRect" type="ColorRect" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.933333, 0.713726, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(576, 342)
+scale = Vector2(4, 4)
+texture = ExtResource("11_mhow8")

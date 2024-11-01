@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bdaadwkyt65ag"]
+
+[ext_resource type="Script" path="res://scenes/environment/SunRays.gd" id="1_dt375"]
+
+[node name="SunRays" type="Node2D" groups=["sunrays"]]
+script = ExtResource("1_dt375")

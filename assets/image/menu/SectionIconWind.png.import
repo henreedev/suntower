@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cnh3cclx3l4wf"
-path="res://.godot/imported/Title.png-7e8f1e75994735f45fce68572814db3f.ctex"
+uid="uid://dmyjaoden5644"
+path="res://.godot/imported/SectionIconWind.png-fa9255429d50e515f940ceedf96b31f0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/image/menu/Title.png"
-dest_files=["res://.godot/imported/Title.png-7e8f1e75994735f45fce68572814db3f.ctex"]
+source_file="res://assets/image/menu/SectionIconWind.png"
+dest_files=["res://.godot/imported/SectionIconWind.png-fa9255429d50e515f940ceedf96b31f0.ctex"]
 
 [params]
 
