@@ -206,7 +206,7 @@ animations = [{
 process_mode = 3
 script = ExtResource("1_3frxe")
 
-[node name="Main" parent="." instance=ExtResource("2_6m11w")]
+[node name="Game" parent="." instance=ExtResource("2_6m11w")]
 
 [node name="Menu" parent="." instance=ExtResource("3_caktm")]
 anchors_preset = 7

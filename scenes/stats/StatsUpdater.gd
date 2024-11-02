@@ -1,6 +1,6 @@
 extends Node
 
-@onready var main : Main = $".."
+@onready var main : Game = $".."
 @onready var tower : Tower = $"../Tower"
 @onready var player : Head = $"../Head"
 

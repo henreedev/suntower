@@ -59,11 +59,11 @@ font_color = Color(0.85, 1, 1, 1)
 font_size = 96
 font_color = Color(1, 0.921569, 0.882353, 1)
 
-[node name="Main" type="Node2D" groups=["main"]]
+[node name="Game" type="Node2D" groups=["game"]]
 process_mode = 1
 script = ExtResource("1_7xsfy")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="Lighting" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_4vhcu")
 
 [node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
@@ -181,6 +181,7 @@ text = "20000.11"
 label_settings = SubResource("LabelSettings_yh54b")
 horizontal_alignment = 1
 script = ExtResource("18_ticvr")
+section_type = null
 
 [node name="StormTime" type="Label" parent="CanvasLayer/SpeedrunTimers"]
 unique_name_in_owner = true

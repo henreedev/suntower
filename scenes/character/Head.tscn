@@ -1,7 +1,6 @@
-[gd_scene load_steps=84 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=83 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/character/Head.gd" id="1_8f5vi"]
-[ext_resource type="PackedScene" uid="uid://jfxpur7d1w8n" path="res://scenes/character/Vine.tscn" id="2_7xbpf"]
 [ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/environment/ParticleLightning.png" id="3_1yowm"]
 [ext_resource type="Shader" path="res://shaders/Electricity.gdshader" id="4_andwo"]
 [ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="5_l8j6c"]
@@ -433,10 +432,6 @@ can_sleep = false
 freeze_mode = 1
 angular_damp = 2.0
 script = ExtResource("1_8f5vi")
-vine_seg = ExtResource("2_7xbpf")
-max_extended_len = null
-dev_mode = null
-skip_game = null
 
 [node name="Sparkles" type="GPUParticles2D" parent="."]
 emitting = false

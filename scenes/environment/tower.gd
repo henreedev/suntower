@@ -72,7 +72,7 @@ var swap_tween : Tween
 @onready var _lights : Lights = $Lights
 
 @onready var _sunrays : SunRays = $SunRays
-@onready var main : Main = get_tree().get_first_node_in_group("main")
+@onready var game : Game = get_tree().get_first_node_in_group("game")
 @onready var cam_max_marker : Marker2D = %CamMaxMarker
 @onready var sun_reset_points : Array[SunResetPoint] = _get_reset_points()
 @onready var start_height = int(%StartHeightMarker.global_position.y)
@@ -85,8 +85,8 @@ var time_trackers : Array[TimeTracker]
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	instance = self
-	await main.initialized
-	time_trackers = main.time_trackers
+	await game.initialized
+	time_trackers = game.time_trackers
 	_begin_tracking(Weather.SUNNY)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -132,7 +132,7 @@ func start_sunny():
 		modulate_tween.tween_method(_lights.set_energy_mult, 0.0, 1.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		_bg.enter_sunny(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", sunny_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
-		main.switch_to_sun_bar()
+		game.switch_to_sun_bar()
 		SceneManager.instance.switch_bgm("Sun")
 		Values.reach_section(weather)
 		_begin_tracking(weather)
@@ -155,7 +155,7 @@ func start_stormy():
 		modulate_tween.tween_method(_lights.set_energy_mult, _lights.get_energy_mult(), 0.0, 1.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		_bg.enter_storm(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", storm_modulate, 1.0).set_trans(Tween.TRANS_CUBIC)
-		main.switch_to_lightning_bar()
+		game.switch_to_lightning_bar()
 		lightning_striker.process_mode = Node.PROCESS_MODE_INHERIT
 		stop_delay_timer.stop()
 		if not lightning_strike_tween:
@@ -176,11 +176,11 @@ func start_windy():
 		if modulate_tween:
 			modulate_tween.kill()
 		modulate_tween = create_tween().set_parallel()
-		_player.show_active_wind_particles()
+		_player.spawn_wind_beam_particles()
 		_bg.enter_windy(modulate_tween, 3.0)
 		stop_lightning()
 		modulate_tween.tween_property($CanvasModulate, "color", windy_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
-		main.switch_to_wind_bar()
+		game.switch_to_wind_bar()
 		SceneManager.instance.switch_bgm("Wind")
 		_player.enable_wind_particles()
 		_player.enable_occluders()
@@ -197,7 +197,7 @@ func start_peaceful():
 		_player.disable_wind_particles()
 		_bg.enter_peaceful(modulate_tween, 3.0)
 		modulate_tween.tween_property($CanvasModulate, "color", peaceful_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)
-		main.switch_to_no_bar()
+		game.switch_to_no_bar()
 		SceneManager.instance.switch_bgm("Peaceful")
 		_player.disable_wind_particles()
 		_lights.set_wind_mode(false)
@@ -225,7 +225,7 @@ func win():
 		# fade out and switch to victory sequence
 		var win_tween := create_tween().set_parallel()
 		win_tween.tween_property(_player.camera_2d, "zoom", Vector2(6, 6), 2.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-		win_tween.tween_property(main.color_rect, "color:a", 1.0, 2.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT) 
+		win_tween.tween_property(game.color_rect, "color:a", 1.0, 2.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT) 
 		win_tween.tween_callback(SceneManager.instance.game_to_victory).set_delay(2.5)
 
 

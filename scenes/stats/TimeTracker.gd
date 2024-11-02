@@ -105,9 +105,9 @@ func lock_in_time():
 			tween.tween_property(self, "position", Vector2.ZERO - size / 2, 2.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 			tween.tween_property(get_parent(), "position", Vector2(1152/2, 684/2), 2.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 			tween.tween_property(self, "modulate:a", 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT).set_delay(2.0)
-			tween.tween_property(Main.instance.time_trackers[0], "modulate:a", 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-			tween.tween_property(Main.instance.time_trackers[1], "modulate:a", 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-			tween.tween_property(Main.instance.time_trackers[2], "modulate:a", 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+			tween.tween_property(Game.instance.time_trackers[0], "modulate:a", 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+			tween.tween_property(Game.instance.time_trackers[1], "modulate:a", 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+			tween.tween_property(Game.instance.time_trackers[2], "modulate:a", 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 			
 		else:
 			# Move to the right side of the screen and shrink
