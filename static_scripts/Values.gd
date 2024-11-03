@@ -100,7 +100,7 @@ static func win():
 		for i in range(len(best_section_time_splits)):
 			pr_section_time_splits[i] = section_time_splits[i]
 	victory_count += 1
-	skip_cutscene = not speedrun_mode
+	skip_cutscene = speedrun_mode
 	save_user_data()
 
 static func reset():

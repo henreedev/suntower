@@ -51,8 +51,8 @@ func _ready():
 	_setup_audio()
 	_setup_game()
 	
-	initialized.emit()
 	is_initialized = true
+	initialized.emit()
 
 # Sets audio variables.
 func _setup_audio():
@@ -70,6 +70,7 @@ func _setup_game():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	print(Values.skip_cutscene)
 	# Calculate audio stream volume given offsets
 	audio_stream_player.volume_db = base_volume + player_volume_offset + tween_volume_offset
 	# Listen for fullscreen input

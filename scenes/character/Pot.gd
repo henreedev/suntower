@@ -6,12 +6,12 @@ class_name Pot
 const VINE_ROOT_OFFSET = Vector2(0, -4)
 
 # Sounds on impact with map
-const POT_HIT_SMALL = preload("res://assets/sound/sfx/PotHitSmall2.wav")
+const POT_HIT_SMALL = preload("res://assets/sound/sfx/PotHitSmall.wav")
 const MEDIUM_BIG_HIT = preload("res://assets/sound/sfx/PotHitMediumBig.wav")
 const MEDIUM_INTERMEDIATE_HIT = preload("res://assets/sound/sfx/PotHitMediumIntermediate.wav")
 const BIG_HIT_WHOOSH = preload("res://assets/sound/sfx/PotHitWhoosh.wav")
 const WEIRD_HIT = preload("res://assets/sound/sfx/PotHitWeird.wav")
-const SMALL_HIT = preload("res://assets/sound/sfx/PotHitSmall.wav")
+const SMALL_HIT = preload("res://assets/sound/sfx/PotHitSmall2.wav")
 const FAIL = preload("res://assets/sound/sfx/PotFail.wav")
 
 # Variables to ensure certain sounds don't trigger too often

@@ -116,7 +116,6 @@ func _ready():
 	
 	camera_2d.limit_top = tower.cam_max_marker.global_position.y
 	add_collision_exception_with(_pot)
-	
 	play_animation_on_start = not Values.skip_cutscene
 	if play_animation_on_start:
 		_animating = true
@@ -129,7 +128,6 @@ func _ready():
 
 # Play a cutscene where the camera pans around, and then the flower spawns in.
 func play_spawn_animation():
-	Values.skip_cutscene = true # Don't play the cutscene again until the game closes or is won.
 	
 	# Make vines and line invisible, tween fade them in
 	get_tree().set_group("vine", "modulate", Color(1.0, 1.0, 1.0, 0.0))
@@ -176,6 +174,7 @@ func play_spawn_animation():
 	await Timing.create_timer(self, 0.5)
 	
 	# Start gameplay
+	Values.skip_cutscene = true # Don't play the cutscene again until the game closes or is won.
 	_animating = false
 	tower.tutorial_chunk.start_tutorial()
 	get_tree().set_group("vine", "linear_damp", 1.0)
