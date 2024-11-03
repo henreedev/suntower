@@ -164,7 +164,7 @@ func _refresh_labels():
 						else:
 							congrats = "Give it a shot!"
 							congrats_color = ColorSetting.PULSE_GREEN
-	
+	# Indicate that scores won't be saved after the player teleports
 	if Values.cheated: 
 		congrats = "cheater..."
 		congrats_color = ColorSetting.PULSE_RED

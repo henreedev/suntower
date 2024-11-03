@@ -25,6 +25,7 @@ func _process(delta):
 		_process_autosave(delta)
 		_process_height_update(delta)
 
+# Autosaves the game at regular intervals.
 func _process_autosave(delta):
 	if autosave_time_left > 0:
 		autosave_time_left -= delta
@@ -32,6 +33,7 @@ func _process_autosave(delta):
 		Values.save_user_data()
 		autosave_time_left = AUTOSAVE_INTERVAL
 
+# Updates the player's height constantly.
 func _process_height_update(delta):
 	if not Values.won:
 		Values.update_height(player.get_height())

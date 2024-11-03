@@ -518,7 +518,8 @@ func update_wind_particles(new_dir : Vector2i, new_strength : float, color_mod :
 	wind_gust_particles_mat.linear_accel_min = new_strength * MOD * 0.5
 	wind_gust_particles_mat.linear_accel_max = new_strength * MOD 
 
-# Enables occluders.
+# Enables occluders. These block light far above and below the Head's position.
+#  TileMaps don't occlude light if they're too far off screen, so this fixes that issue
 func enable_occluders():
 	occluders.visible = true
 

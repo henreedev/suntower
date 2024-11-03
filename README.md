@@ -1,4 +1,4 @@
-# Game Project Title
+# Suntower
 
 ## Project Overview
 
@@ -10,8 +10,7 @@
 
 ## Setup and Installation
 
-- **How to Run the Game**: Quick steps for reviewers to open and run the project (mention if they need Godot to open it or any dependencies).
-- **Project Structure**: _Brief overview of the folder structure if needed, especially if there are multiple levels, assets, etc._
+- **How to Play**: Visit the [itch.io page](https://henree.itch.io/suntower) to install the game as a zip. Unzip and play the game's `.exe` file.
 
 ## Scripts Overview
 
@@ -48,4 +47,5 @@ Briefly mention any limitations you’re aware of or improvements you’d make w
 
 ## Acknowledgments and Credits
 
-Give credit for any assets, libraries, or external resources used.
+Programming and Art: henree
+Music: jSeo.co.kr
