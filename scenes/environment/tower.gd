@@ -176,7 +176,7 @@ func start_windy():
 		if modulate_tween:
 			modulate_tween.kill()
 		modulate_tween = create_tween().set_parallel()
-		_player.spawn_wind_beam_particles()
+		_player.show_active_wind_particles()
 		_bg.enter_windy(modulate_tween, 3.0)
 		stop_lightning()
 		modulate_tween.tween_property($CanvasModulate, "color", windy_modulate, 2.0).set_trans(Tween.TRANS_CUBIC)

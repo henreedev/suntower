@@ -83,6 +83,10 @@ func play_sequence():
 	menu_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	
 
+func _input(event):
+	if event.is_action_pressed("pause"):
+		create_tween().tween_property(menu_button, "modulate:a", 0.5, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		menu_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
 func fade(to_opaque : bool, dur := -1):
 	if dur == -1:

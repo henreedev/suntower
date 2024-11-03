@@ -54,7 +54,7 @@ var _sun_buff_applied := false
 
 # Lightning buff
 var _has_lightning_buff := false
-const MAX_LIGHTNING_BUFF = BASE_MAX_EXTENDED_LEN / 1.5
+const MAX_LIGHTNING_BUFF = BASE_MAX_EXTENDED_LEN 
 var lightning_buff_amount = 0.0
 const LIGHTNING_SPEED = 2.0
 var lightning_speed_mod = 1.0

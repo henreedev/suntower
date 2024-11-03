@@ -61,6 +61,7 @@ static func increment_time(delta : float):
 		update_section_times(cur_section)
 
 static func update_height(height : float):
+	if cheated: return
 	max_height_reached = max(max_height_reached, height)
 
 static func reach_section(section : Tower.Weather):
@@ -71,10 +72,12 @@ static func reach_section(section : Tower.Weather):
 
 
 static func update_section_times(section : Tower.Weather):
+	if cheated: return # Don't save data if the user has teleported
 	var sec_index = int(section)
 	section_times[sec_index] = time
 
 static func update_section_splits(section : Tower.Weather):
+	if cheated: return # Don't save data if the user has teleported
 	var sec_index = int(section) - 1 # We just finished section - 1
 	section_time_splits[sec_index] = time
 	
@@ -92,6 +95,7 @@ static func update_section_splits(section : Tower.Weather):
 static func win():
 	won = true
 	reach_section(Tower.Weather.VICTORY)
+	if cheated: return
 	# update best time if this time is better
 	if time < best_time or best_time == -1:
 		# new PR
@@ -122,7 +126,6 @@ static func clear_user_data():
 
 # saving and loading
 static func save_user_data():
-	if cheated: return # Don't save any data from a run with dev tools involved
 	config.set_value("settings", "finished_tutorial", finished_tutorial)
 	config.set_value("settings", "speedrun_mode", speedrun_mode)
 	config.set_value("settings", "master_volume", VolumeBar.master_volume)

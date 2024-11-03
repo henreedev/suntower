@@ -70,7 +70,6 @@ func _setup_game():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	print(Values.skip_cutscene)
 	# Calculate audio stream volume given offsets
 	audio_stream_player.volume_db = base_volume + player_volume_offset + tween_volume_offset
 	# Listen for fullscreen input
@@ -97,8 +96,12 @@ func game_to_menu():
 # Transitions from the game to the victory screen. 
 # Calls the transition to happen instantly without any fade out.
 func game_to_victory():
-	tween_transition([remove_child.bind(game), _set_game_to_new_copy, add_child.bind(victory_sequence), \
-		switch_bgm.bind("VictoryLeadIn"), victory_sequence.play_sequence], 0)
+	if Values.cheated:
+		tween_transition([remove_child.bind(game), _set_game_to_new_copy, add_child.bind(start_menu), \
+			switch_bgm.bind("Menu"), start_menu.options_menu.refresh], 1.0, true)
+	else:
+		tween_transition([remove_child.bind(game), _set_game_to_new_copy, add_child.bind(victory_sequence), \
+			switch_bgm.bind("VictoryLeadIn"), victory_sequence.play_sequence], 0)
 
 # Transitions from victory to menu. Uses a special transition screen.
 func victory_to_menu():

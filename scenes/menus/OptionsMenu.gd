@@ -165,6 +165,10 @@ func _refresh_labels():
 							congrats = "Give it a shot!"
 							congrats_color = ColorSetting.PULSE_GREEN
 	
+	if Values.cheated: 
+		congrats = "cheater..."
+		congrats_color = ColorSetting.PULSE_RED
+	
 	_set_rich_text_label(congratulations, congrats, "", true, congrats_color, true)
 	
 	# Text for whether the player has beaten the game

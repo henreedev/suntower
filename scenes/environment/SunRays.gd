@@ -9,6 +9,7 @@ var offset_height = -num_rays / 2 - 50
 var leader = false
 @onready var _player : Head = get_tree().get_first_node_in_group("flowerhead")
 @onready var _tower : Tower = get_tree().get_first_node_in_group("tower")
+@onready var _pot : Pot = get_tree().get_first_node_in_group("pot")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_make_rays(num_rays)
@@ -17,6 +18,7 @@ func _ready():
 func _make_rays(count):
 	for i in count:
 		var ray = RayCast2D.new()
+		ray.add_exception(_pot)
 		ray.target_position = Vector2(0, 1000)
 		add_child(ray)
 		ray.position = Vector2(0, i)
