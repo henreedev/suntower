@@ -4,8 +4,6 @@ Suntower is a Foddian rage platformer built in Godot. You help a sunflower reach
 
 ## [Play Suntower on itch.io](https://henree.itch.io/suntower) <!-- omit in toc -->
 
----
-
 ## Table of Contents <!-- omit in toc -->
 
 - [Core Mechanics](#core-mechanics)
@@ -25,8 +23,6 @@ Suntower is a Foddian rage platformer built in Godot. You help a sunflower reach
     - [Windy ](#windy-)
     - [Calm ](#calm-)
 - [Acknowledgments and Credits](#acknowledgments-and-credits)
-
----
 
 ## Core Mechanics
 
@@ -241,6 +237,6 @@ However, the platforming is very precise and punishing. It's the final climb bef
 ## Acknowledgments and Credits
 
 Programming and Art: **henree**
-Music: [**jSeo.co.kr**]()
+Music: **jSeo.co.kr**
 
 Thanks to all of my friends and classmates who playtested Suntower and provided early feedback that shaped the game.
