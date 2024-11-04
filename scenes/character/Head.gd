@@ -35,15 +35,13 @@ var should_teleport := false
 
 # Extension/retraction variables
 @export var max_extended_len := 125.0
-var _target_angle : float
-var _len_per_seg : float # Calculated on initialization
-var _len_per_seg_adj : float # Adjusted by a scalar
+var _len_per_seg_base : float # Calculated on initialization
+var _len_per_seg : float # Adjusted by a scalar
 var _extending_dist_travelled := 0.0
 var _extended_len := 0.0
 var _root_seg : Vine
 var _first_seg : Vine
 var _retracting_seg : Vine
-var extend_speed_mod = 1.0
 var extra_len = 0.0
 var extra_len_display = 0.0
 @onready var _last_pos : Vector2 = position
@@ -274,8 +272,8 @@ func _spawn_vine():
 	var final_vine_pos = position + VINE_ROOT_OFFSET 
 	var diff = final_vine_pos - first_vine_pos
 	
-	_len_per_seg = diff.length() / base_segments
-	_len_per_seg_adj = _len_per_seg
+	_len_per_seg_base = diff.length() / base_segments
+	_len_per_seg = _len_per_seg_base
 	
 	var curr_seg : Vine = null
 	var last_seg : Vine = null
@@ -345,7 +343,6 @@ func begin_extending():
 		linear_damp = 0.0
 		mass = 0.1
 		
-		extend_speed_mod = 1.0
 		
 		stuck_timer.stop()
 		dead_timer.stop()
@@ -539,12 +536,14 @@ func _integrate_forces(state):
 		
 		if _state == State.EXTENDING:
 			# Rotate steadily towards mouse
-			_target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
-			state.transform = Transform2D(lerp_angle(state.transform.get_rotation(), _target_angle, state.step * ROTATE_SPEED * lightning_speed_mod), state.transform.get_origin()) 
+			var target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
+			var new_angle = lerp_angle(state.transform.get_rotation(), target_angle, state.step \
+														* ROTATE_SPEED * lightning_speed_mod)
+			state.transform = Transform2D(new_angle, state.transform.get_origin()) 
 			state.angular_velocity = 0
 			
 			# Move in direction of rotation
-			var lin_vel = Vector2(0, -EXTEND_SPEED * extend_speed_mod * lightning_speed_mod).rotated(rotation)
+			var lin_vel = Vector2(0, -EXTEND_SPEED * lightning_speed_mod).rotated(rotation)
 			# Get pushed by wind beam
 			if has_wind_buff: 
 				const WIND_ACTIVE_BEAM_STRENGTH = 45.0
@@ -635,27 +634,27 @@ func _physics_process(delta):
 				
 				# Spawn fewer segments when going fast
 				var mod = (1.0 / lightning_speed_mod)
-				_len_per_seg_adj = _len_per_seg * mod
+				_len_per_seg = _len_per_seg_base * mod
 				
 				# If we've traveled the length of a segment, add a segment to fill the gap
-				if _extending_dist_travelled > _len_per_seg_adj:
+				if _extending_dist_travelled > _len_per_seg:
 					_add_seg()
-					_extended_len += _len_per_seg_adj
-					_extending_dist_travelled -= _len_per_seg_adj
+					_extended_len += _len_per_seg
+					_extending_dist_travelled -= _len_per_seg
 					
 					# Use extra length to extend, if we have it
 					if extra_len and extra_len_display:
-						extra_len_display -= _len_per_seg_adj
+						extra_len_display -= _len_per_seg
 						if extra_len_display < 0.0: 
 							# Subtract overflow from vine len display
 							vine_len_display += extra_len_display
 							extra_len_display = 0.0
 					else:
 						# Use vine length to extend 
-						vine_len_display -= _len_per_seg_adj
+						vine_len_display -= _len_per_seg
 					
 					if lightning_buff_amount:
-						lightning_buff_amount -= _len_per_seg_adj
+						lightning_buff_amount -= _len_per_seg
 				
 				# Retract if we've extended to the maximum possible length
 				if _extended_len > max_extended_len + extra_len:
@@ -666,26 +665,30 @@ func _physics_process(delta):
 					begin_inactive()
 				else:
 					if not _retracting_seg:
-						# Detach node near root, and propel it towards root
+						# Detach Vine near root, and propel it towards root
 						_retracting_seg = _root_seg.get_child_seg()
-						_root_seg.get_node("PinJoint2D").softness = 0.0
-						_root_seg.get_node("PinJoint2D").node_b = ""
 						_root_seg.detached_child = _retracting_seg
-					var retract_dir = _retracting_seg.position.direction_to(_root_seg.position)
-					var retract_dir_2 = _root_seg.position.direction_to(_retracting_seg.get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().get_child_seg().position)
+						_root_seg.get_node("PinJoint2D").node_b = ""
+					
+					# Determine directions to propel Vines in for retraction
+					var to_head_dir = _retracting_seg.position.direction_to(_root_seg.position)
+					# Direction from root to the retracting seg's fifth child 
+					var to_mid_vine_dir = _root_seg.position.direction_to(_retracting_seg.get_child_seg(5).position)
+					
 					const FORCE_STRENGTH = 135.0
-					var force = retract_dir * FORCE_STRENGTH
-					var force_2 = retract_dir_2 * FORCE_STRENGTH
-					_retracting_seg.apply_central_force(force)
-					_retracting_seg.get_child_seg().apply_central_force(force / 2)
-					_retracting_seg.get_child_seg().get_child_seg().apply_central_force(force / 2)
-					_root_seg.apply_central_force(force.rotated(PI) * 0.3 + force_2 * 0.35)
+					var to_head_force = to_head_dir * FORCE_STRENGTH
+					var to_mid_vine_force = to_mid_vine_dir * FORCE_STRENGTH
+					
+					_retracting_seg.apply_central_force(to_head_force)
+					_retracting_seg.get_child_seg().apply_central_force(to_head_force / 2)
+					_retracting_seg.get_child_seg(1).apply_central_force(to_head_force / 2)
+					_root_seg.apply_central_force(to_head_force.rotated(PI) * 0.3 + to_mid_vine_force * 0.35)
+					
 					# Delete retracting seg if close to head, and pin to the next seg
 					const MIN_DIST = 4
 					if _retracting_seg.position.distance_to(_root_seg.position) < MIN_DIST:
 						_retracting_seg.queue_free()
 						_root_seg.get_node("PinJoint2D").node_b = _retracting_seg.get_child_seg().get_path()
-						_root_seg.get_node("PinJoint2D").softness = 0.0
 						_segs -= 1
 						_retracting_seg = null
 						_root_seg.detached_child = null
@@ -731,7 +734,7 @@ func _add_seg():
 	new_child.add_collision_exception_with(child) # Vines don't collide with each other
 	
 	# Place the child and new child with correct position and rotation
-	var adj = Vector2(0, _len_per_seg_adj).rotated(global_rotation)
+	var adj = Vector2(0, _len_per_seg).rotated(global_rotation)
 	
 	new_child.position = _root_seg.position + adj
 	new_child._set_pos = new_child.position

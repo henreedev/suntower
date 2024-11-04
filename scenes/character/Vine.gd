@@ -46,9 +46,13 @@ func set_child (child : RigidBody2D):
 func set_grav(grav : float):
 	gravity_scale = grav
 
-func get_child_seg():
-	if detached_child: return detached_child
-	return get_node($PinJoint2D.node_b) if not _set_child else _set_child
+func get_child_seg(iterations := 0):
+	var child : Node 
+	if detached_child: child = detached_child
+	else: child = get_node($PinJoint2D.node_b) if not _set_child else _set_child
+	if iterations > 0:
+		return child.get_child_seg(iterations - 1)
+	else: return child
 
 func make_self_exception():
 	get_tree().call_group("vine", "add_collision_exception_with", self)
