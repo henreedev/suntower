@@ -573,12 +573,13 @@ func _integrate_forces(state):
 				_pot.apply_central_force(dir * MOVE_STRENGTH)
 		
 		elif _state == State.INACTIVE:
+			const TURN_STRENGTH = 6.0
 			var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
-			const STR = 6.0
-			state.transform = Transform2D(lerp_angle(rotation, mouse_angle, STR * state.step), state.transform.get_origin())
+			var new_angle = lerp_angle(rotation, mouse_angle, TURN_STRENGTH * state.step)
+			state.transform = Transform2D(new_angle, state.transform.get_origin())
 			if can_extend:
-				const STR2 = 20.0
-				var force_toward_mouse = Vector2(0, -1).rotated(mouse_angle) * STR2
+				const MOVE_STRENGTH = 20.0
+				var force_toward_mouse = Vector2.UP.rotated(mouse_angle) * MOVE_STRENGTH
 				apply_central_force(force_toward_mouse)
 		
 		# Fix the neck gap while retracting

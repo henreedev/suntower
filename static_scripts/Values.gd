@@ -88,9 +88,9 @@ static func update_section_times(section : Tower.Weather):
 
 # Updates current completion times per section, ignoring if cheating has occurred
 static func update_section_splits(section : Tower.Weather):
-	if cheated: return # Don't save data if the user has teleported
 	var sec_index = int(section) - 1 # We just finished section - 1
 	section_time_splits[sec_index] = time
+	if cheated: return # Don't save data if the user has teleported
 	
 	# update best split if this split is better
 	if best_section_time_splits[sec_index] == -1 or best_section_time_splits[sec_index] == 0:

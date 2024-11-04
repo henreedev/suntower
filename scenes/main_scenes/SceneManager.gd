@@ -135,7 +135,7 @@ func switch_bgm(clip_name : String):
 
 # Tweens a transition by fading to a transition screen, executing method calls, and fading back in. 
 # Can use a special fade screen for transitions out of victory screens.
-func tween_transition(method_calls : Array[Callable], dur := 0.75, victory_to_menu := false):
+func tween_transition(method_calls : Array[Callable], dur := 0.75, is_victory_to_menu := false):
 	if can_transition:
 		can_transition = false
 		if level_switch_tween:
@@ -145,7 +145,7 @@ func tween_transition(method_calls : Array[Callable], dur := 0.75, victory_to_me
 		var fade_rect := color_rect
 		var sprite = animated_sprite_2d
 		# Use victory transition visuals
-		if victory_to_menu:
+		if is_victory_to_menu:
 			fade_rect = victory_color_rect
 			sprite = sprite_2d
 		

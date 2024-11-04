@@ -112,6 +112,7 @@ func _ready():
 func _process(delta):
 	_update_progress_offset(delta)
 	_change_weather_on_progress()
+	_rotate_lights_on_progress()
 	_act_on_weather_state()
 	_lerp_lights_towards_goal(delta)
 	_sunrays.set_rotate($Lights.rotation)

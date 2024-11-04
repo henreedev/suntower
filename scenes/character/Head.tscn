@@ -441,7 +441,6 @@ lifetime = 2.0
 visibility_rect = Rect2(-4.81506, -4.91064, 9.81225, 9.78039)
 
 [node name="Lightning" type="GPUParticles2D" parent="."]
-visible = false
 material = SubResource("CanvasItemMaterial_1y40j")
 emitting = false
 amount = 20

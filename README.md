@@ -1,30 +1,51 @@
-# Suntower
+# Suntower <!-- omit in toc -->
 
-## Project Overview
+Suntower is a Foddian rage platformer built in Godot. You help a sunflower reach the top of the tower, navigating difficult weather conditions along the way. The core mechanic is hook-based climbing with a rope that can extend and retract.
 
-**Game Title**: _Brief description of the game (genre, key mechanics, unique features)._
+## [Play Suntower on itch.io](https://henree.itch.io/suntower) <!-- omit in toc -->
 
-**Engine and Tools**: Built in Godot. _Mention any other tools/libraries you used._
+---
 
-**Objective**: Main goals and achievements of the project (e.g., "Demonstrates complex AI for enemies," "Focuses on polished user interface and interactions").
+## Table of Contents <!-- omit in toc -->
 
-## Setup and Installation
+- [Core Mechanics](#core-mechanics)
+  - [Flower Movement - (`Head.gd`)](#flower-movement---headgd)
+    - [State Machine](#state-machine)
+    - [Rope Extension/Retraction](#rope-extensionretraction)
+  - [Weather - `Tower.gd`](#weather---towergd)
+- [Acknowledgments and Credits](#acknowledgments-and-credits)
 
-- **How to Play**: Visit the [itch.io page](https://henree.itch.io/suntower) to install the game as a zip. Unzip and play the game's `.exe` file.
+---
 
-## Scripts Overview
+## Core Mechanics
 
-**Main Scripts**: List each primary script with a short description of its purpose.
+- **Flower Movement**: The player has certain states with different physical properties for movement. These include an **idle** state, **extending** state, and **retracting** state.
 
-- **Example**:
-  - **PlayerController.gd**: Manages player movement, input, and core mechanics like jumping and shooting.
-  - **EnemyAI.gd**: Governs enemy behavior, pathfinding, and interactions with the player.
-  - **GameManager.gd**: Controls game flow, levels, and score tracking.
-  - **UIManager.gd**: Handles all HUD elements and displays health, score, and messages.
+- **Weather**: There are four different sections of the tower, each with different weather conditions. These include **sunny**, **stormy**, **windy**, and **calm**.
 
-## Detailed Explanation of Key Scripts
+### Flower Movement - [(`Head.gd`)](./scenes/character/Head.gd)
 
-### Key Script Example - `PlayerController.gd`
+#### State Machine
+
+The player's physical state is stored in an enum:
+
+```gdscript
+enum State {INACTIVE, EXTENDING, RETRACTING}
+```
+
+While inactive, the player can aim the Head with the mouse.
+The player can begin extending if the Pot is stable:
+
+```gdscript
+# Player can extend if the pot is stable
+can_extend = _pot.touching and _pot.linear_velocity.length_squared() < 2.0
+```
+
+The player's
+
+#### Rope Extension/Retraction
+
+- **Rope Extension/Retraction**: The stem of the flower can extend and retract, using rigid bodies chained together with pin joints.
 
 - **Purpose**: Handles all player-related actions and interactions.
 - **Main Functions**:
@@ -33,19 +54,18 @@
   - `take_damage(amount)`: Reduces health based on the damage amount and triggers game over if health is depleted.
 - **Special Logic**: Briefly mention any unique code you’re proud of or that shows problem-solving skills.
 
-## Algorithms and Important Concepts
+### Weather - `Tower.gd`
 
-Highlight any complex or particularly interesting sections of code:
-
-- **Pathfinding Logic**: _Describe any notable AI pathfinding algorithm or complex movement patterns._
-- **Procedural Generation**: _Describe how procedural generation is implemented, if applicable._
-- **Optimization Techniques**: _Mention any optimizations for performance, such as pooling objects or reducing draw calls._
-
-## Known Limitations or Future Improvements
-
-Briefly mention any limitations you’re aware of or improvements you’d make with more time. This can show that you recognize areas for growth, even if you didn’t have time to address them.
+- **Purpose**: Handles all player-related actions and interactions.
+- **Main Functions**:
+  - `move_player()`: Manages player movement based on user input.
+  - `shoot_projectile()`: Creates and fires projectiles when the player presses the shoot button.
+  - `take_damage(amount)`: Reduces health based on the damage amount and triggers game over if health is depleted.
+- **Special Logic**: Briefly mention any unique code you’re proud of or that shows problem-solving skills.
 
 ## Acknowledgments and Credits
 
-Programming and Art: henree
-Music: jSeo.co.kr
+Programming and Art: **henree**
+Music: [**jSeo.co.kr**]()
+
+Thanks to all of my friends and classmates who playtested Suntower and provided early feedback that shaped the game.
