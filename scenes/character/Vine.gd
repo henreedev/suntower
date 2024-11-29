@@ -5,24 +5,25 @@ var _set_pos
 var _set_rot
 var _set_child
 var detached_child : Vine
-@onready var sprite : Sprite2D = $Smoothing2D/Sprite2D
+@onready var sprite : Sprite2D = $Sprite2D
 @onready var sprite_scale = sprite.scale
-@onready var light : PointLight2D = $Smoothing2D/StormLight
+@onready var light : PointLight2D = $StormLight
 @onready var smooth : Smoothing2D = $Smoothing2D
 @onready var last_pos : Vector2 = position
-@onready var fake_light : Sprite2D = $Smoothing2D/FakeLight
+@onready var fake_light : Sprite2D = $FakeLight
 var this_scene : PackedScene = preload("res://scenes/character/Vine.tscn")
 var _rotation_match_node
 var smoothing = false
 var frame = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	smooth.set_enabled(false)
-	smoothing = false
-	await Timing.create_timer(self, 0.2)
-	smooth.set_enabled(true)
-	smooth.teleport()
-	smoothing = true
+	#smooth.set_enabled(false)
+	#smoothing = false
+	#await Timing.create_timer(self, 0.2)
+	#smooth.set_enabled(true)
+	#smooth.teleport()
+	#smoothing = true
+	pass
 
 func _process(delta):
 	frame += 1
@@ -75,15 +76,15 @@ func _integrate_forces(state):
 		state.transform = Transform2D(state.transform.get_rotation(), _set_pos)
 		last_pos = _set_pos
 		_set_pos = null
-		$Smoothing2D.set_enabled(true)
-		smoothing = true
-		$Smoothing2D.teleport()
+		#$Smoothing2D.set_enabled(true)
+		#smoothing = true
+		#$Smoothing2D.teleport()
 	if _set_rot:
 		state.transform = Transform2D(_set_rot, state.transform.get_origin())
 		_set_rot = null
-		$Smoothing2D.set_enabled(true)
-		smoothing = true
-		$Smoothing2D.teleport()
+		#$Smoothing2D.set_enabled(true)
+		#smoothing = true
+		#$Smoothing2D.teleport()
 	if _set_child:
 		$PinJoint2D.node_b = _set_child.get_path()
 		_set_child = null

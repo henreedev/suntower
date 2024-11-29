@@ -116,6 +116,7 @@ clear_user_data={
 common/physics_ticks_per_second=90
 common/max_physics_steps_per_frame=12
 2d/default_gravity=500.0
+common/physics_interpolation=true
 
 [rendering]
 

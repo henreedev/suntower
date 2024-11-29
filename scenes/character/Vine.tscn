@@ -53,17 +53,13 @@ linear_damp = 1.0
 angular_damp = 20.0
 script = ExtResource("1_d58dt")
 
-[node name="Smoothing2D" type="Node2D" parent="."]
-script = ExtResource("2_2cghh")
-flags = 6
-
-[node name="Sprite2D" type="Sprite2D" parent="Smoothing2D"]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_67x27")
 position = Vector2(0, 0.5)
 scale = Vector2(1, 0.5)
 texture = ExtResource("1_fkaj8")
 
-[node name="StormLight" type="PointLight2D" parent="Smoothing2D"]
+[node name="StormLight" type="PointLight2D" parent="."]
 visible = false
 position = Vector2(0, 0.5)
 scale = Vector2(2.72, 1.36)
@@ -74,12 +70,16 @@ shadow_item_cull_mask = 2
 texture = SubResource("GradientTexture2D_cdlsb")
 texture_scale = 0.02
 
-[node name="FakeLight" type="Sprite2D" parent="Smoothing2D"]
+[node name="FakeLight" type="Sprite2D" parent="."]
 visible = false
 material = SubResource("ShaderMaterial_t2dxa")
 position = Vector2(0, 0.5)
 scale = Vector2(0.04, 0.027)
 texture = SubResource("GradientTexture2D_cdlsb")
+
+[node name="Smoothing2D" type="Node2D" parent="."]
+script = ExtResource("2_2cghh")
+flags = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -3)

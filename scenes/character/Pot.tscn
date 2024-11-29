@@ -160,16 +160,16 @@ contact_monitor = true
 max_contacts_reported = 2
 script = ExtResource("1_u6jn4")
 
-[node name="Smoothing2D" type="Node2D" parent="."]
-script = ExtResource("2_46eyb")
-
-[node name="Pot" type="Sprite2D" parent="Smoothing2D"]
+[node name="Pot" type="Sprite2D" parent="."]
 texture = ExtResource("2_dk0m0")
 offset = Vector2(0, -27)
 
-[node name="Shadow" type="Sprite2D" parent="Smoothing2D/Pot"]
+[node name="Shadow" type="Sprite2D" parent="Pot"]
 position = Vector2(0, 5.5)
 texture = ExtResource("4_0jlhp")
+
+[node name="Smoothing2D" type="Node2D" parent="."]
+script = ExtResource("2_46eyb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)

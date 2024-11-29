@@ -34,7 +34,7 @@ var playback : AudioStreamPlaybackPolyphonic
 @onready var head : Head = get_tree().get_first_node_in_group("flowerhead")
 @onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 @onready var sound_effect_player : AudioStreamPlayer2D = %SoundEffectPlayer
-@onready var shadow : Sprite2D = $Smoothing2D/Pot/Shadow
+@onready var shadow : Sprite2D = $Pot/Shadow
 @onready var sparks : GPUParticles2D = $Sparks
 @onready var dirt : GPUParticles2D = $Dirt
 
