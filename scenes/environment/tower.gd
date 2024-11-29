@@ -97,6 +97,8 @@ var swap_tween : Tween
 @onready var lightning_striker = %LightningStriker
 @onready var stop_delay_timer : Timer = %StopDelayTimer
 @onready var show_clouds_marker = %ShowCloudsMarker
+@onready var water_drip = $WaterDrip
+
 # Array of the speedrun time trackers per section. Initialized in ready using Game's reference.
 var time_trackers : Array[TimeTracker]
 

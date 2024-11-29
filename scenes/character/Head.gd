@@ -131,23 +131,24 @@ func play_spawn_animation():
 	get_tree().set_group("vine", "modulate", Color(1.0, 1.0, 1.0, 0.0))
 	get_tree().set_group("vine", "linear_damp", 100.0)
 	$Vines/Line2D.modulate = Color(1.0,1.0,1.0,0.0)
-	_sprite.modulate = Color(1.0,1.0,1.0,0.0)
-	camera_2d.offset = Vector2(0, 6)
+	_sprite.self_modulate = Color(1.0,1.0,1.0,0.0)
+	camera_2d.offset = Vector2(0, 4)
 	camera_2d.zoom = Vector2(15, 15)
 	create_tween().tween_property(camera_2d,"zoom", Vector2(5.95, 5.95), 2.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	create_tween().tween_property(camera_2d,"offset", Vector2(0, 4), 2.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+	#create_tween().tween_property(camera_2d,"offset", Vector2(0, 4), 2.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	
 	# Tween camera to look left, then right, then center
 	var offset_tween = create_tween()
-	offset_tween.tween_property(camera_2d, "offset", Vector2(-80, 4), 1.5).from(Vector2(0, 4)).set_trans(Tween.TRANS_CUBIC).set_delay(0.5)
-	offset_tween.tween_property(camera_2d, "offset", Vector2(80, 4), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
-	offset_tween.tween_property(camera_2d, "offset", Vector2(0, 4), 2.6).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
+	offset_tween.tween_property(camera_2d, "offset", Vector2(-80, 4), 1.5).from(Vector2(0, 4)).set_trans(Tween.TRANS_CUBIC).set_delay(1.0)
+	offset_tween.tween_property(camera_2d, "offset", Vector2(80, 4), 2.3).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
+	offset_tween.tween_property(camera_2d, "offset", Vector2(0, 4), 2.4).set_trans(Tween.TRANS_CUBIC).set_delay(0.2)
 	
 	# Wait for camera panning to finish 
 	await Timing.create_timer(self, 6.7)
 	
 	# Spawn in vines and flower
-	var delay = 1.95
+	#var delay = 1.95
+	var delay = 1.75
 	var i = -1
 	for vine in get_tree().get_nodes_in_group("vine"):
 		await Timing.create_timer(self, delay * 1.0 / (i+3))
@@ -163,7 +164,7 @@ func play_spawn_animation():
 	create_tween().tween_property($Vines/Line2D, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
 	create_tween().tween_property(_sprite, "scale", Vector2(1.0, 1.0), 0.4).from(Vector2(0.5, 0.5)).set_trans(Tween.TRANS_SINE)
 	create_tween().tween_property(_sprite, "offset", Vector2(0.0, 0.0), 0.4).from(Vector2(0, 5)).set_trans(Tween.TRANS_SINE)
-	create_tween().tween_property(_sprite, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
+	create_tween().tween_property(_sprite, "self_modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
 	get_tree().set_group("vine", "sprite_scale", Vector2(1.0, 0.5))
 	
 	# Reset camera
@@ -174,6 +175,7 @@ func play_spawn_animation():
 	# Start gameplay
 	Values.skip_cutscene = true # Don't play the cutscene again until the game closes or is won.
 	_animating = false
+	tower.water_drip.emitting = false
 	tower.tutorial_chunk.start_tutorial()
 	get_tree().set_group("vine", "linear_damp", 1.0)
 	game.switch_to_sun_bar()

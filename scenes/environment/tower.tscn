@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=39 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Script" path="res://scenes/environment/Tower.gd" id="1_i47gm"]
 [ext_resource type="Script" path="res://scenes/environment/ParallaxBackground.gd" id="2_mjvvg"]
@@ -65,6 +65,55 @@ size = Vector2(452.999, 3079.9)
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bd455"]
 polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -166.935, -2727)
+
+[sub_resource type="Curve" id="Curve_4bykx"]
+max_value = 1000.0
+_data = [Vector2(0.118143, 1000), 0.0, 0.0, 0, 0, Vector2(0.122363, 0), 0.0, 0.0, 0, 0, Vector2(0.827004, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_sss7v"]
+curve = SubResource("Curve_4bykx")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b622u"]
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+spread = 0.0
+initial_velocity_min = 50.0
+initial_velocity_max = 50.0
+gravity = Vector3(0, 250, 0)
+damping_min = 1.0
+damping_max = 1.0
+damping_curve = SubResource("CurveTexture_sss7v")
+color = Color(1, 1, 1, 0.145098)
+collision_mode = 2
+sub_emitter_mode = 2
+sub_emitter_amount_at_end = 4
+
+[sub_resource type="Curve" id="Curve_0kli6"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_x46mi"]
+curve = SubResource("Curve_0kli6")
+
+[sub_resource type="Curve" id="Curve_ob5xa"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.481013, 0.538462), 0.0, 0.0, 0, 0, Vector2(0.700422, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_ktxx8"]
+curve = SubResource("Curve_ob5xa")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_h4il5"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+initial_velocity_min = 38.67
+initial_velocity_max = 91.3
+gravity = Vector3(0, 300, 0)
+damping_min = 49.87
+damping_max = 49.96
+scale_curve = SubResource("CurveTexture_ktxx8")
+color = Color(0.870588, 1, 1, 0.156863)
+alpha_curve = SubResource("CurveTexture_x46mi")
 
 [node name="Tower" type="Node2D" groups=["tower"]]
 material = SubResource("ShaderMaterial_ivn7p")
@@ -335,6 +384,22 @@ position = Vector2(-0.0142213, 599)
 [node name="ShowCloudsMarker" type="Marker2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(-21.9953, -199.001)
+
+[node name="WaterDrip" type="GPUParticles2D" parent="."]
+z_index = 2
+position = Vector2(-0.0100427, 423)
+amount = 1
+sub_emitter = NodePath("../WaterSplash")
+process_material = SubResource("ParticleProcessMaterial_b622u")
+lifetime = 1.32
+collision_base_size = 5.0
+visibility_rect = Rect2(-200, -207.54, 400, 415.32)
+
+[node name="WaterSplash" type="GPUParticles2D" parent="."]
+z_index = 2
+position = Vector2(-0.0136277, 574)
+amount = 4
+process_material = SubResource("ParticleProcessMaterial_h4il5")
 
 [connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]

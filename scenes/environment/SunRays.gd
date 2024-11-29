@@ -4,10 +4,11 @@ class_name SunRays
 
 signal sun_hit
 
-var num_rays = 400
+var num_rays = 450
 var offset_height = -num_rays / 2 - 50
 var leader = false
 var vine_tween : Tween
+var curr_rot : float
 var check_stride = 1 # actually check collisions on every n rays (for performance)
 @export var right = true # are these rays placed on the right side of the tower?
 @onready var _player : Head = get_tree().get_first_node_in_group("flowerhead")
@@ -28,21 +29,23 @@ func _make_rays(count):
 		ray.add_to_group("rays")
 		ray.collision_mask = 1 + 2 + 32
 		 #Visualization line
-		#if i % 5 == 0:
-			#var line = Line2D.new()
-			#ray.add_child(line)
-			#line.add_point(Vector2(0, 0))
-			#line.add_point(ray.target_position)
-			#line.width = 1
-			#line.z_index = 99
-			#line.modulate.a = 0.1
+		if i % 5 == 0:
+			var line = Line2D.new()
+			ray.add_child(line)
+			line.add_point(Vector2(0, 0))
+			line.add_point(ray.target_position)
+			line.width = 1
+			line.z_index = 99
+			line.modulate.a = 0.1
 
 func set_rotate(angle):
 	get_tree().set_group("rays", "rotation", angle)
+	curr_rot = angle
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	position = Vector2(position.x, _player.position.y + offset_height)
+	var rot_adj = 0# (PI / 2 - abs(curr_rot)) * 50
+	position = Vector2(position.x, _player.position.y + offset_height + rot_adj)
 
 func _physics_process(delta):
 	if leader and _check_player_hit():
@@ -56,10 +59,10 @@ func _check_player_hit():
 				for ray : RayCast2D in sunrays.get_children():
 					ray.collision_mask = 1 + 2 + 32 # Include vine segs
 					var hit = ray.get_collider()
-					if not hit: return false
+					if not hit: continue
 					if hit is Head or hit is Vine or hit.is_in_group("flowerhead"):
 						return true
-				return false
+		return false
 	elif _tower.weather == Tower.Weather.SUNNY:
 		var i = 1
 		for sunrays : SunRays in get_tree().get_nodes_in_group("sunrays"):
@@ -78,7 +81,7 @@ func _check_player_hit():
 							#vine_tween.tween_property(hit.sprite, "modulate", Color(1.0, 5.0, 1.0), 0.25)
 							#vine_tween.chain().tween_property(hit.sprite, "modulate", Color(1.0, 1.0, 1.0), 0.25)
 						return true
-				return false
+		return false
 	elif _tower.weather == Tower.Weather.WINDY:
 		for sunrays : SunRays in get_tree().get_nodes_in_group("sunrays"):
 			if sunrays.right and Tower.instance._lights.rotation > 0 || \
@@ -88,5 +91,5 @@ func _check_player_hit():
 					var hit = ray.get_collider()
 					if hit is Head or (hit.is_in_group("flowerhead") if hit else false):
 						return true
-				return false
+		return false
 	else: return false
