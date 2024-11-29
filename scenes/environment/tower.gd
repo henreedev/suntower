@@ -45,7 +45,7 @@ var _right_day_end_angle_wind = deg_to_rad(140.0)
 var _left_day_start_angle_wind = -_right_day_start_angle_wind
 var _left_day_end_angle_wind = -_right_day_end_angle_wind
 var _goal_rotation = _right_day_start_angle
-var _right = true
+var right = true
 
 # Weather variables
 var weather : Weather = Weather.SUNNY
@@ -349,18 +349,18 @@ func _rotate_lights_on_progress():
 			_half_day_cycle_dur = _day_cycle_dur / 2
 			
 			if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: # Right side sunlight
-				if not _right:
+				if not right:
 					# Swap to right side
 					var tween := create_tween()
 					tween.tween_property(self, "_goal_rotation", _right_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-					_right = true
+					right = true
 				else:
 					_goal_rotation = lerp(_right_day_start_angle, _right_day_end_angle, _day_cycle / _half_day_cycle_dur)
 			else: # Left side sunlight
-				if _right:
+				if right:
 					# Swap to left side
 					create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-					_right = false
+					right = false
 				else:
 					_goal_rotation = lerp(_left_day_start_angle, _left_day_end_angle, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 		Weather.STORMY:
@@ -369,18 +369,18 @@ func _rotate_lights_on_progress():
 			_half_day_cycle_dur = _day_cycle_dur / 2 * mult
 			
 			if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: # Right side lightning
-				if not _right:
+				if not right:
 					# Swap to right side
 					var tween := create_tween()
 					tween.tween_property(self, "_goal_rotation", _right_day_start_angle_storm, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-					_right = true
+					right = true
 				else:
 					_goal_rotation = lerp(_right_day_start_angle_storm, _right_day_end_angle_storm, _day_cycle / _half_day_cycle_dur)
 			else: # Left side lightning
-				if _right:
+				if right:
 					# Swap to left side
 					create_tween().tween_property(self, "_goal_rotation", _left_day_start_angle_storm, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-					_right = false
+					right = false
 				else:
 					_goal_rotation = lerp(_left_day_start_angle_storm, _left_day_end_angle_storm, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 		Weather.WINDY:
@@ -391,15 +391,15 @@ func _rotate_lights_on_progress():
 			_half_day_cycle_dur = _day_cycle_dur / 2 * mult
 			
 			if 0.0 <= _day_cycle and _day_cycle < _half_day_cycle_dur: # Right side wind
-				if not _right:
+				if not right:
 					# Swap to right instantly
-					_swap_lights_instantly(_right)
+					_swap_lights_instantly(right)
 				else:
 					_goal_rotation = lerp(_right_day_start_angle_wind, _right_day_end_angle_wind, _day_cycle / _half_day_cycle_dur)
 			else: # Left side wind
-				if _right:
+				if right:
 					# Swap to left instantly
-					_swap_lights_instantly(_right)
+					_swap_lights_instantly(right)
 				else:
 					_goal_rotation = lerp(_left_day_start_angle_wind, _left_day_end_angle_wind, fmod(_day_cycle, _half_day_cycle_dur) / _half_day_cycle_dur)
 		Weather.PEACEFUL:
@@ -407,7 +407,7 @@ func _rotate_lights_on_progress():
 
 # Fades lights out, swaps their side, and fades them back in
 func _swap_lights_instantly(right_side):
-	_right = not right_side
+	right = not right_side
 	lock_lights = true
 	if swap_tween: swap_tween.kill()
 	swap_tween = create_tween()

@@ -4,9 +4,12 @@ class_name SunRays
 
 signal sun_hit
 
-var num_rays = 750
+var num_rays = 400
 var offset_height = -num_rays / 2 - 50
 var leader = false
+var vine_tween : Tween
+var check_stride = 1 # actually check collisions on every n rays (for performance)
+@export var right = true # are these rays placed on the right side of the tower?
 @onready var _player : Head = get_tree().get_first_node_in_group("flowerhead")
 @onready var _tower : Tower = get_tree().get_first_node_in_group("tower")
 @onready var _pot : Pot = get_tree().get_first_node_in_group("pot")
@@ -55,16 +58,23 @@ func _check_player_hit():
 				return true
 		return false
 	elif _tower.weather == Tower.Weather.SUNNY:
-		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
-			var hit = ray.get_collider()
-			if hit is Head or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
-				if not _player._animating and hit is Vine:
-					var tween : Tween = create_tween()
-					tween.tween_property(hit.sprite, "modulate", Color(1.0, 5.0, 1.0), 0.25)
-					tween.tween_property(hit.sprite, "modulate", Color(1.0, 1.0, 1.0), 0.25)
-				
-				return true
-		return false
+		var i = 1
+		for sunrays : SunRays in get_tree().get_nodes_in_group("sunrays"):
+			if sunrays.right == Tower.instance.right: # only check rays pointing into tower
+				for ray : RayCast2D in sunrays.get_children():
+					var hit = ray.get_collider()
+					if i != check_stride: 
+						i = i + 1
+						continue # Skip until stride value is reached
+					else: 
+						i = 1
+					if hit is Head or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
+						#if not _player._animating and hit is Vine:
+							#if not vine_tween: vine_tween = create_tween().set_parallel()
+							#vine_tween.tween_property(hit.sprite, "modulate", Color(1.0, 5.0, 1.0), 0.25)
+							#vine_tween.chain().tween_property(hit.sprite, "modulate", Color(1.0, 1.0, 1.0), 0.25)
+						return true
+				return false
 	elif _tower.weather == Tower.Weather.WINDY:
 		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
 			ray.collision_mask = 1 + 32 # Exclude vine segs

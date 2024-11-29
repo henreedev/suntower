@@ -152,6 +152,7 @@ shadow_enabled = true
 
 [node name="SunRays" parent="." instance=ExtResource("11_0s44v")]
 position = Vector2(-180, 0)
+right = false
 
 [node name="SunRays2" parent="." instance=ExtResource("11_0s44v")]
 position = Vector2(180, 0)

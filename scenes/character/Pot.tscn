@@ -1,7 +1,6 @@
-[gd_scene load_steps=34 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=33 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" path="res://scenes/character/Pot.gd" id="1_u6jn4"]
-[ext_resource type="Script" path="res://addons/smoothing/smoothing_2d.gd" id="2_46eyb"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/character/Pot.png" id="2_dk0m0"]
 [ext_resource type="Texture2D" uid="uid://dtw0lgoge1iy1" path="res://assets/image/character/PotShadow.png" id="4_0jlhp"]
 
@@ -13,6 +12,10 @@ size = Vector2(10, 10)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_r87u0"]
 radius = 5.09902
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_akl3y"]
+radius = 1.0
+height = 10.0
 
 [sub_resource type="Gradient" id="Gradient_hnuae"]
 offsets = PackedFloat32Array(0, 0.67)
@@ -144,10 +147,6 @@ collision_mode = 1
 collision_friction = 0.3
 collision_bounce = 0.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_akl3y"]
-radius = 1.0
-height = 10.0
-
 [node name="Pot" type="RigidBody2D" groups=["pot"]]
 collision_layer = 9
 collision_mask = 9
@@ -168,9 +167,6 @@ offset = Vector2(0, -27)
 position = Vector2(0, 5.5)
 texture = ExtResource("4_0jlhp")
 
-[node name="Smoothing2D" type="Node2D" parent="."]
-script = ExtResource("2_46eyb")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_jnhsv")
@@ -178,6 +174,11 @@ shape = SubResource("RectangleShape2D_jnhsv")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 position = Vector2(0, -2)
 shape = SubResource("CircleShape2D_r87u0")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_akl3y")
 
 [node name="StormLight" type="PointLight2D" parent="."]
 scale = Vector2(2.72, 2.72)
@@ -214,11 +215,6 @@ lifetime = 0.55
 one_shot = true
 explosiveness = 1.0
 trail_lifetime = 0.2
-
-[node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
-position = Vector2(0, 4)
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_akl3y")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

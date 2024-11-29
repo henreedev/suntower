@@ -70,6 +70,8 @@ func _setup_game():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	print(Engine.get_frames_per_second())
+	
 	# Calculate audio stream volume given offsets
 	audio_stream_player.volume_db = base_volume + player_volume_offset + tween_volume_offset
 	# Listen for fullscreen input

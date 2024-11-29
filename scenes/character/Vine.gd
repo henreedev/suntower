@@ -8,12 +8,10 @@ var detached_child : Vine
 @onready var sprite : Sprite2D = $Sprite2D
 @onready var sprite_scale = sprite.scale
 @onready var light : PointLight2D = $StormLight
-@onready var smooth : Smoothing2D = $Smoothing2D
 @onready var last_pos : Vector2 = position
 @onready var fake_light : Sprite2D = $FakeLight
 var this_scene : PackedScene = preload("res://scenes/character/Vine.tscn")
 var _rotation_match_node
-var smoothing = false
 var frame = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -28,11 +26,11 @@ func _ready():
 func _process(delta):
 	frame += 1
 	sprite.scale = sprite_scale
-	last_pos = smooth.global_position if smoothing else global_position
+	last_pos = global_position
 
 func get_avg_pos():
 	var avg_pos
-	avg_pos = ((last_pos + smooth.global_position) / 2.0) if smoothing else global_position
+	avg_pos = global_position
 	return avg_pos
 
 

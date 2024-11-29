@@ -4,7 +4,7 @@ class_name Head
 enum State {INACTIVE, EXTENDING, RETRACTING}
 
 # Constants
-const ROTATE_SPEED = PI 
+const ROTATE_SPEED = PI
 const HEAD_GRAVITY = -0.2 # Head floats upwards
 const VINE_ROOT_OFFSET := Vector2(0, 5)
 const EXTEND_SPEED = 110.0
@@ -27,7 +27,7 @@ var _segs := 15
 var stuck = false # inactive and stuck
 var dead = false # extending and stuck
 var _prev_segs := _segs
-var _set_transform 
+var _set_transform
 var fixing_gap = false
 var can_extend := true
 var _can_nudge = false
@@ -52,7 +52,7 @@ var _sun_buff_applied := false
 
 # Lightning buff
 var _has_lightning_buff := false
-const MAX_LIGHTNING_BUFF = BASE_MAX_EXTENDED_LEN 
+const MAX_LIGHTNING_BUFF = BASE_MAX_EXTENDED_LEN
 var lightning_buff_amount = 0.0
 const LIGHTNING_SPEED = 2.0
 var lightning_speed_mod = 1.0
@@ -81,7 +81,7 @@ var wind_particles_tween : Tween
 @onready var game : Game = get_tree().get_first_node_in_group("game")
 @onready var _pot : Pot = get_tree().get_first_node_in_group("pot")
 @onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
-@onready var _sprite : AnimatedSprite2D = $Smoothing2D/Sprite2D
+@onready var _sprite : AnimatedSprite2D = %Sprite2D
 @onready var tower : Tower = get_tree().get_first_node_in_group("tower")
 @onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 @onready var vine_line : Line2D = $Vines/Line2D
@@ -91,8 +91,8 @@ var wind_particles_tween : Tween
 @onready var occluders : Node2D = $Occluders/Node2D
 
 # Particle system variables
-@onready var sun_particles : GPUParticles2D = $Sparkles
-@onready var lightning_particles : GPUParticles2D = $Lightning
+@onready var sun_particles : GPUParticles2D = %Sparkles
+@onready var lightning_particles : GPUParticles2D = %Lightning
 @onready var wind_particles: GPUParticles2D = %WindParticles
 @onready var wind_gust_particles: GPUParticles2D = %WindGustParticles
 @onready var wind_particles_mat: ParticleProcessMaterial = wind_particles.process_material
@@ -184,7 +184,7 @@ func no_cutscene_setup():
 	create_tween().tween_property(camera_2d, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
 	
 	# Avoid accessing Values before it's loaded from save 
-	if not scene_manager.is_initialized: await scene_manager.initialized 
+	if not scene_manager.is_initialized: await scene_manager.initialized
 	
 	if Values.speedrun_mode:
 		_animating = true
@@ -248,7 +248,7 @@ var waiting_to_check = false # Used to check stuck condition once per second
 func _teleport_if_stuck():
 	if _state == State.INACTIVE:
 		stuck = not can_extend and _pot.linear_velocity.length() < 100.0
-		if stuck: 
+		if stuck:
 			stuck_timer.start() # Help the player after a delay
 		else:
 			if not waiting_to_check:
@@ -269,7 +269,7 @@ func _teleport_if_stuck():
 # Spawns vine segments, equally spaced from the head to the pot. Links them together with pin joints.
 func _spawn_vine():
 	var first_vine_pos = _pot.position + _pot.VINE_ROOT_OFFSET
-	var final_vine_pos = position + VINE_ROOT_OFFSET 
+	var final_vine_pos = position + VINE_ROOT_OFFSET
 	var diff = final_vine_pos - first_vine_pos
 	
 	_len_per_seg_base = diff.length() / base_segments
@@ -288,9 +288,9 @@ func _spawn_vine():
 			curr_seg = vine_creator.create(last_seg)
 		var progress = diff * float(i) / base_segments
 		var seg_pos = first_vine_pos + progress
+		curr_seg.position = seg_pos
 		$Vines.add_child(curr_seg)
 		curr_seg.make_self_exception()
-		curr_seg.position = seg_pos
 		if i == 0:
 			curr_seg.set_child(_pot)
 		if i == base_segments - 1:
@@ -359,7 +359,7 @@ func begin_inactive():
 	disable_spiked_hitbox()
 	
 	# Remove the gap in the neck
-	fixing_gap = true 
+	fixing_gap = true
 	
 	_has_sun_buff = false
 	_sun_buff_applied = false
@@ -367,13 +367,14 @@ func begin_inactive():
 	if sun_buff_tween:
 		sun_buff_tween.kill()
 	sun_buff_tween = create_tween()
-	sun_buff_tween.tween_property(self, "modulate", Color(1.0, 1.0, 1.0), 0.6)
+	sun_buff_tween.tween_property(_sprite, "modulate", Color(1.0, 1.0, 1.0), 0.6)
 	
 	# Don't collide with Props
-	collision_mask = 9 
+	#collision_mask = 13
+	collision_mask = 9
 	
 	# Remove buff bonuses
-	max_extended_len = BASE_MAX_EXTENDED_LEN 
+	max_extended_len = BASE_MAX_EXTENDED_LEN
 	_extended_len = 0.0
 	extra_len = 0.0
 	extra_len_display = 0.0
@@ -388,7 +389,7 @@ func begin_inactive():
 	gravity_scale = HEAD_GRAVITY
 
 	_pot.mass = 1.0
-	_pot.linear_damp = 1.03
+	_pot.linear_damp = 1.01
 	_pot.gravity_scale = 1.0
 	
 	get_tree().call_group("vine", "set_grav", -0.03)
@@ -409,8 +410,8 @@ func begin_retracting():
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
 	
 	physics_material_override.friction = 1.0
-	_pot.gravity_scale = 0.4
-	_pot.mass = 0.25
+	_pot.gravity_scale = 0.43
+	_pot.mass = 0.28
 	_pot.linear_damp = 1.0
 	_pot.angular_damp = 2.0
 	linear_damp = 10.0
@@ -484,7 +485,7 @@ func _spawn_wind_particle(amount : int, dir : Vector2):
 	for i in range(amount):
 		var origin = global_position + Vector2(randf_range(-5, 5), randf_range(-20, 20)).rotated(dir.angle() + PI / 2)
 		var rand_vel := (dir * SPEED * randf_range(0.8, 1.2)).rotated(0)
-		beam_particles.emit_particle(Transform2D(0, Vector2.ONE, 0, origin), 
+		beam_particles.emit_particle(Transform2D(0, Vector2.ONE, 0, origin),
 			rand_vel, Color.WHITE, Color.WHITE, 5)
 
 # Updates wind particle system variables to show the wind direction and strength.
@@ -513,7 +514,7 @@ func update_wind_particles(new_dir : Vector2i, new_strength : float, color_mod :
 	wind_gust_particles_mat.initial_velocity_min = new_strength
 	wind_gust_particles_mat.initial_velocity_min = new_strength
 	wind_gust_particles_mat.linear_accel_min = new_strength * MOD * 0.5
-	wind_gust_particles_mat.linear_accel_max = new_strength * MOD 
+	wind_gust_particles_mat.linear_accel_max = new_strength * MOD
 
 # Enables occluders. These block light far above and below the Head's position.
 #  TileMaps don't occlude light if they're too far off screen, so this fixes that issue
@@ -538,14 +539,14 @@ func _integrate_forces(state):
 			# Rotate steadily towards mouse
 			var target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
 			var new_angle = lerp_angle(state.transform.get_rotation(), target_angle, state.step \
-														* ROTATE_SPEED * lightning_speed_mod)
-			state.transform = Transform2D(new_angle, state.transform.get_origin()) 
+				* ROTATE_SPEED * lightning_speed_mod)
+			state.transform = Transform2D(new_angle, state.transform.get_origin())
 			state.angular_velocity = 0
 			
 			# Move in direction of rotation
 			var lin_vel = Vector2(0, -EXTEND_SPEED * lightning_speed_mod).rotated(rotation)
 			# Get pushed by wind beam
-			if has_wind_buff: 
+			if has_wind_buff:
 				const WIND_ACTIVE_BEAM_STRENGTH = 45.0
 				lin_vel += wind_direction * WIND_ACTIVE_BEAM_STRENGTH * active_wind_beam_strength_mod
 			
@@ -568,7 +569,7 @@ func _integrate_forces(state):
 					dir += -Vector2.from_angle(_pot.rotation) * STR
 				dir = dir.normalized()
 				
-				const MOVE_STRENGTH = 105.0
+				const MOVE_STRENGTH = 115.0
 				_pot.apply_central_force(dir * MOVE_STRENGTH)
 		
 		elif _state == State.INACTIVE:
@@ -582,7 +583,7 @@ func _integrate_forces(state):
 				apply_central_force(force_toward_mouse)
 		
 		# Fix the neck gap while retracting
-		_fix_gap(state) 
+		_fix_gap(state)
 
 # Displays the sun buff, tinting the head and spawning more particles
 func _display_sun_buff():
@@ -590,9 +591,9 @@ func _display_sun_buff():
 		sun_buff_tween.kill()
 	sun_buff_tween = create_tween()
 	var tween_2 = create_tween()
-	sun_buff_tween.tween_property(self, "modulate", Color(4, 4, 4), 0.5)
+	sun_buff_tween.tween_property(_sprite, "modulate", Color(4, 4, 4), 0.5)
 	tween_2.tween_property(_bar, "tint_progress", Color(2, 2, 2), 0.5)
-	sun_buff_tween.tween_property(self, "modulate", Color(2.0, 2.0, 2.0), 1.5)
+	sun_buff_tween.tween_property(_sprite, "modulate", Color(2.0, 2.0, 2.0), 1.5)
 	tween_2.tween_property(_bar, "tint_progress", Color(1., 1., 1.), 0.5)
 	sun_particles.emitting = true
 	sun_particles.amount = 125
@@ -645,7 +646,7 @@ func _physics_process(delta):
 					# Use extra length to extend, if we have it
 					if extra_len and extra_len_display:
 						extra_len_display -= _len_per_seg
-						if extra_len_display < 0.0: 
+						if extra_len_display < 0.0:
 							# Subtract overflow from vine len display
 							vine_len_display += extra_len_display
 							extra_len_display = 0.0
@@ -733,9 +734,6 @@ func _add_seg():
 	var child : Vine = _root_seg.get_child_seg()
 	var new_child : Vine = vine_creator.create(child)
 	
-	$Vines.add_child(new_child)
-	new_child.make_self_exception()
-	new_child.add_collision_exception_with(child) # Vines don't collide with each other
 	
 	# Place the child and new child with correct position and rotation
 	var adj = Vector2(0, _len_per_seg).rotated(global_rotation)
@@ -749,6 +747,10 @@ func _add_seg():
 	child._set_pos = child.position
 	child.rotation = global_rotation
 	child._set_rot = global_rotation
+	
+	$Vines.add_child(new_child)
+	new_child.add_collision_exception_with(child) # Vines don't collide with each other
+	new_child.make_self_exception()
 	
 	# Pin the new child to the root seg
 	_root_seg.get_node("PinJoint2D").node_b = new_child.get_path()
@@ -792,7 +794,7 @@ func _update_lightning_buff(delta):
 			var goal_color = base if not _state == State.EXTENDING else base
 			var goal_energy = 0.5 * buff_ratio + 0.25 if not _state == State.EXTENDING else 0.75 + 0.25 * buff_ratio
 			const STR = 1.0
-			storm_light.texture_scale = lerp(storm_light.texture_scale, goal_scale, delta * STR) 
+			storm_light.texture_scale = lerp(storm_light.texture_scale, goal_scale, delta * STR)
 			storm_light.color = lerp(storm_light.color, goal_color, delta * STR)
 			storm_light.energy = lerp(storm_light.energy, goal_energy, delta * STR)
 			lightning_speed_mod = lerp(1.5, LIGHTNING_SPEED, buff_ratio)

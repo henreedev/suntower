@@ -2,6 +2,7 @@ extends Node2D
 @onready var head = $"../.."
 @export var follow_x := false
 @export var follow_y := true
+@export var follow_rotation := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -15,3 +16,5 @@ func _process(delta):
 		global_position.x = head.global_position.x
 	if follow_y:
 		global_position.y = head.global_position.y
+	if follow_rotation:
+		global_rotation = head.global_rotation
