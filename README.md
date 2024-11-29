@@ -230,7 +230,7 @@ This section is chaotic, constantly pushing the player left and right and forcin
 
 #### Calm ![Calm Icon](./assets/image/menu/SectionIconPeace.png)
 
-In the **calm** section, the Tower glows with sunlight as the clouds fade away. Here, the weather does not help or hurt the player. They're left with just the basic mechanics.
+In the **calm** section, the Tower glows with sunlight as the clouds fade away. Here, there are no windows, so the weather does not help or hurt the player. They're left with just the basic mechanics.
 
 However, the platforming is very precise and punishing. It's the final climb before the end, and it requires fine-tuned pot swinging skills to be completed.
 

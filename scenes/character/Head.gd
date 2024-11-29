@@ -665,9 +665,9 @@ func _physics_process(delta):
 					begin_inactive()
 				else:
 					if not _retracting_seg:
-						# Detach Vine near root, and propel it towards root
 						_retracting_seg = _root_seg.get_child_seg()
 						_root_seg.detached_child = _retracting_seg
+						# Detach the pin joint of the root segment
 						_root_seg.get_node("PinJoint2D").node_b = ""
 					
 					# Determine directions to propel Vines in for retraction
@@ -679,19 +679,23 @@ func _physics_process(delta):
 					var to_head_force = to_head_dir * FORCE_STRENGTH
 					var to_mid_vine_force = to_mid_vine_dir * FORCE_STRENGTH
 					
+					# Propel retracting seg towards head
 					_retracting_seg.apply_central_force(to_head_force)
+					# Propel Vines after that towards head, slightly less
 					_retracting_seg.get_child_seg().apply_central_force(to_head_force / 2)
 					_retracting_seg.get_child_seg(1).apply_central_force(to_head_force / 2)
+					# Propel root seg away from head and towards middle of vine  
 					_root_seg.apply_central_force(to_head_force.rotated(PI) * 0.3 + to_mid_vine_force * 0.35)
 					
 					# Delete retracting seg if close to head, and pin to the next seg
-					const MIN_DIST = 4
+					const MIN_DIST = 4.0
 					if _retracting_seg.position.distance_to(_root_seg.position) < MIN_DIST:
-						_retracting_seg.queue_free()
+						# Root seg pins to the Vine after the retracting seg
 						_root_seg.get_node("PinJoint2D").node_b = _retracting_seg.get_child_seg().get_path()
-						_segs -= 1
+						_retracting_seg.queue_free()
 						_retracting_seg = null
 						_root_seg.detached_child = null
+						_segs -= 1
 		# Do dev right-click teleport
 		if dev_mode and should_teleport:
 			should_teleport = false

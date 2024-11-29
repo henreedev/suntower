@@ -50,7 +50,8 @@ func _check_player_hit():
 		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
 			ray.collision_mask = 1 + 2 + 32 # Include vine segs
 			var hit = ray.get_collider()
-			if hit is Head or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
+			if not hit: return false
+			if hit is Head or hit is Vine or hit.is_in_group("flowerhead"):
 				return true
 		return false
 	elif _tower.weather == Tower.Weather.SUNNY:
