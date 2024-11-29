@@ -50,17 +50,21 @@ func _physics_process(delta):
 
 func _check_player_hit():
 	if _tower.weather == Tower.Weather.STORMY and _tower.lightning_striking:
-		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
-			ray.collision_mask = 1 + 2 + 32 # Include vine segs
-			var hit = ray.get_collider()
-			if not hit: return false
-			if hit is Head or hit is Vine or hit.is_in_group("flowerhead"):
-				return true
-		return false
+		for sunrays : SunRays in get_tree().get_nodes_in_group("sunrays"):
+			if sunrays.right and Tower.instance._lights.rotation > 0 || \
+					not sunrays.right and Tower.instance._lights.rotation < 0: # only check rays pointing into tower
+				for ray : RayCast2D in sunrays.get_children():
+					ray.collision_mask = 1 + 2 + 32 # Include vine segs
+					var hit = ray.get_collider()
+					if not hit: return false
+					if hit is Head or hit is Vine or hit.is_in_group("flowerhead"):
+						return true
+				return false
 	elif _tower.weather == Tower.Weather.SUNNY:
 		var i = 1
 		for sunrays : SunRays in get_tree().get_nodes_in_group("sunrays"):
-			if sunrays.right == Tower.instance.right: # only check rays pointing into tower
+			if sunrays.right and Tower.instance._lights.rotation > 0 || \
+					not sunrays.right and Tower.instance._lights.rotation < 0: # only check rays pointing into tower
 				for ray : RayCast2D in sunrays.get_children():
 					var hit = ray.get_collider()
 					if i != check_stride: 
@@ -76,10 +80,13 @@ func _check_player_hit():
 						return true
 				return false
 	elif _tower.weather == Tower.Weather.WINDY:
-		for ray : RayCast2D in get_tree().get_nodes_in_group("rays"):
-			ray.collision_mask = 1 + 32 # Exclude vine segs
-			var hit = ray.get_collider()
-			if hit is Head or (hit.is_in_group("flowerhead") if hit else false):
-				return true
-		return false
+		for sunrays : SunRays in get_tree().get_nodes_in_group("sunrays"):
+			if sunrays.right and Tower.instance._lights.rotation > 0 || \
+					not sunrays.right and Tower.instance._lights.rotation < 0: # only check rays pointing into tower
+				for ray : RayCast2D in sunrays.get_children():
+					ray.collision_mask = 1 + 32 # Exclude vine segs
+					var hit = ray.get_collider()
+					if hit is Head or (hit.is_in_group("flowerhead") if hit else false):
+						return true
+				return false
 	else: return false
