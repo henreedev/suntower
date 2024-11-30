@@ -29,14 +29,14 @@ func _make_rays(count):
 		ray.add_to_group("rays")
 		ray.collision_mask = 1 + 2 + 32
 		 #Visualization line
-		if i % 5 == 0:
-			var line = Line2D.new()
-			ray.add_child(line)
-			line.add_point(Vector2(0, 0))
-			line.add_point(ray.target_position)
-			line.width = 1
-			line.z_index = 99
-			line.modulate.a = 0.1
+		#if i % 5 == 0:
+			#var line = Line2D.new()
+			#ray.add_child(line)
+			#line.add_point(Vector2(0, 0))
+			#line.add_point(ray.target_position)
+			#line.width = 1
+			#line.z_index = 99
+			#line.modulate.a = 0.1
 
 func set_rotate(angle):
 	get_tree().set_group("rays", "rotation", angle)
