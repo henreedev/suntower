@@ -386,6 +386,7 @@ unique_name_in_owner = true
 position = Vector2(-21.9953, -199.001)
 
 [node name="WaterDrip" type="GPUParticles2D" parent="."]
+visible = false
 z_index = 2
 position = Vector2(-0.0100427, 423)
 amount = 1
@@ -396,6 +397,7 @@ collision_base_size = 5.0
 visibility_rect = Rect2(-200, -207.54, 400, 415.32)
 
 [node name="WaterSplash" type="GPUParticles2D" parent="."]
+visible = false
 z_index = 2
 position = Vector2(-0.0136277, 574)
 amount = 4

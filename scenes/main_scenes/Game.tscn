@@ -25,11 +25,12 @@
 background_mode = 3
 reflected_light_source = 1
 glow_enabled = true
-glow_intensity = 8.0
+glow_intensity = 1.87
 glow_strength = 1.12
-glow_bloom = 0.25
+glow_bloom = 0.34
 glow_hdr_threshold = 0.75
-glow_hdr_luminance_cap = 21.94
+glow_hdr_scale = 1.05
+glow_hdr_luminance_cap = 0.45
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fx6ct"]
 shader = ExtResource("13_asiqk")
