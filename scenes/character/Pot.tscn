@@ -154,7 +154,7 @@ mass = 0.25
 physics_material_override = SubResource("PhysicsMaterial_4ed4y")
 gravity_scale = 1.1
 center_of_mass_mode = 1
-center_of_mass = Vector2(0, 4)
+center_of_mass = Vector2(0, 2)
 contact_monitor = true
 max_contacts_reported = 2
 script = ExtResource("1_u6jn4")
@@ -172,8 +172,10 @@ position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_jnhsv")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, -2)
 shape = SubResource("CircleShape2D_r87u0")
+disabled = true
 
 [node name="CollisionShape2D4" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)

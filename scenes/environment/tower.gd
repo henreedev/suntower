@@ -457,6 +457,7 @@ func _act_on_weather_state():
 
 # Applies passive horizontal wind every physics update.
 func _physics_process(delta: float) -> void:
+	print(fmod(_lights.rotation, TAU))
 	if in_wind and weather == Weather.WINDY:
 		_apply_passive_wind()
 

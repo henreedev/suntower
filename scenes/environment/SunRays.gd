@@ -51,11 +51,17 @@ func _physics_process(delta):
 	if leader and _check_player_hit():
 		_player._on_sunrays_hit()
 
+func _sunrays_pointing_into_tower(sunrays : SunRays):
+	var lights_adj_rot = fmod(Tower.instance._lights.rotation, TAU)
+	if lights_adj_rot < 0: lights_adj_rot += TAU
+	var lights_right = lights_adj_rot < PI 
+	var should_hit = sunrays.right and lights_right || not sunrays.right and not lights_right
+	return should_hit
+
 func _check_player_hit():
 	if _tower.weather == Tower.Weather.STORMY and _tower.lightning_striking:
 		for sunrays : SunRays in get_tree().get_nodes_in_group("sunrays"):
-			if sunrays.right and Tower.instance._lights.rotation > 0 || \
-					not sunrays.right and Tower.instance._lights.rotation < 0: # only check rays pointing into tower
+			if _sunrays_pointing_into_tower(sunrays): # only check rays pointing into tower
 				for ray : RayCast2D in sunrays.get_children():
 					ray.collision_mask = 1 + 2 + 32 # Include vine segs
 					var hit = ray.get_collider()
@@ -66,8 +72,7 @@ func _check_player_hit():
 	elif _tower.weather == Tower.Weather.SUNNY:
 		var i = 1
 		for sunrays : SunRays in get_tree().get_nodes_in_group("sunrays"):
-			if sunrays.right and Tower.instance._lights.rotation > 0 || \
-					not sunrays.right and Tower.instance._lights.rotation < 0: # only check rays pointing into tower
+			if _sunrays_pointing_into_tower(sunrays): # only check rays pointing into tower
 				for ray : RayCast2D in sunrays.get_children():
 					var hit = ray.get_collider()
 					if i != check_stride: 
@@ -84,8 +89,7 @@ func _check_player_hit():
 		return false
 	elif _tower.weather == Tower.Weather.WINDY:
 		for sunrays : SunRays in get_tree().get_nodes_in_group("sunrays"):
-			if sunrays.right and Tower.instance._lights.rotation > 0 || \
-					not sunrays.right and Tower.instance._lights.rotation < 0: # only check rays pointing into tower
+			if _sunrays_pointing_into_tower(sunrays): # only check rays pointing into tower
 				for ray : RayCast2D in sunrays.get_children():
 					ray.collision_mask = 1 + 32 # Exclude vine segs
 					var hit = ray.get_collider()

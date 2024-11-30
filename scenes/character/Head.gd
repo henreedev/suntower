@@ -4,7 +4,7 @@ class_name Head
 enum State {INACTIVE, EXTENDING, RETRACTING}
 
 # Constants
-const ROTATE_SPEED = PI
+const ROTATE_SPEED = PI * 1.5
 const HEAD_GRAVITY = -0.2 # Head floats upwards
 const VINE_ROOT_OFFSET := Vector2(0, 5)
 const EXTEND_SPEED = 110.0
