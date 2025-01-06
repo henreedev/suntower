@@ -1,4 +1,4 @@
-[gd_scene load_steps=82 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=84 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" path="res://scenes/character/Head.gd" id="1_8f5vi"]
 [ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/environment/ParticleLightning.png" id="3_1yowm"]
@@ -127,6 +127,13 @@ polygon = PackedVector2Array(-198, -424, -198, -385, 192, -382, 195, -419)
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_g7b60"]
 polygon = PackedVector2Array(-188, 264, -190, 298, 194, 300, 194, 267)
 
+[sub_resource type="Curve" id="Curve_ib0o0"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.746835, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_kur7x"]
+curve = SubResource("Curve_ib0o0")
+
 [sub_resource type="Gradient" id="Gradient_7awna"]
 colors = PackedColorArray(1, 0.905882, 0, 1, 0.321569, 0.760784, 0.0431373, 1)
 
@@ -157,10 +164,14 @@ curve = SubResource("Curve_dlb3u")
 particle_flag_disable_z = true
 emission_shape = 3
 emission_box_extents = Vector3(4, 4, 1)
+spread = 180.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
 gravity = Vector3(0, 0, 0)
 scale_curve = SubResource("CurveTexture_5gt1y")
 color_ramp = SubResource("GradientTexture1D_18684")
 color_initial_ramp = SubResource("GradientTexture1D_2inft")
+alpha_curve = SubResource("CurveTexture_kur7x")
 emission_curve = SubResource("CurveTexture_0bqkg")
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_1y40j"]

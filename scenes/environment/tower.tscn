@@ -1,6 +1,7 @@
-[gd_scene load_steps=39 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=40 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Script" path="res://scenes/environment/Tower.gd" id="1_i47gm"]
+[ext_resource type="Shader" path="res://scenes/environment/pixelate.gdshader" id="2_1ern8"]
 [ext_resource type="Script" path="res://scenes/environment/ParallaxBackground.gd" id="2_mjvvg"]
 [ext_resource type="Texture2D" uid="uid://d2cieoughn5nu" path="res://assets/image/environment/Background.png" id="3_83867"]
 [ext_resource type="Texture2D" uid="uid://cm88pnpk4lv5y" path="res://assets/image/environment/Forest.png" id="4_p61x1"]
@@ -20,6 +21,10 @@
 [ext_resource type="PackedScene" uid="uid://dx72kt582x8cg" path="res://scenes/environment/level-chunks/peaceful/ChunkPeacefulEnd.tscn" id="18_qlfm1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ivn7p"]
+shader = ExtResource("2_1ern8")
+shader_parameter/quantize_size = 3.0
+shader_parameter/handle_scale = false
+shader_parameter/handle_subpixels = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_41ibw"]
 shader = ExtResource("5_qin3k")
@@ -121,7 +126,7 @@ rotation = -2.37417e-05
 script = ExtResource("1_i47gm")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color(0.88644, 0.89, 0.8722, 1)
+color = Color(0.886275, 0.890196, 0.870588, 1)
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 script = ExtResource("2_mjvvg")
@@ -209,6 +214,8 @@ position = Vector2(180, 0)
 [node name="LevelChunks" type="Node2D" parent="."]
 
 [node name="Sun" type="Node2D" parent="LevelChunks"]
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="SunChunk1" parent="LevelChunks/Sun" instance=ExtResource("12_tpe5c")]
 
@@ -216,6 +223,8 @@ position = Vector2(180, 0)
 position = Vector2(0, 592)
 
 [node name="Storm" type="Node2D" parent="LevelChunks"]
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="StormChunk1" parent="LevelChunks/Storm" instance=ExtResource("14_j1mvb")]
 
@@ -247,6 +256,8 @@ wait_time = 0.349
 one_shot = true
 
 [node name="Wind" type="Node2D" parent="LevelChunks"]
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="WindChunk1" parent="LevelChunks/Wind" instance=ExtResource("15_8v58s")]
 
@@ -335,6 +346,8 @@ position = Vector2(-2.37417e-05, 1)
 occluder = SubResource("OccluderPolygon2D_kmt2p")
 
 [node name="Peaceful" type="Node2D" parent="LevelChunks"]
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="PeacefulChunk1" parent="LevelChunks/Peaceful" instance=ExtResource("17_bwap8")]
 position = Vector2(0, -1600)
@@ -380,10 +393,12 @@ occluder = SubResource("OccluderPolygon2D_bd455")
 [node name="StartHeightMarker" type="Marker2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(-0.0142213, 599)
+metadata/_edit_lock_ = true
 
 [node name="ShowCloudsMarker" type="Marker2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(-21.9953, -199.001)
+metadata/_edit_lock_ = true
 
 [node name="WaterDrip" type="GPUParticles2D" parent="."]
 z_index = 2
@@ -394,12 +409,14 @@ process_material = SubResource("ParticleProcessMaterial_b622u")
 lifetime = 1.32
 collision_base_size = 5.0
 visibility_rect = Rect2(-200, -207.54, 400, 415.32)
+metadata/_edit_lock_ = true
 
 [node name="WaterSplash" type="GPUParticles2D" parent="."]
 z_index = 2
 position = Vector2(-0.0136277, 574)
 amount = 4
 process_material = SubResource("ParticleProcessMaterial_h4il5")
+metadata/_edit_lock_ = true
 
 [connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]

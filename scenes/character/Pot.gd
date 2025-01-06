@@ -26,6 +26,9 @@ var prev_vel_sqrd : float
 var prev_avel : float
 var velocity_diff : float
 
+## Duration the pot has not been touching the ground.
+var air_time := 0.0 
+
 # Audio variables
 var stream : AudioStreamPolyphonic
 var playback : AudioStreamPlaybackPolyphonic
@@ -47,6 +50,8 @@ func _ready():
 # Displays the pot's shadow.
 func _process(delta):
 	_display_shadow()
+	if not touching:
+		air_time += delta
 
 # Displays pot shadow only if pot is still, with a smooth fade in/out
 func _display_shadow():
@@ -87,7 +92,7 @@ func _get_volume(sound):
 		_: return 0
 
 # Plays a sound and emits dirt and spark particles based on impact strength.
-func _play_sound_on_impact():
+func _play_sound_on_impact(air_time : float):
 	# Difference in velocity indicates the strength of the impact.
 	velocity_diff = abs(prev_vel_sqrd - linear_velocity.length_squared())
 	var adiff = abs(prev_avel - angular_velocity)
@@ -101,7 +106,7 @@ func _play_sound_on_impact():
 	
 	if not head._animating:
 		# For each sound, if within its velocity diff range, play the sound and emit particles
-		if velocity_diff > 150000.0:
+		if velocity_diff > 60000.0 and air_time > 1.5:
 			volume_offset = get_volume_adjust_by_speed(200000.0, 150000.0)
 			_play_sound(FAIL, volume_offset)
 			_play_sound(MEDIUM_BIG_HIT, volume_offset)
@@ -177,7 +182,8 @@ func _emit_dirt(amount : int, dir : Vector2, both_sides = false):
 func _on_body_entered(body):
 	if body.is_in_group("tower_hitbox"):
 		touching = true
-		_play_sound_on_impact()
+		_play_sound_on_impact(air_time)
+		air_time = 0.0
 
 func _on_body_exited(body):
 	if body.is_in_group("tower_hitbox"):

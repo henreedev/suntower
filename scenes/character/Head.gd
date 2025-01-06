@@ -392,6 +392,7 @@ func begin_inactive():
 
 	_pot.mass = 1.0
 	_pot.linear_damp = 1.01
+	_pot.angular_damp = 3.0
 	_pot.gravity_scale = 1.0
 	
 	get_tree().call_group("vine", "set_grav", -0.03)
