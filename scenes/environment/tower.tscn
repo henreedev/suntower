@@ -1,7 +1,6 @@
-[gd_scene load_steps=40 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=39 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Script" path="res://scenes/environment/Tower.gd" id="1_i47gm"]
-[ext_resource type="Shader" path="res://scenes/environment/pixelate.gdshader" id="2_1ern8"]
 [ext_resource type="Script" path="res://scenes/environment/ParallaxBackground.gd" id="2_mjvvg"]
 [ext_resource type="Texture2D" uid="uid://d2cieoughn5nu" path="res://assets/image/environment/Background.png" id="3_83867"]
 [ext_resource type="Texture2D" uid="uid://cm88pnpk4lv5y" path="res://assets/image/environment/Forest.png" id="4_p61x1"]
@@ -21,10 +20,6 @@
 [ext_resource type="PackedScene" uid="uid://dx72kt582x8cg" path="res://scenes/environment/level-chunks/peaceful/ChunkPeacefulEnd.tscn" id="18_qlfm1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ivn7p"]
-shader = ExtResource("2_1ern8")
-shader_parameter/quantize_size = 3.0
-shader_parameter/handle_scale = false
-shader_parameter/handle_subpixels = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_41ibw"]
 shader = ExtResource("5_qin3k")
@@ -129,6 +124,7 @@ script = ExtResource("1_i47gm")
 color = Color(0.886275, 0.890196, 0.870588, 1)
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+layer = -1
 script = ExtResource("2_mjvvg")
 
 [node name="Background" type="ParallaxLayer" parent="ParallaxBackground"]
@@ -214,15 +210,19 @@ position = Vector2(180, 0)
 [node name="LevelChunks" type="Node2D" parent="."]
 
 [node name="Sun" type="Node2D" parent="LevelChunks"]
+use_parent_material = true
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
 [node name="SunChunk1" parent="LevelChunks/Sun" instance=ExtResource("12_tpe5c")]
+use_parent_material = true
 
 [node name="TutorialChunk" parent="LevelChunks/Sun" instance=ExtResource("13_5svu2")]
+use_parent_material = true
 position = Vector2(0, 592)
 
 [node name="Storm" type="Node2D" parent="LevelChunks"]
+use_parent_material = true
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
@@ -256,6 +256,7 @@ wait_time = 0.349
 one_shot = true
 
 [node name="Wind" type="Node2D" parent="LevelChunks"]
+use_parent_material = true
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
@@ -346,6 +347,7 @@ position = Vector2(-2.37417e-05, 1)
 occluder = SubResource("OccluderPolygon2D_kmt2p")
 
 [node name="Peaceful" type="Node2D" parent="LevelChunks"]
+use_parent_material = true
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
@@ -417,6 +419,15 @@ position = Vector2(-0.0136277, 574)
 amount = 4
 process_material = SubResource("ParticleProcessMaterial_h4il5")
 metadata/_edit_lock_ = true
+
+[node name="Pixelate" type="ColorRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(364, 10000)
+offset_left = -182.0
+offset_top = -9276.0
+offset_right = 181.0
+offset_bottom = 724.0
+mouse_filter = 2
 
 [connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]

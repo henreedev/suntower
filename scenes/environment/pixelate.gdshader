@@ -38,5 +38,8 @@ void fragment() {
 //
 //void fragment() {
 	//COLOR = quantizeTexture(TEXTURE, UV);
-//} 
+//}
 
+//void light() {
+//
+//}

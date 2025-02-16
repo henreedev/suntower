@@ -1,7 +1,7 @@
-[gd_scene load_steps=30 format=3 uid="uid://cjl7hh0kgvrb8"]
+[gd_scene load_steps=28 format=3 uid="uid://cjl7hh0kgvrb8"]
 
 [ext_resource type="Script" path="res://scenes/main_scenes/Game.gd" id="1_7xsfy"]
-[ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
+[ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/Tower.tscn" id="2_dc8uo"]
 [ext_resource type="PackedScene" uid="uid://dktse0vckd1qr" path="res://scenes/character/Head.tscn" id="3_84kx1"]
 [ext_resource type="PackedScene" uid="uid://deoc0hgj85t7q" path="res://scenes/character/Pot.tscn" id="3_k12lq"]
 [ext_resource type="Texture2D" uid="uid://dnn86dvj662yj" path="res://assets/image/hud/BarVinesProgress.png" id="6_vlg86"]
@@ -18,7 +18,6 @@
 [ext_resource type="Texture2D" uid="uid://b834k37jve3s0" path="res://assets/image/hud/WindTexture.png" id="14_ubjmv"]
 [ext_resource type="FontFile" uid="uid://07upkyw5b3yx" path="res://assets/font/PixelFont5x7.ttf" id="15_fcn5l"]
 [ext_resource type="Script" path="res://scenes/stats/SpeedrunTimers.gd" id="17_3irkt"]
-[ext_resource type="Shader" path="res://scenes/environment/pixelate.gdshader" id="17_o3jbk"]
 [ext_resource type="Script" path="res://scenes/stats/TimeTracker.gd" id="18_ticvr"]
 [ext_resource type="Script" path="res://scenes/stats/StatsUpdater.gd" id="19_4a02y"]
 
@@ -59,12 +58,6 @@ font_color = Color(0.85, 1, 1, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_j8jmy"]
 font_size = 96
 font_color = Color(1, 0.921569, 0.882353, 1)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_v23c5"]
-shader = ExtResource("17_o3jbk")
-shader_parameter/quantize_size = 3.0
-shader_parameter/handle_scale = true
-shader_parameter/handle_subpixels = true
 
 [node name="Game" type="Node2D" groups=["game"]]
 process_mode = 1
@@ -260,11 +253,3 @@ section_type = 3
 script = ExtResource("19_4a02y")
 
 [node name="PostProcessing" type="CanvasLayer" parent="."]
-
-[node name="Pixelate" type="ColorRect" parent="PostProcessing"]
-material = SubResource("ShaderMaterial_v23c5")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2

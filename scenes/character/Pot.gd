@@ -29,6 +29,9 @@ var velocity_diff : float
 ## Duration the pot has not been touching the ground.
 var air_time := 0.0 
 
+# The offset from the center that the center of mass will always have.
+const CENTER_OF_MASS_OFFSET = Vector2(0, 2)
+
 # Audio variables
 var stream : AudioStreamPolyphonic
 var playback : AudioStreamPlaybackPolyphonic
@@ -70,6 +73,7 @@ func _enter_tree():
 func _physics_process(delta):
 	prev_vel_sqrd = linear_velocity.length_squared()
 	prev_avel = angular_velocity
+	center_of_mass = CENTER_OF_MASS_OFFSET.rotated(rotation)
 	# Make sure touching is never false when not moving at all (must be grounded)
 	if not touching and head._state == Head.State.INACTIVE and \
 			prev_vel_sqrd < 0.01 and abs(prev_avel) < 0.01:

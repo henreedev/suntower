@@ -13,6 +13,7 @@ void vertex() {
 void fragment() {
 	if (electricity > 0.0) {
 		vec4 orig_color = texture(TEXTURE, UV);
+		// quantizeScreen(SCREEN_TEXTURE, SCREEN_UV, g_vertex);
 		if (orig_color.a > 0.0) {
 			vec4 new_color = mix(orig_color, electric_color, (electricity * ((orig_color.r * 0.6 + orig_color.g * 1.4) / 2.0)));
 			//vec4 noise_color = texture(noise, UV + vec2(0, -TIME * scroll_speed));

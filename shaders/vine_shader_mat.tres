@@ -1,0 +1,20 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://btrehlhod1mvf"]
+
+[ext_resource type="Shader" path="res://shaders/Vine.gdshader" id="1_o531q"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_04w2w"]
+frequency = 0.1089
+fractal_weighted_strength = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l4c21"]
+noise = SubResource("FastNoiseLite_04w2w")
+
+[resource]
+shader = ExtResource("1_o531q")
+shader_parameter/quantize_size = 1.0
+shader_parameter/handle_scale = null
+shader_parameter/handle_subpixels = true
+shader_parameter/electricity = null
+shader_parameter/scroll_speed = 0.307
+shader_parameter/electric_color = Color(0.458824, 1, 1, 1)
+shader_parameter/noise = SubResource("NoiseTexture2D_l4c21")
