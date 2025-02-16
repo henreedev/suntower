@@ -248,8 +248,7 @@ script = ExtResource("18_ticvr")
 section_type = 3
 
 [node name="PauseMenu" parent="." instance=ExtResource("11_swgty")]
+layer = 3
 
 [node name="StatsUpdater" type="Node" parent="."]
 script = ExtResource("19_4a02y")
-
-[node name="PostProcessing" type="CanvasLayer" parent="."]
