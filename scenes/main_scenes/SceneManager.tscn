@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://jvuqketuhc3e"]
+[gd_scene load_steps=27 format=3 uid="uid://jvuqketuhc3e"]
 
 [ext_resource type="Script" path="res://scenes/main_scenes/SceneManager.gd" id="1_3frxe"]
 [ext_resource type="PackedScene" uid="uid://cjl7hh0kgvrb8" path="res://scenes/main_scenes/Game.tscn" id="2_6m11w"]
@@ -8,6 +8,8 @@
 [ext_resource type="AudioStream" uid="uid://cx5bka55nj2kb" path="res://assets/sound/music/SectionSun.mp3" id="6_jeqtv"]
 [ext_resource type="AudioStream" uid="uid://dmb7q4tmk1afv" path="res://assets/sound/music/SectionSunSketch.mp3" id="7_o1l5k"]
 [ext_resource type="AudioStream" uid="uid://yycwfoeimnw7" path="res://assets/sound/music/SectionWind.mp3" id="8_c4n5k"]
+[ext_resource type="AudioStream" uid="uid://71eh0otxnw23" path="res://assets/sound/sfx/PotHitSmall2.wav" id="8_sck5p"]
+[ext_resource type="AudioStream" uid="uid://d3nu3ankx5w5" path="res://assets/sound/music/Credits.mp3" id="9_5pnhc"]
 [ext_resource type="AudioStream" uid="uid://xyl04jh8d1cm" path="res://assets/sound/music/SectionStorm.mp3" id="9_ox3v5"]
 [ext_resource type="Texture2D" uid="uid://dfrbet6fuea5a" path="res://assets/image/character/FlowerHeadSpritesheet.png" id="10_8410o"]
 [ext_resource type="Texture2D" uid="uid://b264wep2a0c6p" path="res://assets/image/menu/VictoryTransition.png" id="11_mhow8"]
@@ -48,11 +50,10 @@ clip_10/name = &"Peaceful"
 clip_10/stream = ExtResource("7_o1l5k")
 clip_10/auto_advance = 0
 clip_11/name = &"VictoryLeadIn"
-clip_11/stream = ExtResource("6_jeqtv")
-clip_11/auto_advance = 1
-clip_11/next_clip = 12
+clip_11/stream = ExtResource("8_sck5p")
+clip_11/auto_advance = 0
 clip_12/name = &"Victory"
-clip_12/stream = ExtResource("6_jeqtv")
+clip_12/stream = ExtResource("9_5pnhc")
 clip_12/auto_advance = 0
 _transitions = {
 Vector2i(1, 1): {

@@ -15,5 +15,5 @@ dest_files=["res://.godot/imported/SectionStorm.mp3-38c0f111bae57aafa36b3f4a91eb
 loop=true
 loop_offset=0.0
 bpm=172.0
-beat_count=428
+beat_count=416
 bar_beats=4
