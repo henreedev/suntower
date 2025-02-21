@@ -44,6 +44,9 @@ var _first_seg : Vine
 var _retracting_seg : Vine
 var extra_len = 0.0
 var extra_len_display = 0.0
+const MAX_FORCE_MOD := 4.0 ## Max slingshot force multiplier
+var force_mod := 1.0 ## Increased when pressing slingshot
+var slingshotting := false ## True after pressing slingshot input, until inactive
 @onready var _last_pos : Vector2 = position
 
 # Sun buff
@@ -72,6 +75,7 @@ var sun_buff_tween : Tween
 var lightning_buff_tween : Tween
 var wind_tween : Tween
 var wind_particles_tween : Tween
+var slingshot_tween : Tween
 
 
 # Onready references to other nodes
@@ -383,6 +387,7 @@ func begin_inactive():
 	wind_extra_len_display = BASE_MAX_EXTENDED_LEN
 	vine_len_display = BASE_MAX_EXTENDED_LEN
 	
+	
 	physics_material_override.friction = 0.0
 	lock_rotation = false
 
@@ -391,11 +396,18 @@ func begin_inactive():
 	gravity_scale = HEAD_GRAVITY
 
 	_pot.mass = 1.0
-	_pot.linear_damp = 1.01
+	if not slingshotting: # Let the pot move more quickly if slingshotting
+		_pot.linear_damp = 1.01
 	_pot.angular_damp = 3.0
 	_pot.gravity_scale = 1.0
 	
+	# Reset slingshot variables
+	slingshotting = false
+	if slingshot_tween: slingshot_tween.kill()
+	force_mod = 1.0
+	
 	get_tree().call_group("vine", "set_grav", -0.03)
+	get_tree().set_group("vine", "linear_damp", 1.0)
 	
 	stuck_timer.stop()
 	dead_timer.stop()
@@ -556,6 +568,16 @@ func _integrate_forces(state):
 			state.linear_velocity = lin_vel
 			
 		elif _state == State.RETRACTING:
+			# Do slingshot
+			if Input.is_action_just_pressed("slingshot") and not slingshotting:
+				slingshotting = true
+				if slingshot_tween: slingshot_tween.kill()
+				slingshot_tween = create_tween()
+				_pot.linear_damp = 0.0
+				_pot.mass = 0.5
+				slingshot_tween.tween_property(self, "force_mod", MAX_FORCE_MOD, 2.0)
+				get_tree().set_group("vine", "linear_damp", 0.1)
+			
 			# Swing the pot left or right
 			var dir = Vector2(0.0, 0.0)
 			if Input.is_action_pressed("move_left") and not _animating:
@@ -679,10 +701,14 @@ func _physics_process(delta):
 					# Direction from root to the retracting seg's fifth child 
 					var to_mid_vine_dir = _root_seg.position.direction_to(_retracting_seg.get_child_seg(5).position)
 					
-					const FORCE_STRENGTH = 135.0
-					var to_head_force = to_head_dir * FORCE_STRENGTH
-					var to_mid_vine_force = to_mid_vine_dir * FORCE_STRENGTH
+					const BASE_FORCE_STR = 135.0
+					var force_str = BASE_FORCE_STR * force_mod
+					var to_head_force = to_head_dir * force_str
+					var to_mid_vine_force = to_mid_vine_dir * force_str
 					
+					if _retracting_seg.global_position.distance_to(_root_seg.global_position) > 10.0:
+						# FIXME creates multiple tweens
+						create_tween().tween_property(_retracting_seg, "global_position", _root_seg.global_position, 0.25) # .set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 					# Propel retracting seg towards head
 					_retracting_seg.apply_central_force(to_head_force)
 					# Propel Vines after that towards head, slightly less
