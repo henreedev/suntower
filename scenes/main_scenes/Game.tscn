@@ -75,7 +75,6 @@ position = Vector2(0, 599)
 position = Vector2(0, 549)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
-layer = 2
 
 [node name="WindBar" type="TextureProgressBar" parent="CanvasLayer"]
 anchors_preset = 5
@@ -160,6 +159,7 @@ color = Color(1, 0.932333, 0.71, 0)
 metadata/_edit_lock_ = true
 
 [node name="SpeedrunTimers" type="Node2D" parent="CanvasLayer"]
+visible = false
 position = Vector2(840.66, -22.33)
 script = ExtResource("17_3irkt")
 

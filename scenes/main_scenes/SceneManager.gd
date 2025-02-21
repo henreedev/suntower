@@ -110,7 +110,11 @@ func victory_to_menu():
 
 # Restarts music and sets game to a new copy.
 func restart_game():
-	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy, _add_game_as_child])
+	tween_transition([switch_bgm.bind("Sun"), _set_game_to_new_copy, _add_game_as_child, unpause])
+
+## Unpauses the game if it's paused.
+func unpause():
+	get_tree().paused = false
 
 # Adds the game as child. Used so that "game" is the current value of the variable, instead of the 
 #  value assigned at the moment of calling tween_transition. 

@@ -78,13 +78,13 @@ func play_sequence():
 	SceneManager.instance.switch_bgm("Victory")
 	
 	# wait
-	await Timing.create_timer(self, 6.0)
+	await Timing.create_timer(self, 30.0)
 	create_tween().tween_property(menu_button, "modulate:a", 0.5, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	menu_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	
 
 func _input(event):
-	if event.is_action_pressed("pause"):
+	if event.is_action_pressed("pause") and on_final_splash:
 		create_tween().tween_property(menu_button, "modulate:a", 0.5, 1.0).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 		menu_button.mouse_filter = Control.MOUSE_FILTER_STOP
 
