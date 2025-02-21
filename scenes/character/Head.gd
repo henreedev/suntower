@@ -408,6 +408,8 @@ func begin_inactive():
 	
 	get_tree().call_group("vine", "set_grav", -0.03)
 	get_tree().set_group("vine", "linear_damp", 1.0)
+	get_tree().set_group("vine", "angular_damp", 20.0)
+	
 	
 	stuck_timer.stop()
 	dead_timer.stop()
@@ -576,7 +578,8 @@ func _integrate_forces(state):
 				_pot.linear_damp = 0.0
 				_pot.mass = 0.5
 				slingshot_tween.tween_property(self, "force_mod", MAX_FORCE_MOD, 2.0)
-				get_tree().set_group("vine", "linear_damp", 0.1)
+				get_tree().set_group("vine", "linear_damp", 0.0)
+				get_tree().set_group("vine", "angular_damp", 2.0)
 			
 			# Swing the pot left or right
 			var dir = Vector2(0.0, 0.0)
@@ -695,6 +698,8 @@ func _physics_process(delta):
 						_root_seg.detached_child = _retracting_seg
 						# Detach the pin joint of the root segment
 						_root_seg.get_node("PinJoint2D").node_b = ""
+						_retracting_seg.angular_damp = 0.0
+						_retracting_seg.linear_damp = 0.0
 					
 					# Determine directions to propel Vines in for retraction
 					var to_head_dir = _retracting_seg.position.direction_to(_root_seg.position)
@@ -706,9 +711,9 @@ func _physics_process(delta):
 					var to_head_force = to_head_dir * force_str
 					var to_mid_vine_force = to_mid_vine_dir * force_str
 					
-					if _retracting_seg.global_position.distance_to(_root_seg.global_position) > 10.0:
+					#if _retracting_seg.global_position.distance_to(_root_seg.global_position) > 10.0:
 						# FIXME creates multiple tweens
-						create_tween().tween_property(_retracting_seg, "global_position", _root_seg.global_position, 0.25) # .set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+						#create_tween().tween_property(_retracting_seg, "global_position", _root_seg.global_position, 0.25) # .set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 					# Propel retracting seg towards head
 					_retracting_seg.apply_central_force(to_head_force)
 					# Propel Vines after that towards head, slightly less
