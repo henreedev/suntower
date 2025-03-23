@@ -119,6 +119,7 @@ color = Color(0.870588, 1, 1, 0.156863)
 alpha_curve = SubResource("CurveTexture_x46mi")
 
 [node name="Tower" type="Node2D" groups=["tower"]]
+z_index = -1
 script = ExtResource("1_i47gm")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
@@ -405,7 +406,7 @@ position = Vector2(-21.9953, -199.001)
 metadata/_edit_lock_ = true
 
 [node name="WaterDrip" type="GPUParticles2D" parent="."]
-z_index = 2
+z_index = 1
 position = Vector2(-0.0100427, 423)
 amount = 1
 sub_emitter = NodePath("../WaterSplash")
@@ -416,13 +417,20 @@ process_material = SubResource("ParticleProcessMaterial_b622u")
 metadata/_edit_lock_ = true
 
 [node name="WaterSplash" type="GPUParticles2D" parent="."]
-z_index = 2
+z_index = 1
 position = Vector2(-0.0136277, 574)
 amount = 4
 process_material = SubResource("ParticleProcessMaterial_h4il5")
 metadata/_edit_lock_ = true
 
-[node name="Pixelate" type="ColorRect" parent="."]
+[node name="BackBufferCopy" type="BackBufferCopy" parent="."]
+z_as_relative = false
+copy_mode = 2
+rect = Rect2(-182, -10000, 364, 11000)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="Pixelate" type="ColorRect" parent="BackBufferCopy"]
 material = ExtResource("19_ivy1r")
 custom_minimum_size = Vector2(364, 10000)
 offset_left = -182.0
@@ -430,12 +438,6 @@ offset_top = -9391.97
 offset_right = 182.0
 offset_bottom = 608.025
 mouse_filter = 2
-
-[node name="BackBufferCopy" type="BackBufferCopy" parent="."]
-copy_mode = 2
-rect = Rect2(-182, -10000, 364, 11000)
-metadata/_edit_lock_ = true
-metadata/_edit_group_ = true
 
 [connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]

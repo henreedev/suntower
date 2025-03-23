@@ -41,6 +41,7 @@ void fragment() {
 	//COLOR = quantizeTexture(TEXTURE, UV);
 //}
 
+// Don't draw lights on the ColorRect
 void light() {
-
+	
 }

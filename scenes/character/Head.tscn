@@ -1,6 +1,7 @@
-[gd_scene load_steps=84 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=88 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" uid="uid://dwvxrj22ijjs5" path="res://scenes/character/Head.gd" id="1_8f5vi"]
+[ext_resource type="Script" uid="uid://bhncjmxag1wgd" path="res://scenes/character/VineLine.gd" id="3_0cjmd"]
 [ext_resource type="Texture2D" uid="uid://bbj0g1lusl4nj" path="res://assets/image/environment/ParticleLightning.png" id="3_1yowm"]
 [ext_resource type="Shader" uid="uid://k0sdowct21xq" path="res://shaders/Electricity.gdshader" id="4_andwo"]
 [ext_resource type="Texture2D" uid="uid://cu36a04qxb3gd" path="res://assets/image/character/FlowerHead.png" id="6_82ggr"]
@@ -11,6 +12,22 @@
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0
 rough = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0cjmd"]
+frequency = 0.06
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7c66q"]
+noise = SubResource("FastNoiseLite_0cjmd")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c78o8"]
+shader = ExtResource("4_andwo")
+shader_parameter/electricity = 0.0
+shader_parameter/scroll_speed = 1.0
+shader_parameter/electric_color = Color(0, 1, 1, 1)
+shader_parameter/noise = SubResource("NoiseTexture2D_7c66q")
+
+[sub_resource type="Gradient" id="Gradient_q1ijr"]
+colors = PackedColorArray(0.20014, 0.451195, 0.0228207, 1, 0.227213, 0.505454, 0.0282418, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_04w2w"]
 frequency = 0.1089
@@ -25,9 +42,6 @@ shader_parameter/electricity = 0.0
 shader_parameter/scroll_speed = 0.307
 shader_parameter/electric_color = Color(0.458824, 1, 1, 1)
 shader_parameter/noise = SubResource("NoiseTexture2D_l4c21")
-
-[sub_resource type="Gradient" id="Gradient_q1ijr"]
-colors = PackedColorArray(0.20014, 0.451195, 0.0228207, 1, 0.262616, 0.576407, 0.0353309, 1)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rvalu"]
 atlas = ExtResource("7_s0rxb")
@@ -449,29 +463,28 @@ script = ExtResource("1_8f5vi")
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0
-material = SubResource("ShaderMaterial_67x27")
-points = PackedVector2Array(0, 6)
+z_index = -1
+z_as_relative = false
+material = SubResource("ShaderMaterial_c78o8")
+points = PackedVector2Array(0, 6, 24, 27, 94, 15, 224, 1)
 width = 2.0
-default_color = Color(0.243137, 0.537255, 0.0313726, 1)
 gradient = SubResource("Gradient_q1ijr")
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 1
+script = ExtResource("3_0cjmd")
 
-[node name="SpriteHolder" type="Node" parent="."]
-physics_interpolation_mode = 1
-
-[node name="Sprite2D" type="AnimatedSprite2D" parent="SpriteHolder"]
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 physics_interpolation_mode = 1
-z_index = 1
+z_as_relative = false
 material = SubResource("ShaderMaterial_67x27")
 sprite_frames = SubResource("SpriteFrames_g3nl5")
 animation = &"spiked"
 frame = 3
-script = ExtResource("8_isoiy")
-follow_x = true
-follow_rotation = true
+
+[node name="SpriteHolder" type="Node" parent="."]
+physics_interpolation_mode = 1
 
 [node name="SpikedHitbox" type="CollisionPolygon2D" parent="."]
 show_behind_parent = true
@@ -530,6 +543,7 @@ physics_interpolation_mode = 2
 [node name="Sparkles" type="GPUParticles2D" parent="Node"]
 unique_name_in_owner = true
 physics_interpolation_mode = 2
+z_index = -1
 emitting = false
 amount = 73
 lifetime = 2.0
@@ -540,6 +554,7 @@ follow_x = true
 
 [node name="Lightning" type="GPUParticles2D" parent="Node"]
 unique_name_in_owner = true
+z_index = -1
 material = SubResource("CanvasItemMaterial_1y40j")
 emitting = false
 amount = 20
@@ -552,6 +567,7 @@ follow_x = true
 unique_name_in_owner = true
 visible = false
 show_behind_parent = true
+z_index = -1
 emitting = false
 amount = 205
 lifetime = 7.0
@@ -565,6 +581,7 @@ script = ExtResource("8_isoiy")
 unique_name_in_owner = true
 visible = false
 show_behind_parent = true
+z_index = -1
 emitting = false
 amount = 205
 lifetime = 3.7
@@ -579,6 +596,7 @@ follow_x = true
 unique_name_in_owner = true
 visible = false
 show_behind_parent = true
+z_index = -1
 material = SubResource("CanvasItemMaterial_g0rad")
 emitting = false
 amount = 1
@@ -588,7 +606,7 @@ explosiveness = 0.45
 process_material = SubResource("ParticleProcessMaterial_njwcs")
 script = ExtResource("8_isoiy")
 
-[connection signal="animation_finished" from="SpriteHolder/Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
-[connection signal="animation_looped" from="SpriteHolder/Sprite2D" to="." method="_on_sprite_2d_animation_looped"]
+[connection signal="animation_finished" from="Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
+[connection signal="animation_looped" from="Sprite2D" to="." method="_on_sprite_2d_animation_looped"]
 [connection signal="timeout" from="StuckTimer" to="." method="_on_stuck_timer_timeout"]
 [connection signal="timeout" from="DeadTimer" to="." method="_on_dead_timer_timeout"]
