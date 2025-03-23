@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://b574p0trbhj2o"]
 
-[ext_resource type="Script" path="res://scenes/menus/PauseMenu.gd" id="1_nm5fg"]
+[ext_resource type="Script" uid="uid://daxl7xx7o7bn5" path="res://scenes/menus/PauseMenu.gd" id="1_nm5fg"]
 [ext_resource type="Theme" uid="uid://cn83a0xrk33ty" path="res://scenes/menus/themes/MenuTheme.tres" id="2_2rwhk"]
 [ext_resource type="Texture2D" uid="uid://ck3deg20pn25e" path="res://assets/image/menu/ButtonResume.png" id="3_oy0be"]
 [ext_resource type="Texture2D" uid="uid://bqj7k7n2r0ukj" path="res://assets/image/menu/ButtonResumeHovered.png" id="4_8i8nm"]

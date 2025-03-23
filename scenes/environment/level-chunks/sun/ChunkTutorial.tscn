@@ -1,9 +1,9 @@
 [gd_scene load_steps=37 format=4 uid="uid://bmodcpfd7ap0y"]
 
 [ext_resource type="TileSet" uid="uid://r7paxto5gyud" path="res://scenes/environment/TowerTileset.tres" id="1_yayyj"]
-[ext_resource type="Script" path="res://scenes/environment/level-chunks/sun/Tutorial.gd" id="1_ydp82"]
+[ext_resource type="Script" uid="uid://lmxnwtqjyci6" path="res://scenes/environment/level-chunks/sun/Tutorial.gd" id="1_ydp82"]
 [ext_resource type="PackedScene" uid="uid://d1a5vtc8o4kcd" path="res://scenes/environment/tutorial/TutorialManager.tscn" id="2_6fxdc"]
-[ext_resource type="Script" path="res://scenes/environment/tutorial/TutorialInscription.gd" id="3_q7u7n"]
+[ext_resource type="Script" uid="uid://dfepbjp6p204r" path="res://scenes/environment/tutorial/TutorialInscription.gd" id="3_q7u7n"]
 [ext_resource type="Texture2D" uid="uid://bfcfwknn2xppb" path="res://assets/image/environment/TutorialInscriptions.png" id="4_1p8tq"]
 [ext_resource type="PackedScene" uid="uid://g26y1heavh30" path="res://scenes/environment/SunResetPoint.tscn" id="5_cg3ho"]
 

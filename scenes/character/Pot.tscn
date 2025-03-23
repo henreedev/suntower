@@ -1,6 +1,6 @@
 [gd_scene load_steps=33 format=3 uid="uid://deoc0hgj85t7q"]
 
-[ext_resource type="Script" path="res://scenes/character/Pot.gd" id="1_u6jn4"]
+[ext_resource type="Script" uid="uid://dxdv6f7qq1f66" path="res://scenes/character/Pot.gd" id="1_u6jn4"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/character/Pot.png" id="2_dk0m0"]
 [ext_resource type="Texture2D" uid="uid://dtw0lgoge1iy1" path="res://assets/image/character/PotShadow.png" id="4_0jlhp"]
 
@@ -33,8 +33,7 @@ fill_to = Vector2(1, 1)
 polyphony = 8
 
 [sub_resource type="Curve" id="Curve_augk2"]
-min_value = -2.0
-max_value = 2.0
+_limits = [-2.0, 2.0, 0.0, 1.0]
 _data = [Vector2(0, 2), 0.0, 0.0, 0, 0]
 point_count = 1
 
@@ -57,7 +56,7 @@ point_count = 1
 curve = SubResource("Curve_oskuw")
 
 [sub_resource type="Curve" id="Curve_3cmea"]
-max_value = 2.0
+_limits = [0.0, 2.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.0492813, 0.995409), 0.0, 0.0, 0, 0, Vector2(0.731006, 1.00536), 0.0, 0.0, 0, 0, Vector2(0.852156, 0.786534), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 5
 
@@ -89,8 +88,7 @@ point_count = 2
 curve = SubResource("Curve_ao2md")
 
 [sub_resource type="Curve" id="Curve_jc8ph"]
-min_value = -2.0
-max_value = 2.0
+_limits = [-2.0, 2.0, 0.0, 1.0]
 _data = [Vector2(0, 2), 0.0, 0.0, 0, 0]
 point_count = 1
 
@@ -112,8 +110,7 @@ gradient = SubResource("Gradient_aws2j")
 use_hdr = true
 
 [sub_resource type="Curve" id="Curve_cbmc2"]
-min_value = 1.0
-max_value = 2.01
+_limits = [0.99, 2.01, 0.0, 1.0]
 _data = [Vector2(0.442708, 1), 0.0, 0.0, 0, 0]
 point_count = 1
 
@@ -121,7 +118,7 @@ point_count = 1
 curve = SubResource("Curve_cbmc2")
 
 [sub_resource type="Curve" id="Curve_srae7"]
-max_value = 2.0
+_limits = [0.0, 2.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.0492813, 0.995409), 0.0, 0.0, 0, 0, Vector2(0.731006, 1.00536), 0.0, 0.0, 0, 0, Vector2(0.852156, 0.786534), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 5
 

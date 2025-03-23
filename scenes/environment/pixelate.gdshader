@@ -3,10 +3,11 @@
 */
 
 shader_type canvas_item;
+render_mode unshaded;
 // This file relies on a quantize shader include file, listed further down.
 // The paths must match your file's location.
 #include "res://shaders/quantize.gdshaderinc"
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, repeat_disable, filter_nearest;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, repeat_disable, filter_nearest  ;
 
 void vertex() {
     g_q_size = getQuantizeSize(CANVAS_MATRIX);
@@ -40,6 +41,6 @@ void fragment() {
 	//COLOR = quantizeTexture(TEXTURE, UV);
 //}
 
-//void light() {
-//
-//}
+void light() {
+
+}

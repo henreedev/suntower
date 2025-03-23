@@ -1,7 +1,7 @@
 [gd_scene load_steps=28 format=3 uid="uid://cjl7hh0kgvrb8"]
 
-[ext_resource type="Script" path="res://scenes/main_scenes/Game.gd" id="1_7xsfy"]
-[ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/Tower.tscn" id="2_dc8uo"]
+[ext_resource type="Script" uid="uid://j57y2kwg33a3" path="res://scenes/main_scenes/Game.gd" id="1_7xsfy"]
+[ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/tower.tscn" id="2_dc8uo"]
 [ext_resource type="PackedScene" uid="uid://dktse0vckd1qr" path="res://scenes/character/Head.tscn" id="3_84kx1"]
 [ext_resource type="PackedScene" uid="uid://deoc0hgj85t7q" path="res://scenes/character/Pot.tscn" id="3_k12lq"]
 [ext_resource type="Texture2D" uid="uid://dnn86dvj662yj" path="res://assets/image/hud/BarVinesProgress.png" id="6_vlg86"]
@@ -13,13 +13,13 @@
 [ext_resource type="Texture2D" uid="uid://do1nlubiugans" path="res://assets/image/hud/BarWindUnder.png" id="11_dw3tv"]
 [ext_resource type="PackedScene" uid="uid://b574p0trbhj2o" path="res://scenes/menus/PauseMenu.tscn" id="11_swgty"]
 [ext_resource type="Texture2D" uid="uid://oob82gi6ut36" path="res://assets/image/hud/BarWind.png" id="12_fsejr"]
-[ext_resource type="Shader" path="res://shaders/WindScrollingNoise.gdshader" id="13_asiqk"]
+[ext_resource type="Shader" uid="uid://po8tfqknkuad" path="res://shaders/WindScrollingNoise.gdshader" id="13_asiqk"]
 [ext_resource type="Texture2D" uid="uid://chbnbpvg4p0wi" path="res://assets/image/hud/BarWindProgress.png" id="13_c3ak3"]
 [ext_resource type="Texture2D" uid="uid://b834k37jve3s0" path="res://assets/image/hud/WindTexture.png" id="14_ubjmv"]
 [ext_resource type="FontFile" uid="uid://07upkyw5b3yx" path="res://assets/font/PixelFont5x7.ttf" id="15_fcn5l"]
-[ext_resource type="Script" path="res://scenes/stats/SpeedrunTimers.gd" id="17_3irkt"]
-[ext_resource type="Script" path="res://scenes/stats/TimeTracker.gd" id="18_ticvr"]
-[ext_resource type="Script" path="res://scenes/stats/StatsUpdater.gd" id="19_4a02y"]
+[ext_resource type="Script" uid="uid://cxuhm5vx8iovn" path="res://scenes/stats/SpeedrunTimers.gd" id="17_3irkt"]
+[ext_resource type="Script" uid="uid://dyxrljioe8d3o" path="res://scenes/stats/TimeTracker.gd" id="18_ticvr"]
+[ext_resource type="Script" uid="uid://b1tecfjnewaul" path="res://scenes/stats/StatsUpdater.gd" id="19_4a02y"]
 
 [sub_resource type="Environment" id="Environment_4vhcu"]
 background_mode = 3
@@ -34,8 +34,8 @@ glow_hdr_luminance_cap = 21.94
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fx6ct"]
 shader = ExtResource("13_asiqk")
 shader_parameter/windiness = 0.0
-shader_parameter/scroll_speed = Vector2(-1.34, 0.36)
 shader_parameter/windy_noise = ExtResource("14_ubjmv")
+shader_parameter/scroll_speed = Vector2(-1.34, 0.36)
 
 [sub_resource type="LabelSettings" id="LabelSettings_ul41i"]
 font = ExtResource("15_fcn5l")

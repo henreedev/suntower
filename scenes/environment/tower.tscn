@@ -1,25 +1,25 @@
-[gd_scene load_steps=39 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=41 format=3 uid="uid://dmtd1mxporvjw"]
 
-[ext_resource type="Script" path="res://scenes/environment/Tower.gd" id="1_i47gm"]
-[ext_resource type="Script" path="res://scenes/environment/ParallaxBackground.gd" id="2_mjvvg"]
+[ext_resource type="Script" uid="uid://dj6g1ax1p53i6" path="res://scenes/environment/tower.gd" id="1_i47gm"]
+[ext_resource type="Script" uid="uid://dgppynms6jfdm" path="res://scenes/environment/ParallaxBackground.gd" id="2_mjvvg"]
 [ext_resource type="Texture2D" uid="uid://d2cieoughn5nu" path="res://assets/image/environment/Background.png" id="3_83867"]
 [ext_resource type="Texture2D" uid="uid://cm88pnpk4lv5y" path="res://assets/image/environment/Forest.png" id="4_p61x1"]
-[ext_resource type="Shader" path="res://scenes/environment/Clouds.gdshader" id="5_qin3k"]
+[ext_resource type="Shader" uid="uid://ds1djkmy0yqj4" path="res://scenes/environment/Clouds.gdshader" id="5_qin3k"]
 [ext_resource type="Texture2D" uid="uid://cg7jutptx5j3u" path="res://assets/image/environment/CloudsThick.png" id="6_todh5"]
-[ext_resource type="Script" path="res://scenes/environment/Clouds.gd" id="7_87obv"]
+[ext_resource type="Script" uid="uid://ba6qcepm33d4p" path="res://scenes/environment/Clouds.gd" id="7_87obv"]
 [ext_resource type="Texture2D" uid="uid://c7e11237n0hy6" path="res://assets/image/environment/CloudsSmall.png" id="8_pcrsk"]
 [ext_resource type="Texture2D" uid="uid://d0r7row0y7nes" path="res://assets/image/environment/CloudsBig.png" id="9_2xix1"]
-[ext_resource type="Script" path="res://scenes/environment/Lights.gd" id="10_1oap2"]
+[ext_resource type="Script" uid="uid://dhwh7btfehqfk" path="res://scenes/environment/Lights.gd" id="10_1oap2"]
 [ext_resource type="PackedScene" uid="uid://bdaadwkyt65ag" path="res://scenes/environment/SunRays.tscn" id="11_0s44v"]
 [ext_resource type="PackedScene" uid="uid://cxiyhj8bmeppa" path="res://scenes/environment/level-chunks/sun/SunChunk.tscn" id="12_tpe5c"]
+[ext_resource type="Shader" uid="uid://8l8yvceswr8f" path="res://shaders/no_light.gdshader" id="12_txop6"]
 [ext_resource type="PackedScene" uid="uid://bmodcpfd7ap0y" path="res://scenes/environment/level-chunks/sun/ChunkTutorial.tscn" id="13_5svu2"]
 [ext_resource type="PackedScene" uid="uid://c66ux8dtsf1vd" path="res://scenes/environment/level-chunks/storm/ChunkStorm.tscn" id="14_j1mvb"]
 [ext_resource type="PackedScene" uid="uid://dvdi8qi1lsl6c" path="res://scenes/environment/level-chunks/wind/ChunkWind.tscn" id="15_8v58s"]
 [ext_resource type="PackedScene" uid="uid://ca4fvc73x8ydq" path="res://scenes/environment/WindBurstArea.tscn" id="16_hgiwd"]
 [ext_resource type="PackedScene" uid="uid://dh7b3um8nnq1j" path="res://scenes/environment/level-chunks/peaceful/ChunkPeaceful1.tscn" id="17_bwap8"]
 [ext_resource type="PackedScene" uid="uid://dx72kt582x8cg" path="res://scenes/environment/level-chunks/peaceful/ChunkPeacefulEnd.tscn" id="18_qlfm1"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ivn7p"]
+[ext_resource type="Material" uid="uid://c7x5qvhrgejqb" path="res://shaders/pixelate_shader_mat.tres" id="19_ivy1r"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_41ibw"]
 shader = ExtResource("5_qin3k")
@@ -35,6 +35,9 @@ shader_parameter/brightness = 1.0
 shader = ExtResource("5_qin3k")
 shader_parameter/scroll_offset = -0.05
 shader_parameter/brightness = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bo3vn"]
+shader = ExtResource("12_txop6")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1ol0a"]
 size = Vector2(454, 1361)
@@ -67,7 +70,7 @@ size = Vector2(452.999, 3079.9)
 polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -166.935, -2727)
 
 [sub_resource type="Curve" id="Curve_4bykx"]
-max_value = 1000.0
+_limits = [0.0, 1000.0, 0.0, 1.0]
 _data = [Vector2(0.118143, 1000), 0.0, 0.0, 0, 0, Vector2(0.122363, 0), 0.0, 0.0, 0, 0, Vector2(0.827004, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
@@ -116,8 +119,6 @@ color = Color(0.870588, 1, 1, 0.156863)
 alpha_curve = SubResource("CurveTexture_x46mi")
 
 [node name="Tower" type="Node2D" groups=["tower"]]
-material = SubResource("ShaderMaterial_ivn7p")
-rotation = -2.37417e-05
 script = ExtResource("1_i47gm")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
@@ -208,6 +209,7 @@ right = false
 position = Vector2(180, 0)
 
 [node name="LevelChunks" type="Node2D" parent="."]
+material = SubResource("ShaderMaterial_bo3vn")
 
 [node name="Sun" type="Node2D" parent="LevelChunks"]
 use_parent_material = true
@@ -407,10 +409,10 @@ z_index = 2
 position = Vector2(-0.0100427, 423)
 amount = 1
 sub_emitter = NodePath("../WaterSplash")
-process_material = SubResource("ParticleProcessMaterial_b622u")
 lifetime = 1.32
 collision_base_size = 5.0
 visibility_rect = Rect2(-200, -207.54, 400, 415.32)
+process_material = SubResource("ParticleProcessMaterial_b622u")
 metadata/_edit_lock_ = true
 
 [node name="WaterSplash" type="GPUParticles2D" parent="."]
@@ -421,13 +423,19 @@ process_material = SubResource("ParticleProcessMaterial_h4il5")
 metadata/_edit_lock_ = true
 
 [node name="Pixelate" type="ColorRect" parent="."]
-visible = false
+material = ExtResource("19_ivy1r")
 custom_minimum_size = Vector2(364, 10000)
 offset_left = -182.0
-offset_top = -9276.0
-offset_right = 181.0
-offset_bottom = 724.0
+offset_top = -9391.97
+offset_right = 182.0
+offset_bottom = 608.025
 mouse_filter = 2
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="."]
+copy_mode = 2
+rect = Rect2(-182, -10000, 364, 11000)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
 
 [connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]

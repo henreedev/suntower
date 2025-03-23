@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://g26y1heavh30"]
 
-[ext_resource type="Script" path="res://scenes/environment/SunResetPoint.gd" id="1_b75ha"]
+[ext_resource type="Script" uid="uid://djd6oyxv553ds" path="res://scenes/environment/SunResetPoint.gd" id="1_b75ha"]
 
 [node name="SunResetPoint" type="Marker2D"]
 script = ExtResource("1_b75ha")

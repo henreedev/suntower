@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bml36duxahxnm"]
 
-[ext_resource type="Script" path="res://scenes/menus/TransitionOverlay.gd" id="1_f86nd"]
+[ext_resource type="Script" uid="uid://6fti4mscwnnl" path="res://scenes/menus/TransitionOverlay.gd" id="1_f86nd"]
 
 [sub_resource type="Animation" id="Animation_4vrq2"]
 length = 0.001
@@ -51,9 +51,9 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_palnj"]
 _data = {
-"RESET": SubResource("Animation_4vrq2"),
-"fade_to_black": SubResource("Animation_f6eky"),
-"fade_to_normal": SubResource("Animation_db0ul")
+&"RESET": SubResource("Animation_4vrq2"),
+&"fade_to_black": SubResource("Animation_f6eky"),
+&"fade_to_normal": SubResource("Animation_db0ul")
 }
 
 [node name="TransitionOverlay" type="CanvasLayer"]

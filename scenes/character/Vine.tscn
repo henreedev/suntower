@@ -1,9 +1,9 @@
 [gd_scene load_steps=13 format=3 uid="uid://jfxpur7d1w8n"]
 
-[ext_resource type="Script" path="res://scenes/character/Vine.gd" id="1_d58dt"]
+[ext_resource type="Script" uid="uid://dwns6pd55cm7e" path="res://scenes/character/Vine.gd" id="1_d58dt"]
 [ext_resource type="Texture2D" uid="uid://cha84rrafkjwh" path="res://assets/image/character/VineSeg.png" id="1_fkaj8"]
-[ext_resource type="Shader" path="res://shaders/Electricity.gdshader" id="2_kpskx"]
-[ext_resource type="Shader" path="res://shaders/Light.gdshader" id="5_fobon"]
+[ext_resource type="Shader" uid="uid://k0sdowct21xq" path="res://shaders/Electricity.gdshader" id="2_kpskx"]
+[ext_resource type="Shader" uid="uid://cc15am8jmpjpd" path="res://shaders/Light.gdshader" id="5_fobon"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_owbri"]
 friction = 0.0

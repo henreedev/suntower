@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ca4fvc73x8ydq"]
 
-[ext_resource type="Script" path="res://scenes/environment/WindBurstArea.gd" id="1_l1y53"]
+[ext_resource type="Script" uid="uid://b23bg2yeoykkx" path="res://scenes/environment/WindBurstArea.gd" id="1_l1y53"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8p2wy"]
 size = Vector2(332.75, 44)

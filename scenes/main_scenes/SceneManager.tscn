@@ -1,6 +1,6 @@
 [gd_scene load_steps=27 format=3 uid="uid://jvuqketuhc3e"]
 
-[ext_resource type="Script" path="res://scenes/main_scenes/SceneManager.gd" id="1_3frxe"]
+[ext_resource type="Script" uid="uid://dti0ra8c6e8qu" path="res://scenes/main_scenes/SceneManager.gd" id="1_3frxe"]
 [ext_resource type="PackedScene" uid="uid://cjl7hh0kgvrb8" path="res://scenes/main_scenes/Game.tscn" id="2_6m11w"]
 [ext_resource type="PackedScene" uid="uid://c7w06rdclh4r0" path="res://scenes/main_scenes/Menu.tscn" id="3_caktm"]
 [ext_resource type="PackedScene" uid="uid://qaj6su1qqv6p" path="res://scenes/main_scenes/VictorySequence.tscn" id="4_dxtj1"]
@@ -57,13 +57,13 @@ clip_12/stream = ExtResource("9_5pnhc")
 clip_12/auto_advance = 0
 _transitions = {
 Vector2i(1, 1): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 4,
 "from_time": 0,
 "to_time": 1
 },
 Vector2i(1, 4): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 4,
 "filler_clip": 3,
 "from_time": 0,
@@ -72,7 +72,7 @@ Vector2i(1, 4): {
 "use_filler_clip": true
 },
 Vector2i(4, 1): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 4,
 "filler_clip": 2,
 "from_time": 0,
@@ -81,7 +81,7 @@ Vector2i(4, 1): {
 "use_filler_clip": true
 },
 Vector2i(4, 7): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 4,
 "filler_clip": 6,
 "from_time": 0,
@@ -90,7 +90,7 @@ Vector2i(4, 7): {
 "use_filler_clip": true
 },
 Vector2i(7, 4): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 4,
 "filler_clip": 5,
 "from_time": 0,
@@ -99,7 +99,7 @@ Vector2i(7, 4): {
 "use_filler_clip": true
 },
 Vector2i(7, 10): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 4,
 "filler_clip": 9,
 "from_time": 0,
@@ -108,7 +108,7 @@ Vector2i(7, 10): {
 "use_filler_clip": true
 },
 Vector2i(10, 7): {
-"fade_beats": 1,
+"fade_beats": 1.0,
 "fade_mode": 4,
 "filler_clip": 8,
 "from_time": 0,

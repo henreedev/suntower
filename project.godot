@@ -15,11 +15,11 @@ config/description="Escape the tower through flower power."
 config/version="1.0.0"
 run/main_scene="res://scenes/main_scenes/SceneManager.tscn"
 config/auto_accept_quit=false
-config/features=PackedStringArray("4.3", "GL Compatibility")
+config/features=PackedStringArray("4.4", "GL Compatibility")
 boot_splash/bg_color=Color(0.129412, 0.145098, 0.196078, 1)
-boot_splash/image="res://assets/image/SuntowerSplash.png"
 boot_splash/fullsize=false
 boot_splash/use_filter=false
+boot_splash/image="res://assets/image/SuntowerSplash.png"
 config/icon="res://assets/image/SuntowerIcon.png"
 
 [audio]
