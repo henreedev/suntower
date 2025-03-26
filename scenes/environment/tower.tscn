@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://dmtd1mxporvjw"]
+[gd_scene load_steps=42 format=3 uid="uid://dmtd1mxporvjw"]
 
 [ext_resource type="Script" uid="uid://dj6g1ax1p53i6" path="res://scenes/environment/tower.gd" id="1_i47gm"]
 [ext_resource type="Script" uid="uid://dgppynms6jfdm" path="res://scenes/environment/ParallaxBackground.gd" id="2_mjvvg"]
@@ -20,6 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://dh7b3um8nnq1j" path="res://scenes/environment/level-chunks/peaceful/ChunkPeaceful1.tscn" id="17_bwap8"]
 [ext_resource type="PackedScene" uid="uid://dx72kt582x8cg" path="res://scenes/environment/level-chunks/peaceful/ChunkPeacefulEnd.tscn" id="18_qlfm1"]
 [ext_resource type="Material" uid="uid://c7x5qvhrgejqb" path="res://shaders/pixelate_shader_mat.tres" id="19_ivy1r"]
+[ext_resource type="PackedScene" uid="uid://cxh0d0sigy2vl" path="res://scenes/character/Hat.tscn" id="21_bo3vn"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_41ibw"]
 shader = ExtResource("5_qin3k")
@@ -232,6 +233,7 @@ metadata/_edit_lock_ = true
 [node name="StormChunk1" parent="LevelChunks/Storm" instance=ExtResource("14_j1mvb")]
 
 [node name="StormArea" type="Area2D" parent="LevelChunks/Storm"]
+collision_mask = 16
 monitorable = false
 metadata/_edit_group_ = true
 
@@ -335,6 +337,7 @@ disable_duration = 0
 [node name="WindArea" type="Area2D" parent="LevelChunks/Wind"]
 unique_name_in_owner = true
 position = Vector2(3, 7.12251e-05)
+collision_mask = 16
 monitorable = false
 gravity_point_center = Vector2(1, 0)
 gravity_direction = Vector2(1, 0)
@@ -366,6 +369,7 @@ position = Vector2(0.145489, -4528)
 
 [node name="VictoryArea" type="Area2D" parent="LevelChunks/Peaceful/PeacefulChunkEnd"]
 position = Vector2(0.017, -1371)
+collision_mask = 16
 monitorable = false
 gravity_point_center = Vector2(1, 0)
 gravity_direction = Vector2(1, 0)
@@ -382,6 +386,7 @@ position = Vector2(0.281, -4284)
 
 [node name="PeacefulArea" type="Area2D" parent="LevelChunks/Peaceful"]
 position = Vector2(0.0172127, -2331.1)
+collision_mask = 16
 monitorable = false
 gravity_point_center = Vector2(1, 0)
 gravity_direction = Vector2(1, 0)
@@ -438,6 +443,12 @@ offset_top = -9391.97
 offset_right = 182.0
 offset_bottom = 608.025
 mouse_filter = 2
+
+[node name="Hat" parent="." instance=ExtResource("21_bo3vn")]
+
+[node name="Hat2" parent="." instance=ExtResource("21_bo3vn")]
+modulate = Color(1, 1, 0, 1)
+position = Vector2(-55, -4)
 
 [connection signal="body_entered" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_entered"]
 [connection signal="body_exited" from="LevelChunks/Storm/StormArea" to="." method="_on_storm_area_body_exited"]

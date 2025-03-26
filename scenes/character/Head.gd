@@ -118,7 +118,8 @@ func _ready():
 	
 	camera_2d.limit_top = tower.cam_max_marker.global_position.y
 	add_collision_exception_with(_pot)
-	play_animation_on_start = not Values.skip_cutscene
+	#play_animation_on_start = not Values.skip_cutscene
+	play_animation_on_start = false # FIXME
 	if play_animation_on_start:
 		_animating = true
 	begin_inactive()
@@ -290,7 +291,7 @@ func _spawn_vine():
 		if i == 0:
 			curr_seg = vine_creator.create(_pot)
 			_first_seg = curr_seg
-			_first_seg.lock_rotation = true
+			#_first_seg.lock_rotation = true # Causes pot to get stuck going over corners
 		else:
 			curr_seg = vine_creator.create(last_seg)
 		var progress = diff * float(i) / base_segments
@@ -338,7 +339,7 @@ func begin_extending():
 			sun_particles.amount = 5
 		
 		lock_rotation = false
-		collision_mask = 13
+		collision_mask = 1 + 4 + 8
 		
 		get_tree().call_group("vine", "set_grav", 0.1)
 		
@@ -378,7 +379,7 @@ func begin_inactive():
 	
 	# Don't collide with Props
 	#collision_mask = 13
-	collision_mask = 9
+	collision_mask = 1 + 8
 	
 	# Remove buff bonuses
 	max_extended_len = BASE_MAX_EXTENDED_LEN

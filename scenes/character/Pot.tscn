@@ -145,7 +145,7 @@ collision_friction = 0.3
 collision_bounce = 0.0
 
 [node name="Pot" type="RigidBody2D" groups=["pot"]]
-collision_layer = 9
+collision_layer = 0
 collision_mask = 9
 mass = 0.25
 physics_material_override = SubResource("PhysicsMaterial_4ed4y")
