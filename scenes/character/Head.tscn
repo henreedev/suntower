@@ -142,7 +142,7 @@ polygon = PackedVector2Array(-198, -424, -198, -385, 192, -382, 195, -419)
 polygon = PackedVector2Array(-188, 264, -190, 298, 194, 300, 194, 267)
 
 [sub_resource type="Curve" id="Curve_ib0o0"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.746835, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1e-05, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_kur7x"]
@@ -155,20 +155,21 @@ colors = PackedColorArray(1, 0.905882, 0, 1, 0.321569, 0.760784, 0.0431373, 1)
 gradient = SubResource("Gradient_7awna")
 
 [sub_resource type="Gradient" id="Gradient_5ys7y"]
-colors = PackedColorArray(2, 2, 1.7, 1, 10, 10, 10, 1)
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(2, 2, 1.7, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_18684"]
 gradient = SubResource("Gradient_5ys7y")
 
 [sub_resource type="Curve" id="Curve_8gqrt"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_0bqkg"]
 curve = SubResource("Curve_8gqrt")
 
 [sub_resource type="Curve" id="Curve_dlb3u"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.546667, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_5gt1y"]
@@ -178,10 +179,13 @@ curve = SubResource("Curve_dlb3u")
 particle_flag_disable_z = true
 emission_shape = 3
 emission_box_extents = Vector3(4, 4, 1)
+inherit_velocity_ratio = -0.11
 spread = 180.0
 initial_velocity_min = 1.0
 initial_velocity_max = 2.0
 gravity = Vector3(0, 0, 0)
+radial_accel_min = -2.23517e-06
+radial_accel_max = 8.98
 scale_curve = SubResource("CurveTexture_5gt1y")
 color_ramp = SubResource("GradientTexture1D_18684")
 color_initial_ramp = SubResource("GradientTexture1D_2inft")
@@ -445,7 +449,7 @@ turbulence_influence_over_life = SubResource("CurveTexture_qk2uq")
 
 [node name="Head" type="RigidBody2D" groups=["flowerhead"]]
 physics_interpolation_mode = 1
-z_index = 1
+z_index = 2
 collision_layer = 5
 collision_mask = 5
 mass = 0.1
@@ -463,7 +467,6 @@ script = ExtResource("1_8f5vi")
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0
-z_index = -1
 z_as_relative = false
 material = SubResource("ShaderMaterial_c78o8")
 points = PackedVector2Array(0, 6, 24, 27, 94, 15, 224, 1)
@@ -477,7 +480,6 @@ script = ExtResource("3_0cjmd")
 [node name="Sprite2D" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 physics_interpolation_mode = 1
-z_as_relative = false
 material = SubResource("ShaderMaterial_67x27")
 sprite_frames = SubResource("SpriteFrames_g3nl5")
 animation = &"spiked"
@@ -546,7 +548,7 @@ physics_interpolation_mode = 2
 z_index = -1
 emitting = false
 amount = 73
-lifetime = 2.0
+lifetime = 1.3
 visibility_rect = Rect2(-4.81506, -4.91064, 9.81225, 9.78039)
 process_material = SubResource("ParticleProcessMaterial_ha0my")
 script = ExtResource("8_isoiy")

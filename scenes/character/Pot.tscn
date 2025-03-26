@@ -157,7 +157,6 @@ max_contacts_reported = 2
 script = ExtResource("1_u6jn4")
 
 [node name="Pot" type="Sprite2D" parent="."]
-z_index = -1
 texture = ExtResource("2_dk0m0")
 offset = Vector2(0, -27)
 

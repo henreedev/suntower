@@ -290,6 +290,7 @@ func _spawn_vine():
 		if i == 0:
 			curr_seg = vine_creator.create(_pot)
 			_first_seg = curr_seg
+			_first_seg.lock_rotation = true
 		else:
 			curr_seg = vine_creator.create(last_seg)
 		var progress = diff * float(i) / base_segments
