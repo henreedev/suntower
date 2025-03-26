@@ -118,10 +118,10 @@ func _ready():
 	
 	camera_2d.limit_top = tower.cam_max_marker.global_position.y
 	add_collision_exception_with(_pot)
-	#play_animation_on_start = not Values.skip_cutscene
-	play_animation_on_start = false # FIXME
+	play_animation_on_start = not Values.skip_cutscene
+	#play_animation_on_start = false # FIXME
 	if play_animation_on_start:
-		_animating = true
+		_animating = true 
 	begin_inactive()
 	
 	if play_animation_on_start:
@@ -131,7 +131,9 @@ func _ready():
 
 # Play a cutscene where the camera pans around, and then the flower spawns in.
 func play_spawn_animation():
-	
+	# Show drip and splash, syncing them 
+	Tower.instance.water_drip.emitting = true 
+	create_tween().tween_property(Tower.instance.water_splash, "emitting", true, 0.0).set_delay(1.32) 
 	# Make vines and line invisible, tween fade them in
 	get_tree().set_group("vine", "modulate", Color(1.0, 1.0, 1.0, 0.0))
 	get_tree().set_group("vine", "linear_damp", 100.0)
@@ -181,6 +183,7 @@ func play_spawn_animation():
 	Values.skip_cutscene = true # Don't play the cutscene again until the game closes or is won.
 	_animating = false
 	tower.water_drip.emitting = false
+	tower.water_splash.emitting = false
 	tower.tutorial_chunk.start_tutorial()
 	get_tree().set_group("vine", "linear_damp", 1.0)
 	game.switch_to_sun_bar()
@@ -604,7 +607,7 @@ func _integrate_forces(state):
 		
 		elif _state == State.INACTIVE:
 			const TURN_STRENGTH = 6.0
-			var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
+			var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI / 2
 			var new_angle = lerp_angle(rotation, mouse_angle, TURN_STRENGTH * state.step)
 			state.transform = Transform2D(new_angle, state.transform.get_origin())
 			if can_extend:

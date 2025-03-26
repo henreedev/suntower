@@ -57,7 +57,7 @@ var in_peaceful = false
 var sunny_modulate := Color(.89, .89, .89, 1.0)
 var storm_modulate := Color(0.0, 0.0, 0.0, 1.0)
 var windy_modulate := Color.WHITE
-var peaceful_modulate := Color(1.05, 1.05, 1.05, 1.0)
+var peaceful_modulate := Color(1.15, 1.15, 1.15, 1.0)
 var modulate_tween : Tween
 
 # Storm variables
@@ -98,6 +98,7 @@ var swap_tween : Tween
 @onready var stop_delay_timer : Timer = %StopDelayTimer
 @onready var show_clouds_marker = %ShowCloudsMarker
 @onready var water_drip = $WaterDrip
+@onready var water_splash: GPUParticles2D = $WaterSplash
 
 # Array of the speedrun time trackers per section. Initialized in ready using Game's reference.
 var time_trackers : Array[TimeTracker]

@@ -70,6 +70,13 @@ size = Vector2(452.999, 3079.9)
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_bd455"]
 polygon = PackedVector2Array(-166.935, -2726, 167.065, -2726, 167.065, -2727, -166.935, -2727)
 
+[sub_resource type="Curve" id="Curve_bo3vn"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.949495, 1), 0.0, 0.0, 0, 0, Vector2(0.959596, 0.0132176), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_msyfo"]
+curve = SubResource("Curve_bo3vn")
+
 [sub_resource type="Curve" id="Curve_4bykx"]
 _limits = [0.0, 1000.0, 0.0, 1.0]
 _data = [Vector2(0.118143, 1000), 0.0, 0.0, 0, 0, Vector2(0.122363, 0), 0.0, 0.0, 0, 0, Vector2(0.827004, 0), 0.0, 0.0, 0, 0]
@@ -80,8 +87,7 @@ curve = SubResource("Curve_4bykx")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_b622u"]
 particle_flag_disable_z = true
-direction = Vector3(0, 1, 0)
-spread = 0.0
+direction = Vector3(0, -1, 0)
 initial_velocity_min = 50.0
 initial_velocity_max = 50.0
 gravity = Vector3(0, 250, 0)
@@ -89,9 +95,7 @@ damping_min = 1.0
 damping_max = 1.0
 damping_curve = SubResource("CurveTexture_sss7v")
 color = Color(1, 1, 1, 0.145098)
-collision_mode = 2
-sub_emitter_mode = 2
-sub_emitter_amount_at_end = 4
+alpha_curve = SubResource("CurveTexture_msyfo")
 
 [sub_resource type="Curve" id="Curve_0kli6"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -99,13 +103,6 @@ point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_x46mi"]
 curve = SubResource("Curve_0kli6")
-
-[sub_resource type="Curve" id="Curve_ob5xa"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.481013, 0.538462), 0.0, 0.0, 0, 0, Vector2(0.700422, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
-point_count = 4
-
-[sub_resource type="CurveTexture" id="CurveTexture_ktxx8"]
-curve = SubResource("Curve_ob5xa")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_h4il5"]
 particle_flag_disable_z = true
@@ -115,7 +112,6 @@ initial_velocity_max = 91.3
 gravity = Vector3(0, 300, 0)
 damping_min = 49.87
 damping_max = 49.96
-scale_curve = SubResource("CurveTexture_ktxx8")
 color = Color(0.870588, 1, 1, 0.156863)
 alpha_curve = SubResource("CurveTexture_x46mi")
 
@@ -412,21 +408,26 @@ metadata/_edit_lock_ = true
 
 [node name="WaterDrip" type="GPUParticles2D" parent="."]
 z_index = 1
-position = Vector2(-0.0100427, 423)
+position = Vector2(0, 424)
+emitting = false
 amount = 1
-sub_emitter = NodePath("../WaterSplash")
 lifetime = 1.32
+use_fixed_seed = true
+seed = 3204005195
 collision_base_size = 5.0
 visibility_rect = Rect2(-200, -207.54, 400, 415.32)
 process_material = SubResource("ParticleProcessMaterial_b622u")
-metadata/_edit_lock_ = true
 
 [node name="WaterSplash" type="GPUParticles2D" parent="."]
 z_index = 1
-position = Vector2(-0.0136277, 574)
+position = Vector2(0, 597)
+emitting = false
 amount = 4
+lifetime = 1.32
+explosiveness = 1.0
+use_fixed_seed = true
+seed = 69409885
 process_material = SubResource("ParticleProcessMaterial_h4il5")
-metadata/_edit_lock_ = true
 
 [node name="BackBufferCopy" type="BackBufferCopy" parent="."]
 z_as_relative = false
