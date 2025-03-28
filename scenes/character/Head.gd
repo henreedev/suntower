@@ -586,30 +586,24 @@ func _integrate_forces(state):
 				get_tree().set_group("vine", "linear_damp", 0.0)
 				get_tree().set_group("vine", "angular_damp", 2.0)
 			
-			# Swing the pot left or right
-			var dir = Vector2(0.0, 0.0)
-			if Input.is_action_pressed("move_left") and not _animating:
-				dir += Vector2(-1.0, 0.0)
-			if Input.is_action_pressed("move_right") and not _animating:
-				dir += Vector2(1.0, 0.0)
+			# Rotate steadily towards mouse
+			var target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
+			var new_angle = lerp_angle(state.transform.get_rotation(), target_angle, state.step \
+				* ROTATE_SPEED * 0.3 * lightning_speed_mod)
+			state.transform = Transform2D(new_angle, state.transform.get_origin())
+			state.angular_velocity = 0
 			
-			if dir != Vector2.ZERO:
-				# Don't just move horizontally (x-axis), but also horizontally from the pot's perspective
-				var STR = _pot.linear_velocity.length() / 250.0
-				if dir.x > 0:
-					dir += Vector2.from_angle(_pot.rotation) * STR
-				elif dir.x < 0:
-					dir += -Vector2.from_angle(_pot.rotation) * STR
-				dir = dir.normalized()
-				
-				const MOVE_STRENGTH = 115.0
-				_pot.apply_central_force(dir * MOVE_STRENGTH)
+			# Move the pot by inputs
+			_do_pot_movement()
 		
 		elif _state == State.INACTIVE:
 			const TURN_STRENGTH = 6.0
 			var mouse_angle = pos.angle_to_point(get_global_mouse_position()) + PI / 2
 			var new_angle = lerp_angle(rotation, mouse_angle, TURN_STRENGTH * state.step)
 			state.transform = Transform2D(new_angle, state.transform.get_origin())
+			# Allow A/D movement if not touching
+			if not _pot.touching:
+				_do_pot_movement()
 			if can_extend:
 				const MOVE_STRENGTH = 20.0
 				var force_toward_mouse = Vector2.UP.rotated(mouse_angle) * MOVE_STRENGTH
@@ -617,6 +611,28 @@ func _integrate_forces(state):
 		
 		# Fix the neck gap while retracting
 		_fix_gap(state)
+
+## Performs pot left / right movement based on input.
+func _do_pot_movement():
+	if _animating: return
+	# Swing the pot left or right
+	var dir = Vector2(0.0, 0.0)
+	if Input.is_action_pressed("move_left"):
+		dir += Vector2(-1.0, 0.0)
+	if Input.is_action_pressed("move_right"):
+		dir += Vector2(1.0, 0.0)
+	
+	if dir != Vector2.ZERO:
+		# Don't just move horizontally (x-axis), but also horizontally from the pot's perspective
+		var STR = _pot.linear_velocity.length() / 250.0
+		if dir.x > 0:
+			dir += Vector2.from_angle(_pot.rotation) * STR
+		elif dir.x < 0:
+			dir += -Vector2.from_angle(_pot.rotation) * STR
+		dir = dir.normalized()
+		
+		var MOVE_STRENGTH = 220.0 + (110.0 if _state == State.RETRACTING else 0.0)
+		_pot.apply_central_force(dir * MOVE_STRENGTH * _pot.mass)
 
 # Displays the sun buff, tinting the head and spawning more particles
 func _display_sun_buff():
