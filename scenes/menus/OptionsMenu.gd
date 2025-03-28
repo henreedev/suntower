@@ -161,7 +161,10 @@ func _refresh_labels():
 						if Values.max_height_reached < 500 and Values.max_height_reached > 0:
 							congrats = "you just got started... don't give up"
 							congrats_color = ColorSetting.PULSE_RED
-						else:
+						elif Values.max_height_reached > 0:
+							congrats = "Nice job!! Keep going!"
+							congrats_color = ColorSetting.PULSE_GREEN
+						else: 
 							congrats = "Give it a shot!"
 							congrats_color = ColorSetting.PULSE_GREEN
 	# Indicate that scores won't be saved after the player teleports

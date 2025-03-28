@@ -96,10 +96,10 @@ func game_to_menu():
 # Transitions from the game to the victory screen. 
 # Calls the transition to happen instantly without any fade out.
 func game_to_victory():
-	#if Values.cheated:
-		#tween_transition([remove_child.bind(game), _set_game_to_new_copy, add_child.bind(start_menu), \
-			#switch_bgm.bind("Menu"), start_menu.options_menu.refresh], 1.0, true)
-	#else:
+	if Values.cheated:
+		tween_transition([remove_child.bind(game), _set_game_to_new_copy, add_child.bind(start_menu), \
+			switch_bgm.bind("Menu"), start_menu.options_menu.refresh], 1.0, true)
+	else:
 		tween_transition([remove_child.bind(game), _set_game_to_new_copy, add_child.bind(victory_sequence), \
 			switch_bgm.bind("VictoryLeadIn"), victory_sequence.play_sequence], 0)
 
