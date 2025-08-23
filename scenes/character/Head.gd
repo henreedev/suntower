@@ -112,7 +112,7 @@ var slingshot_tween : Tween
 # Spawns vine, plays cutscene, and sets important values 
 func _ready():
 	if skip_game:
-		create_tween().set_loops().tween_property(self, "position", Vector2(0, -5000), 10.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		create_tween().set_loops().tween_property(self, "position", Vector2(0, -7000), 10.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	
 	_spawn_vine()
 	

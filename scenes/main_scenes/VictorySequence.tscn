@@ -233,7 +233,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 1.53
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -334,7 +334,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"growing",
-"speed": 3.06
+"speed": 4.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -351,7 +351,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"grown",
-"speed": 3.06
+"speed": 4.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -404,7 +404,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"jumping",
-"speed": 6.12
+"speed": 8.0
 }]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nxe83"]
@@ -965,7 +965,7 @@ script = ExtResource("1_ft4u0")
 
 [node name="FinalSplash" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_kiyt6")
-animation = &"growing"
+animation = &"jumping"
 
 [node name="LeadInAnims" type="AnimatedSprite2D" parent="."]
 visible = false

@@ -43,5 +43,5 @@ void fragment() {
 
 // Don't draw lights on the ColorRect
 void light() {
-	
+
 }

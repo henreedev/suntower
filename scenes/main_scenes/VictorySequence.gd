@@ -122,7 +122,7 @@ func _on_final_splash_animation_looped():
 		"grown":
 			if final_splash_loops == loops_until_jump:
 				final_splash_loops = 0
-				loops_until_jump = randi_range(1, 6)
+				loops_until_jump = 1
 				final_splash.animation = "jumping"
 				final_splash.play()
 			else:
