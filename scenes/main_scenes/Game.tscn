@@ -73,6 +73,7 @@ position = Vector2(0, 599)
 
 [node name="Head" parent="." instance=ExtResource("3_84kx1")]
 position = Vector2(0, 549)
+should_check_if_stuck = false
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
 

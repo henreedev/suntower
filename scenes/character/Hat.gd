@@ -91,7 +91,6 @@ func _process(delta: float) -> void:
 
 ## HELPERS
 
-
 func get_head_hat() -> Hat:
 	for child in head.get_children():
 		if child is Hat:

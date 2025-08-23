@@ -430,6 +430,7 @@ seed = 69409885
 process_material = SubResource("ParticleProcessMaterial_h4il5")
 
 [node name="BackBufferCopy" type="BackBufferCopy" parent="."]
+z_index = 2
 z_as_relative = false
 copy_mode = 2
 rect = Rect2(-182, -10000, 364, 11000)

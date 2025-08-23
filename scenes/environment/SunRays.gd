@@ -81,7 +81,10 @@ func _check_player_hit():
 					for ray : RayCast2D in sunrays.get_children():
 						var hit = ray.get_collider()
 						if hit is Head or hit is Vine or (hit.is_in_group("flowerhead") if hit else false):
-							#if not _player._animating and hit is Vine:
+							if not _player._animating and hit is Vine:
+								hit.trigger_sunlight_vfx_chain(200)
+							if not _player._animating and hit is Head:
+								hit.trigger_vine_sunlight_vfx_chain()
 								#if not vine_tween: vine_tween = create_tween().set_parallel()
 								#vine_tween.tween_property(hit.sprite, "modulate", Color(1.0, 5.0, 1.0), 0.25)
 								#vine_tween.chain().tween_property(hit.sprite, "modulate", Color(1.0, 1.0, 1.0), 0.25)

@@ -80,14 +80,6 @@ position = Vector2(0, 0.5)
 scale = Vector2(0.04, 0.027)
 texture = SubResource("GradientTexture2D_cdlsb")
 
-[node name="SunlightVfxLight" type="Sprite2D" parent="."]
-visible = false
-modulate = Color(1, 0.870588, 0.552941, 1)
-material = SubResource("ShaderMaterial_t2dxa")
-position = Vector2(0, 0.5135)
-scale = Vector2(0.04, 0.027)
-texture = SubResource("GradientTexture2D_cdlsb")
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -3)
 shape = SubResource("CapsuleShape2D_nmj1a")

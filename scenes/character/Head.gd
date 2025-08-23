@@ -32,6 +32,7 @@ var fixing_gap = false
 var can_extend := true
 var _can_nudge = false
 var should_teleport := false
+var rotation_while_retracting_enabled := false
 
 # Extension/retraction variables
 @export var max_extended_len := 125.0
@@ -167,12 +168,15 @@ func play_spawn_animation():
 	
 	# Flash everything bright after vine spawning complete, spawn flower
 	for vine in get_tree().get_nodes_in_group("vine"):
-		create_tween().tween_property(vine, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
+		var tween = create_tween()
+		tween.tween_property(vine, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
+		tween.tween_property(vine, "sprite_scale", Vine.BASE_SPRITE_SCALE, 0.5).from(Vector2(1.0, 0.0)).set_ease(Tween.EASE_IN_OUT)
+	
 	create_tween().tween_property($Vines/Line2D, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
 	create_tween().tween_property(_sprite, "scale", Vector2(1.0, 1.0), 0.4).from(Vector2(0.5, 0.5)).set_trans(Tween.TRANS_SINE)
 	create_tween().tween_property(_sprite, "offset", Vector2(0.0, 0.0), 0.4).from(Vector2(0, 5)).set_trans(Tween.TRANS_SINE)
 	create_tween().tween_property(_sprite, "self_modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
-	get_tree().set_group("vine", "sprite_scale", Vector2(1.0, 0.5))
+	#get_tree().set_group("vine", "sprite_scale", Vector2(1.0, 0.5))
 	
 	# Reset camera
 	create_tween().tween_property(camera_2d,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
@@ -239,6 +243,8 @@ func _input(event):
 		Values.clear_user_data()
 	if event.is_action_pressed("toggle_dev_mode"):
 		dev_mode = not dev_mode
+	if event.is_action_pressed("toggle_rotation_while_retracting"):
+		rotation_while_retracting_enabled = not rotation_while_retracting_enabled
 	if dev_mode and event.is_action_pressed("dev_teleport"):
 		should_teleport = true
 		Values.cheated = true
@@ -249,13 +255,22 @@ func _draw_line():
 	var vine_seg : Vine = _root_seg
 	vine_line.add_point($RootVinePin.global_position)
 	while(vine_seg):
-		vine_line.add_point(vine_seg.get_avg_pos())
+		# TODO add gradient lighting up with sunlight here
+		vine_line.add_point(vine_seg.get_avg_pos()) 
 		vine_seg = vine_seg.get_child_seg() if not vine_seg.get_child_seg() is Pot else null
+
+## Triggers the sunlight vfx chain on the root segment. 
+func trigger_vine_sunlight_vfx_chain():
+	if _root_seg:
+		_root_seg.trigger_sunlight_vfx_chain(100.0)
 
 
 var waiting_to_check = false # Used to check stuck condition once per second
 # Checks conditions to teleport the head to the pot when the head is stuck.
+@export var should_check_if_stuck = true
 func _teleport_if_stuck():
+	if not should_check_if_stuck: return
+	
 	if _state == State.INACTIVE:
 		stuck = not can_extend and _pot.linear_velocity.length() < 100.0
 		if stuck:
@@ -431,7 +446,7 @@ func begin_retracting():
 	
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
 	
-	physics_material_override.friction = 1.0
+	physics_material_override.friction = 10.0
 	_pot.gravity_scale = 0.43
 	_pot.mass = 0.28
 	_pot.linear_damp = 1.0
@@ -587,11 +602,12 @@ func _integrate_forces(state):
 				get_tree().set_group("vine", "angular_damp", 2.0)
 			
 			# Rotate steadily towards mouse
-			var target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
-			var new_angle = lerp_angle(state.transform.get_rotation(), target_angle, state.step \
-				* ROTATE_SPEED * 0.3 * lightning_speed_mod)
-			state.transform = Transform2D(new_angle, state.transform.get_origin())
-			state.angular_velocity = 0
+			if rotation_while_retracting_enabled:
+				var target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
+				var new_angle = lerp_angle(state.transform.get_rotation(), target_angle, state.step \
+					* ROTATE_SPEED * 0.5 * lightning_speed_mod)
+				state.transform = Transform2D(new_angle, state.transform.get_origin())
+				state.angular_velocity = 0
 			
 			# Move the pot by inputs
 			_do_pot_movement()
@@ -609,7 +625,7 @@ func _integrate_forces(state):
 				var force_toward_mouse = Vector2.UP.rotated(mouse_angle) * MOVE_STRENGTH
 				apply_central_force(force_toward_mouse)
 		
-		# Fix the neck gap while retracting
+		# Fix the neck gap based on state
 		_fix_gap(state)
 
 ## Performs pot left / right movement based on input.
@@ -789,7 +805,6 @@ func _add_seg():
 	var child : Vine = _root_seg.get_child_seg()
 	var new_child : Vine = vine_creator.create(child)
 	
-	
 	# Place the child and new child with correct position and rotation
 	var adj = Vector2(0, _len_per_seg).rotated(global_rotation)
 	
@@ -810,6 +825,10 @@ func _add_seg():
 	# Pin the new child to the root seg
 	_root_seg.get_node("PinJoint2D").node_b = new_child.get_path()
 	_segs += 1
+	
+	# Display sunlight vfx on child vine if root seg was on vfx cooldown
+	if _root_seg.is_on_sunlight_vfx_cooldown():
+		child.trigger_sunlight_vfx_chain()
 
 # Gives the lightning buff, which speeds up movement for a set amount of length.
 func _get_lightning_buff():
