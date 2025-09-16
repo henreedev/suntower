@@ -19,7 +19,7 @@ var vine_len_display = BASE_MAX_EXTENDED_LEN
 var wind_extra_len_display = BASE_MAX_EXTENDED_LEN
 var lightning_buff_display = 0.0
 
-# Flower state
+## Flower state
 var _state : State = State.INACTIVE
 var _animating = false
 var base_segments := 15
@@ -36,15 +36,17 @@ var rotation_while_retracting_enabled := false
 
 # Extension/retraction variables
 @export var max_extended_len := 125.0
-var _len_per_seg_base : float # Calculated on initialization
-var _len_per_seg : float # Adjusted by a scalar
-var _extending_dist_travelled := 0.0
-var _extended_len := 0.0
+var _len_per_seg_base : float ## Calculated on initialization
+var _len_per_seg : float ## Adjusted by a scalar
+## Amount past base length we've travelled, but decrements by _len_per_seg upon reaching that value. 
+var _extending_dist_travelled := 0.0 
+## Total amount we've extended past base length
+var _extended_len := 0.0 
 var _root_seg : Vine
 var _first_seg : Vine
 var _retracting_seg : Vine
-var extra_len = 0.0
-var extra_len_display = 0.0
+var extra_len = 0.0 ## The amount of extra length added onto the current maximum length
+var extra_len_display = 0.0 ## The current amount of the extra length remaining
 const MAX_FORCE_MOD := 4.0 ## Max slingshot force multiplier
 var force_mod := 1.0 ## Increased when pressing slingshot
 var slingshotting := false ## True after pressing slingshot input, until inactive
@@ -236,6 +238,8 @@ func _process(delta):
 		act_on_state()
 		_update_lightning_buff(delta)
 		_update_wind_buff(delta)
+		if is_inactive() and can_dash:
+			charge_dash_on_input(delta)
 
 # Listens for dev-related inputs.
 func _input(event):
@@ -329,10 +333,13 @@ func act_on_state():
 	if _state == State.EXTENDING:
 		if Input.is_action_just_released("extend") and not _animating:
 			begin_retracting()
+		
 	elif _state == State.RETRACTING:
 		lock_rotation = true
 		if _segs <= base_segments:
 			begin_inactive()
+		elif Input.is_action_just_pressed("extend"):
+			begin_extending()
 		_teleport_if_stuck()
 	elif _state == State.INACTIVE:
 		if Input.is_action_just_pressed("extend"):
@@ -343,7 +350,9 @@ func act_on_state():
 # Overall, the head moves in the direction of rotation and rotates linearly towards the mouse,
 #  and the vines and pot lose gravity.  
 func begin_extending():
-	if _state == State.INACTIVE and can_extend and not _animating:
+	if\
+	 #_state == State.INACTIVE and \
+	 can_extend and not _animating:
 		_state = State.EXTENDING
 		
 		# Show spikes
@@ -369,6 +378,9 @@ func begin_extending():
 		linear_damp = 0.0
 		mass = 0.1
 		
+		# Dash if charged
+		if can_dash and dash_charge_amount > 0.0:
+			dash()
 		
 		stuck_timer.stop()
 		dead_timer.stop()
@@ -406,6 +418,10 @@ func begin_inactive():
 	extra_len_display = 0.0
 	wind_extra_len_display = BASE_MAX_EXTENDED_LEN
 	vine_len_display = BASE_MAX_EXTENDED_LEN
+	
+	# Restore dash ability
+	can_dash = true
+	dash_charge_amount = 0.0
 	
 	
 	physics_material_override.friction = 0.0
@@ -456,7 +472,7 @@ func begin_retracting():
 	gravity_scale = 0.3
 	
 	_extending_dist_travelled = 0
-	_extended_len = 0
+	#_extended_len = 0
 	
 	stuck_timer.stop()
 
@@ -576,12 +592,22 @@ func _integrate_forces(state):
 			# Rotate steadily towards mouse
 			var target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
 			var new_angle = lerp_angle(state.transform.get_rotation(), target_angle, state.step \
-				* ROTATE_SPEED * lightning_speed_mod)
+				* ROTATE_SPEED * lightning_speed_mod * 
+				(dash_turn_strength if is_dashing else 1.0)
+			)
 			state.transform = Transform2D(new_angle, state.transform.get_origin())
-			state.angular_velocity = 0
+			#state.angular_velocity -= 5.0 * state.angular_velocity * state.step 
+			state.angular_velocity = 0.0
 			
-			# Move in direction of rotation
-			var lin_vel = Vector2(0, -EXTEND_SPEED * lightning_speed_mod).rotated(rotation)
+			# Add to linear velocity if dashing
+			var lin_vel = state.linear_velocity
+			if is_dashing:
+				lin_vel = Vector2(0, -dash_force_strength + -EXTEND_SPEED * lightning_speed_mod).rotated(rotation)
+			else:
+				# Move in direction of rotation
+				lin_vel = Vector2(0, -EXTEND_SPEED * lightning_speed_mod).rotated(rotation)
+			
+			
 			# Get pushed by wind beam
 			if has_wind_buff:
 				const WIND_ACTIVE_BEAM_STRENGTH = 45.0
@@ -671,7 +697,7 @@ func get_height():
 func _physics_process(delta):
 	if not _animating:
 		# Player can extend if the pot is still
-		can_extend = _pot.touching and _pot.linear_velocity.length_squared() < 2.0 or _state == State.EXTENDING
+		can_extend = _pot.touching and _pot.linear_velocity.length_squared() < 2.0 or _state == State.EXTENDING or (_state == State.RETRACTING and _extended_len > 0)
 		
 		var pos = position
 		
@@ -722,6 +748,15 @@ func _physics_process(delta):
 					if lightning_buff_amount:
 						lightning_buff_amount -= _len_per_seg
 				
+				# Clear retracting seg if it exists
+				if _retracting_seg:
+					# Root seg pins to the Vine after the retracting seg
+					_root_seg.get_node("PinJoint2D").node_b = _retracting_seg.get_child_seg().get_path()
+					_retracting_seg.queue_free()
+					_retracting_seg = null
+					_root_seg.detached_child = null
+					_segs -= 1 
+				
 				# Retract if we've extended to the maximum possible length
 				if _extended_len > max_extended_len + extra_len:
 					begin_retracting()
@@ -767,7 +802,20 @@ func _physics_process(delta):
 						_retracting_seg.queue_free()
 						_retracting_seg = null
 						_root_seg.detached_child = null
-						_segs -= 1
+						_segs -= 1 
+					
+					# Calculate ratio between number of extra segments and number of MAXIMUM extra segments
+					# (how extended are we right now?)
+					var extra_segs := _segs - base_segments
+					var maximum_extra_segs = (BASE_MAX_EXTENDED_LEN + extra_len) / _len_per_seg 
+					var extended_ratio = extra_segs / maximum_extra_segs
+					
+					# Invert it - how much have we retracted back to normal length?
+					var retracted_ratio = 1 - extended_ratio
+					
+					# Lerp along this ratio 
+					# Length that I'm able to extend by is from 0 to MAX_EXTENDED_LEN based on how much I've retracted
+					_extended_len = extra_segs * _len_per_seg
 		# Do dev right-click teleport
 		if dev_mode and should_teleport:
 			should_teleport = false
@@ -951,6 +999,103 @@ func _on_sunrays_hit():
 func unstuck():
 	position = _pot.global_position
 	get_tree().set_group("vine", "global_position", _pot.global_position - Vector2(0, 10))
+
+#region Dash methods
+
+## True when the player is able to dash, either after charging it up while INACTIVE or as a second-wind while RETRACTING.
+## Becomes true when INACTIVE. Becomes false after a charged dash or second wind dash.
+var can_dash := false
+
+## True if the dash has been charged at all while INACTIVE. If this is true, the head will dash at the start of extension.
+var should_dash_on_extend := false
+
+## Float from 0.0 to 1.0 indicating how powerful the next charged dash will be. The second wind dash cannot be charged. 
+var dash_charge_amount := 0.0
+
+## A constant angle for the duration of the dash, indicating the direction the head is dashing in. 
+## The player can turn slightly from this angle depending on dash strength. 
+var dash_angle := 0.0
+
+## Float from 0.0 to 1.0 indicating the strength of angular rotation of the head while dashing. 
+## For charged dashes, this decreases as charge increases, to make powerful dashes less controllable.  
+var dash_turn_strength := 0.0
+
+## Float that constantly changes over the duration of a dash, indicating the current force that should be applied in the dash direction. 
+var dash_force_strength := 0.0
+
+## True if the player is currently dashing.
+var is_dashing := false
+
+## If the player can dash, is holding right click, is INACTIVE, and can extend, 
+## increases dash charge amount and updates dash charge visuals  
+func charge_dash_on_input(delta : float):
+	if can_dash and is_inactive() and can_extend and Input.is_action_pressed("dash"):
+		const DASH_CHARGE_DURATION = 2.0
+		const DASH_CHARGE_MULTIPLIER = 1.0 / DASH_CHARGE_DURATION
+		dash_charge_amount += delta * DASH_CHARGE_MULTIPLIER
+		dash_charge_amount = clampf(dash_charge_amount, 0.0, 1.0)
+		print(dash_charge_amount)
+		
+
+## Executes a dash, with varying behavior for charged and second wind dashes.
+## Charged: Picks a dash direction and does an impulse in that direction. 
+##          Overrides default extension movement to apply force in that direction depending on dash charge amount. 
+##          The current force and turn rate allowance are tweened here.
+## Second wind: Similar to charged, but a constant strength. Also begins extending for a bit. TODO
+func dash() -> void:
+	if is_extending(): # Must be a charged dash
+		is_dashing = true
+		can_dash = false
+		dash_angle = get_mouse_angle()
+		# Set head angle to dash angle
+		_set_transform = Transform2D(dash_angle, get_transform().get_origin())
+		
+		var extra_dash_length = dash_charge_amount * 500.0
+		extra_len += extra_dash_length
+		
+		const MAX_DASH_FORCE_STRENGTH = 125.0
+		const MIN_DASH_FORCE_STRENGTH = 60.0
+		var initial_dash_force_strength = MAX_DASH_FORCE_STRENGTH * pow(dash_charge_amount, 0.75) + MIN_DASH_FORCE_STRENGTH
+		#initial_dash_force_strength = clampf(initial_dash_force_strength, MIN_DASH_FORCE_STRENGTH, MAX_DASH_FORCE_STRENGTH)
+		
+		dash_force_strength = initial_dash_force_strength
+		
+		var initial_dash_turn_strength = 1.0 - (dash_charge_amount * 0.6 + 0.2) # 0.2 control at full charge, 0.8 control at 0 charge
+		dash_turn_strength = initial_dash_turn_strength
+		
+		var dash_duration = dash_charge_amount * 0.6 + 0.4
+		
+		var tween := create_tween()
+		
+		tween.tween_property(self, "dash_force_strength", 0.0, dash_duration).set_trans(Tween.TRANS_CUBIC)
+		tween.parallel().tween_property(self, "dash_turn_strength", 1.0, dash_duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		
+		tween.tween_property(self, "is_dashing", false, 0.0)
+	else:
+		push_error("Second wind dash not implemented yet")
+
+
+
+
+
+
+
+#endregion Dash methods
+
+
+#region Convenience helpers
+
+func is_inactive() -> bool:
+	return _state == State.INACTIVE
+
+func is_extending() -> bool:
+	return _state == State.EXTENDING
+
+func get_mouse_angle() -> float:
+	return global_position.angle_to_point(get_global_mouse_position()) + PI/2
+	
+#endregion Convenience helpers
+
 
 # Ensures that spiked and idle forms remain that way after playing once.
 func _on_sprite_2d_animation_looped():
