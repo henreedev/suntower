@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://dg0pgvca75j8a"]
+
+[ext_resource type="Script" uid="uid://beqcsybl3im8b" path="res://scenes/character/FollowHead.gd" id="1_8akf6"]
+[ext_resource type="Texture2D" uid="uid://bqjqg0buycvv" path="res://assets/image/character/indicator-arrow-base.png" id="1_yrgwa"]
+[ext_resource type="Script" uid="uid://df215ejjra5yg" path="res://scenes/character/arrow_holder.gd" id="2_kjwnj"]
+[ext_resource type="Texture2D" uid="uid://bco6x8gqhexmd" path="res://assets/image/character/indicator-arrow-dash.png" id="2_nkwgc"]
+
+[node name="IndicatorArrow" type="Node2D"]
+script = ExtResource("1_8akf6")
+follow_x = true
+follow_rotation = true
+
+[node name="ArrowHolder" type="Node2D" parent="."]
+position = Vector2(0, -20)
+script = ExtResource("2_kjwnj")
+
+[node name="BaseArrow" type="Sprite2D" parent="ArrowHolder"]
+texture = ExtResource("1_yrgwa")
+
+[node name="DashArrow" type="Sprite2D" parent="ArrowHolder"]
+modulate = Color(2, 2, 1, 1)
+texture = ExtResource("2_nkwgc")

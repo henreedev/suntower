@@ -71,6 +71,8 @@ var has_wind_buff := false
 var wind_direction : Vector2
 var active_wind_beam_strength_mod := 0.0
 var wind_dot : float # Used in speed calculation in beam, and for bar modulate
+## How much total extra length has been added by the wind beam.
+var wind_extra_len := 0.0
 
 # Tweens
 var spiked_hitbox_tween : Tween
@@ -89,6 +91,7 @@ var slingshot_tween : Tween
 @onready var _pot : Pot = get_tree().get_first_node_in_group("pot")
 @onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
 @onready var _sprite : AnimatedSprite2D = %Sprite2D
+@onready var dash_overlay: AnimatedSprite2D = $Sprite2D/DashOverlay
 @onready var tower : Tower = get_tree().get_first_node_in_group("tower")
 @onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 @onready var vine_line : Line2D = $Vines/Line2D
@@ -106,6 +109,9 @@ var slingshot_tween : Tween
 @onready var wind_gust_particles_mat: ParticleProcessMaterial = wind_gust_particles.process_material
 @onready var beam_particles: GPUParticles2D = %BeamParticles
 @onready var beam_particles_mat: ParticleProcessMaterial = beam_particles.process_material
+@onready var dash_charge_sparkles: GPUParticles2D = %DashChargeSparkles
+@onready var dash_charge_sparkles_mat: ParticleProcessMaterial = dash_charge_sparkles.process_material
+
 
 # Dev tools
 @export var dev_mode := false # Enable to teleport with right click
@@ -118,6 +124,8 @@ func _ready():
 		create_tween().set_loops().tween_property(self, "position", Vector2(0, -7000), 10.0).from(Vector2.ZERO).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	
 	_spawn_vine()
+	
+	_wiggle_dash_overlay()
 	
 	camera_2d.limit_top = tower.cam_max_marker.global_position.y
 	add_collision_exception_with(_pot)
@@ -238,8 +246,7 @@ func _process(delta):
 		act_on_state()
 		_update_lightning_buff(delta)
 		_update_wind_buff(delta)
-		if is_inactive() and can_dash:
-			charge_dash_on_input(delta)
+		process_dash_logic(delta)
 
 # Listens for dev-related inputs.
 func _input(event):
@@ -328,27 +335,27 @@ func _spawn_vine():
 			_root_seg = curr_seg
 		last_seg = curr_seg
 
-# Checks state guards and/or sets certain variables.
+## Checks state guards and/or sets certain variables.
 func act_on_state():
 	if _state == State.EXTENDING:
 		if Input.is_action_just_released("extend") and not _animating:
 			begin_retracting()
-		
 	elif _state == State.RETRACTING:
 		lock_rotation = true
 		if _segs <= base_segments:
 			begin_inactive()
-		elif Input.is_action_just_pressed("extend"):
-			begin_extending()
+		# Enable extension while retracting here:
+		#elif Input.is_action_just_pressed("extend"):
+			#begin_extending()
 		_teleport_if_stuck()
 	elif _state == State.INACTIVE:
 		if Input.is_action_just_pressed("extend"):
 			begin_extending()
 		_teleport_if_stuck()
 
-# Sets physical variables related to extension.
-# Overall, the head moves in the direction of rotation and rotates linearly towards the mouse,
-#  and the vines and pot lose gravity.  
+## Sets physical variables related to extension.
+## Overall, the head moves in the direction of rotation and rotates linearly towards the mouse,
+##  and the vines and pot lose gravity.  
 func begin_extending():
 	if\
 	 #_state == State.INACTIVE and \
@@ -415,6 +422,7 @@ func begin_inactive():
 	max_extended_len = BASE_MAX_EXTENDED_LEN
 	_extended_len = 0.0
 	extra_len = 0.0
+	wind_extra_len = 0.0
 	extra_len_display = 0.0
 	wind_extra_len_display = BASE_MAX_EXTENDED_LEN
 	vine_len_display = BASE_MAX_EXTENDED_LEN
@@ -462,7 +470,7 @@ func begin_retracting():
 	
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
 	
-	physics_material_override.friction = 10.0
+	physics_material_override.friction = 2.5
 	_pot.gravity_scale = 0.43
 	_pot.mass = 0.28
 	_pot.linear_damp = 1.0
@@ -589,15 +597,25 @@ func _integrate_forces(state):
 			_set_transform = null
 		
 		if _state == State.EXTENDING:
+			# Slow movement and rotation speeds when little length is left
+			var slow_multiplier = 1.0
+			const SLOWDOWN_LENGTH = 50.0
+			var remaining_length = (max_extended_len - _extended_len)
+			if remaining_length < SLOWDOWN_LENGTH:
+				slow_multiplier = lerpf(0.25, 1.0, remaining_length / SLOWDOWN_LENGTH) # As length remaining approaches 0, slow down more
+			
 			# Rotate steadily towards mouse
 			var target_angle = pos.angle_to_point(get_global_mouse_position()) + PI/2
 			var new_angle = lerp_angle(state.transform.get_rotation(), target_angle, state.step \
 				* ROTATE_SPEED * lightning_speed_mod * 
-				(dash_turn_strength if is_dashing else 1.0)
+				(dash_turn_strength if is_dashing else 1.0) 
+				* slow_multiplier
 			)
 			state.transform = Transform2D(new_angle, state.transform.get_origin())
 			#state.angular_velocity -= 5.0 * state.angular_velocity * state.step 
 			state.angular_velocity = 0.0
+			
+			
 			
 			# Add to linear velocity if dashing
 			var lin_vel = state.linear_velocity
@@ -607,6 +625,7 @@ func _integrate_forces(state):
 				# Move in direction of rotation
 				lin_vel = Vector2(0, -EXTEND_SPEED * lightning_speed_mod).rotated(rotation)
 			
+			lin_vel *= slow_multiplier
 			
 			# Get pushed by wind beam
 			if has_wind_buff:
@@ -650,6 +669,12 @@ func _integrate_forces(state):
 				const MOVE_STRENGTH = 20.0
 				var force_toward_mouse = Vector2.UP.rotated(mouse_angle) * MOVE_STRENGTH
 				apply_central_force(force_toward_mouse)
+			# Shrink down towards pot when charging a dash to show the "windup"
+			if dash_charge_amount > 0.0:
+				# Apply a force towards pot
+				const DASH_CHARGE_FORCE_STRENGTH = 23.0
+				var force_toward_pot = global_position.direction_to(_pot.global_position) * DASH_CHARGE_FORCE_STRENGTH
+				apply_central_force(force_toward_pot)
 		
 		# Fix the neck gap based on state
 		_fix_gap(state)
@@ -715,17 +740,17 @@ func _physics_process(delta):
 				
 				# Add length if extending along wind beam
 				if has_wind_buff:
-					if extra_len < BASE_MAX_EXTENDED_LEN:
+					if wind_extra_len < BASE_MAX_EXTENDED_LEN:
 						wind_dot = _last_pos.direction_to(pos).dot(wind_direction)
 						wind_dot = maxf(wind_dot, 0.0)
-						extra_len += dist_travelled * wind_dot
+						wind_extra_len += dist_travelled * wind_dot
 						extra_len_display += dist_travelled * wind_dot
-					elif extra_len > BASE_MAX_EXTENDED_LEN:
-						extra_len = BASE_MAX_EXTENDED_LEN
-					wind_extra_len_display = BASE_MAX_EXTENDED_LEN - extra_len
+					elif wind_extra_len > BASE_MAX_EXTENDED_LEN:
+						wind_extra_len = BASE_MAX_EXTENDED_LEN
+					wind_extra_len_display = BASE_MAX_EXTENDED_LEN - wind_extra_len
 				
 				# Spawn fewer segments when going fast
-				var mod = (1.0 / lightning_speed_mod)
+				var mod = (1.0 / lightning_speed_mod) # TODO incorporate dash bonus here too 
 				_len_per_seg = _len_per_seg_base * mod
 				
 				# If we've traveled the length of a segment, add a segment to fill the gap
@@ -757,8 +782,10 @@ func _physics_process(delta):
 					_root_seg.detached_child = null
 					_segs -= 1 
 				
+				max_extended_len = BASE_MAX_EXTENDED_LEN + extra_len + wind_extra_len
+				
 				# Retract if we've extended to the maximum possible length
-				if _extended_len > max_extended_len + extra_len:
+				if _extended_len > max_extended_len:
 					begin_retracting()
 			
 			State.RETRACTING:
@@ -1026,16 +1053,58 @@ var dash_force_strength := 0.0
 ## True if the player is currently dashing.
 var is_dashing := false
 
+func process_dash_logic(delta: float):
+	if is_inactive() and can_dash:
+		charge_dash_on_input(delta)
+	update_dash_overlay()
+
 ## If the player can dash, is holding right click, is INACTIVE, and can extend, 
-## increases dash charge amount and updates dash charge visuals  
+## increases dash charge amount and updates dash charge visuals.
+## Triggers a dash on release of right click. 
 func charge_dash_on_input(delta : float):
 	if can_dash and is_inactive() and can_extend and Input.is_action_pressed("dash"):
-		const DASH_CHARGE_DURATION = 2.0
+		const DASH_CHARGE_DURATION = 1.0
 		const DASH_CHARGE_MULTIPLIER = 1.0 / DASH_CHARGE_DURATION
 		dash_charge_amount += delta * DASH_CHARGE_MULTIPLIER
 		dash_charge_amount = clampf(dash_charge_amount, 0.0, 1.0)
-		print(dash_charge_amount)
+
+	if can_dash and is_inactive() and can_extend and dash_charge_amount > 0 and Input.is_action_just_released("dash"):
+		begin_extending() # Triggers a dash
+
+func update_dash_overlay():
+	if dash_charge_amount > 0.0:
+		dash_overlay.visible = true
 		
+		# Emit a particle if frame changes
+		var current_dash_overlay_frame = dash_overlay.frame
+		set_dash_overlay_anim_and_frame()
+		var new_dash_overlay_frame = dash_overlay.frame
+		if current_dash_overlay_frame != new_dash_overlay_frame:
+			emit_dash_charge_particle(new_dash_overlay_frame)
+
+func emit_dash_charge_particle(frame: int):
+	const FRAMES = 8
+	# -90 -> 0 -> 90 -> 180 as frames increase from 0 to 7
+	var particle_angle = -PI / 2 + frame * (PI / 4) + rotation
+	var particle_direction = Vector2.from_angle(particle_angle)
+	
+	const BASE_AMOUNT = 12
+	const BASE_SPEED = 50.0
+	var amount = BASE_AMOUNT + randi_range(0, 8)
+	for i in range(amount):
+		var rand_vel = particle_direction.rotated(randf_range(-PI / 8, PI / 8)) * BASE_SPEED * randf_range(0.8, 1.2)
+		dash_charge_sparkles.emit_particle(Transform2D.IDENTITY, 
+			rand_vel, Color.WHITE, Color.WHITE, GPUParticles2D.EmitFlags.EMIT_FLAG_VELOCITY)
+
+
+
+func _wiggle_dash_overlay():
+	var tween = create_tween().set_loops()
+	const DUR = 0.33
+	const OFFSET = Vector2(-0.25, -0.25)
+	tween.tween_property(dash_overlay, "offset", OFFSET, DUR).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_IN)
+	tween.tween_property(dash_overlay, "offset", Vector2.ZERO, DUR).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
+
 
 ## Executes a dash, with varying behavior for charged and second wind dashes.
 ## Charged: Picks a dash direction and does an impulse in that direction. 
@@ -1069,16 +1138,26 @@ func dash() -> void:
 		
 		tween.tween_property(self, "dash_force_strength", 0.0, dash_duration).set_trans(Tween.TRANS_CUBIC)
 		tween.parallel().tween_property(self, "dash_turn_strength", 1.0, dash_duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		tween.parallel().tween_property(self, "dash_charge_amount", 0.0, dash_duration - 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		
 		
 		tween.tween_property(self, "is_dashing", false, 0.0)
-	else:
+		tween.tween_callback(begin_retracting)
+		tween.tween_callback(dash_overlay.hide)
+	elif is_retracting():
 		push_error("Second wind dash not implemented yet")
 
-
-
-
-
-
+func set_dash_overlay_anim_and_frame():
+	var head_anim: String = _sprite.animation
+	var head_frame: String = str(_sprite.frame)
+	var dash_overlay_anim = "normal"
+	if head_anim != "normal":
+		dash_overlay_anim = head_anim + head_frame
+	
+	var dash_overlay_frame = int(dash_charge_amount * 7)
+	
+	dash_overlay.animation = dash_overlay_anim
+	dash_overlay.frame = dash_overlay_frame
 
 #endregion Dash methods
 
@@ -1090,6 +1169,9 @@ func is_inactive() -> bool:
 
 func is_extending() -> bool:
 	return _state == State.EXTENDING
+
+func is_retracting() -> bool:
+	return _state == State.RETRACTING
 
 func get_mouse_angle() -> float:
 	return global_position.angle_to_point(get_global_mouse_position()) + PI/2
