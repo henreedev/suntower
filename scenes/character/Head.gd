@@ -30,6 +30,7 @@ var _prev_segs := _segs
 var _set_transform
 var fixing_gap = false
 var can_extend := true
+var ignore_extension_limit := false
 var _can_nudge = false
 var should_teleport := false
 var rotation_while_retracting_enabled := false
@@ -347,9 +348,11 @@ func act_on_state():
 		# Enable extension while retracting here:
 		#elif Input.is_action_just_pressed("extend"):
 			#begin_extending()
+		elif can_dash and Input.is_action_pressed("dash"):
+			dash()
 		_teleport_if_stuck()
 	elif _state == State.INACTIVE:
-		if Input.is_action_just_pressed("extend"):
+		if Input.is_action_just_pressed("extend") and not Input.is_action_pressed("dash"):
 			begin_extending()
 		_teleport_if_stuck()
 
@@ -619,13 +622,16 @@ func _integrate_forces(state):
 			
 			# Add to linear velocity if dashing
 			var lin_vel = state.linear_velocity
+			var base_y_vel = -EXTEND_SPEED * lightning_speed_mod
 			if is_dashing:
-				lin_vel = Vector2(0, -dash_force_strength + -EXTEND_SPEED * lightning_speed_mod).rotated(rotation)
+				var dash_y_vel = -dash_force_strength
+				base_y_vel = max(base_y_vel, dash_y_vel)
+				lin_vel = Vector2(0, dash_y_vel).rotated(rotation)
 			else:
 				# Move in direction of rotation
-				lin_vel = Vector2(0, -EXTEND_SPEED * lightning_speed_mod).rotated(rotation)
-			
-			lin_vel *= slow_multiplier
+				lin_vel = Vector2(0, base_y_vel).rotated(rotation)
+				# Calculate slow multiplier for dash
+				lin_vel *= slow_multiplier
 			
 			# Get pushed by wind beam
 			if has_wind_buff:
@@ -785,7 +791,7 @@ func _physics_process(delta):
 				max_extended_len = BASE_MAX_EXTENDED_LEN + extra_len + wind_extra_len
 				
 				# Retract if we've extended to the maximum possible length
-				if _extended_len > max_extended_len:
+				if _extended_len > max_extended_len and not ignore_extension_limit:
 					begin_retracting()
 			
 			State.RETRACTING:
@@ -1068,7 +1074,7 @@ func charge_dash_on_input(delta : float):
 		dash_charge_amount += delta * DASH_CHARGE_MULTIPLIER
 		dash_charge_amount = clampf(dash_charge_amount, 0.0, 1.0)
 
-	if can_dash and is_inactive() and can_extend and dash_charge_amount > 0 and Input.is_action_just_released("dash"):
+	if can_dash and is_inactive() and can_extend and dash_charge_amount > 0 and not Input.is_action_pressed("dash"):
 		begin_extending() # Triggers a dash
 
 func update_dash_overlay():
@@ -1120,10 +1126,10 @@ func dash() -> void:
 		_set_transform = Transform2D(dash_angle, get_transform().get_origin())
 		
 		var extra_dash_length = dash_charge_amount * 500.0
-		extra_len += extra_dash_length
+		extra_len += extra_dash_length # FIXME not using above value for limit
 		
-		const MAX_DASH_FORCE_STRENGTH = 125.0
-		const MIN_DASH_FORCE_STRENGTH = 60.0
+		const MAX_DASH_FORCE_STRENGTH = 200.0
+		const MIN_DASH_FORCE_STRENGTH = 100.0
 		var initial_dash_force_strength = MAX_DASH_FORCE_STRENGTH * pow(dash_charge_amount, 0.75) + MIN_DASH_FORCE_STRENGTH
 		#initial_dash_force_strength = clampf(initial_dash_force_strength, MIN_DASH_FORCE_STRENGTH, MAX_DASH_FORCE_STRENGTH)
 		
@@ -1136,16 +1142,42 @@ func dash() -> void:
 		
 		var tween := create_tween()
 		
-		tween.tween_property(self, "dash_force_strength", 0.0, dash_duration).set_trans(Tween.TRANS_CUBIC)
-		tween.parallel().tween_property(self, "dash_turn_strength", 1.0, dash_duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		const SLOWDOWN_DUR = 0.2
+		
+		tween.tween_property(self, "dash_turn_strength", 1.0, dash_duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 		tween.parallel().tween_property(self, "dash_charge_amount", 0.0, dash_duration - 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		tween.parallel().tween_property(self, "dash_force_strength", MIN_DASH_FORCE_STRENGTH * 0.75, dash_duration - SLOWDOWN_DUR).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		tween.chain().tween_property(self, "dash_force_strength", 0.0, SLOWDOWN_DUR).set_trans(Tween.TRANS_CUBIC)
 		
 		
 		tween.tween_property(self, "is_dashing", false, 0.0)
 		tween.tween_callback(begin_retracting)
 		tween.tween_callback(dash_overlay.hide)
-	elif is_retracting():
-		push_error("Second wind dash not implemented yet")
+	elif is_retracting(): # Second wind dash
+		# Second wind dash ignores limit because it's only for a short duration
+		ignore_extension_limit = true
+		is_dashing = true
+		can_dash = false
+		
+		begin_extending()
+		
+		dash_angle = get_mouse_angle()
+		# Set head angle to dash angle
+		_set_transform = Transform2D(dash_angle, get_transform().get_origin())
+		
+		const SECOND_WIND_DASH_FORCE_STRENGTH_MIN = 50.0
+		const SECOND_WIND_DASH_FORCE_STRENGTH_MAX = 200.0
+		const SECOND_WIND_DASH_TURN_STRENGTH = 0.5
+		const SECOND_WIND_DASH_DURATION = 0.5
+		
+		dash_force_strength = SECOND_WIND_DASH_FORCE_STRENGTH_MAX
+		
+		var tween := create_tween()
+		tween.tween_property(self, "dash_force_strength", SECOND_WIND_DASH_FORCE_STRENGTH_MIN, SECOND_WIND_DASH_DURATION).set_trans(Tween.TRANS_CIRC)
+		
+		tween.tween_property(self, "is_dashing", false, 0.0)
+		tween.tween_property(self, "ignore_extension_limit", false, 0.0)
+		tween.tween_callback(begin_retracting)
 
 func set_dash_overlay_anim_and_frame():
 	var head_anim: String = _sprite.animation
