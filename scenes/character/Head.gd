@@ -35,6 +35,9 @@ var _can_nudge = false
 var should_teleport := false
 var rotation_while_retracting_enabled := false
 
+# Camera variables
+var target_y_offset := 0.0
+
 # Extension/retraction variables
 @export var max_extended_len := 125.0
 var _len_per_seg_base : float ## Calculated on initialization
@@ -248,6 +251,7 @@ func _process(delta):
 		_update_lightning_buff(delta)
 		_update_wind_buff(delta)
 		process_dash_logic(delta)
+		_process_camera_offset(delta)
 
 # Listens for dev-related inputs.
 func _input(event):
@@ -1192,6 +1196,29 @@ func set_dash_overlay_anim_and_frame():
 	dash_overlay.frame = dash_overlay_frame
 
 #endregion Dash methods
+
+#region Camera offset
+
+## Offsets the camera vertically in the direction of movement.
+func _process_camera_offset(delta: float):
+	if delta < 0.1:
+		var dist_from_pot = global_position.y - _pot.global_position.y 
+		#var dist_from_pot = linear_velocity.y
+		#print(dist_from_pot)
+		if abs(dist_from_pot) < 50: 
+			dist_from_pot *= 0.0
+		#elif abs(dist_from_pot) < 150:
+			#dist_from_pot *= 0.5
+		else:
+			dist_from_pot *= -0.2
+		const MAX_CAMERA_Y_OFFSET = 50.0
+		target_y_offset = clamp(dist_from_pot, -MAX_CAMERA_Y_OFFSET, MAX_CAMERA_Y_OFFSET)
+		var offset = camera_2d.offset.y
+		offset = move_toward(offset, target_y_offset, delta * 10.0) * 0.5 + \
+				lerpf(offset, target_y_offset, delta * 1.5) * 0.5 
+		#camera_2d.offset.y = offset
+
+#endregion Camera offset
 
 
 #region Convenience helpers

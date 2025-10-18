@@ -41,8 +41,8 @@ frequency = 1.0
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uika7"]
 width = 256
 height = 256
-seamless = true
 noise = SubResource("FastNoiseLite_q58ya")
+seamless = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_r2684"]
 shader = ExtResource("1_0j8fu")
