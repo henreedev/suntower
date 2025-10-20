@@ -14,6 +14,8 @@ const VINE_SCENE : PackedScene = preload("res://scenes/character/Vine.tscn")
 # Gameplay control variables
 var play_animation_on_start : bool # Set by SceneManager
 
+var last_stable_pot_position: Vector2
+
 # Display values of resources, for HUD to use
 var vine_len_display = BASE_MAX_EXTENDED_LEN
 var wind_extra_len_display = BASE_MAX_EXTENDED_LEN
@@ -733,7 +735,8 @@ func _physics_process(delta):
 	if not _animating:
 		# Player can extend if the pot is still
 		can_extend = _pot.touching and _pot.linear_velocity.length_squared() < 2.0 or _state == State.EXTENDING or (_state == State.RETRACTING and _extended_len > 0)
-		
+		if can_extend:
+			last_stable_pot_position = _pot.position
 		var pos = position
 		
 		match _state:
@@ -1034,7 +1037,8 @@ func _on_sunrays_hit():
 
 # Teleports head and vine segments to the pot, fixing any issues with the head being stuck.
 func unstuck():
-	position = _pot.global_position
+	_pot.position = last_stable_pot_position
+	position = _pot.position
 	get_tree().set_group("vine", "global_position", _pot.global_position - Vector2(0, 10))
 
 #region Dash methods
@@ -1205,18 +1209,21 @@ func _process_camera_offset(delta: float):
 		var dist_from_pot = global_position.y - _pot.global_position.y 
 		#var dist_from_pot = linear_velocity.y
 		#print(dist_from_pot)
-		if abs(dist_from_pot) < 50: 
+		if abs(dist_from_pot) < 55: 
 			dist_from_pot *= 0.0
 		#elif abs(dist_from_pot) < 150:
 			#dist_from_pot *= 0.5
 		else:
-			dist_from_pot *= -0.2
-		const MAX_CAMERA_Y_OFFSET = 50.0
+			if is_extending():
+				dist_from_pot *= 0.25
+			else:
+				dist_from_pot *= -0.25
+		const MAX_CAMERA_Y_OFFSET = 40.0
 		target_y_offset = clamp(dist_from_pot, -MAX_CAMERA_Y_OFFSET, MAX_CAMERA_Y_OFFSET)
 		var offset = camera_2d.offset.y
-		offset = move_toward(offset, target_y_offset, delta * 10.0) * 0.5 + \
-				lerpf(offset, target_y_offset, delta * 1.5) * 0.5 
-		#camera_2d.offset.y = offset
+		offset = move_toward(offset, target_y_offset, delta * 20.0) * 0.3 + \
+				lerpf(offset, target_y_offset, delta * 1.5) * 0.7 
+		camera_2d.offset.y = offset
 
 #endregion Camera offset
 
@@ -1236,7 +1243,6 @@ func get_mouse_angle() -> float:
 	return global_position.angle_to_point(get_global_mouse_position()) + PI/2
 	
 #endregion Convenience helpers
-
 
 # Ensures that spiked and idle forms remain that way after playing once.
 func _on_sprite_2d_animation_looped():
