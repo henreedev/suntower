@@ -57,6 +57,9 @@ const MAX_FORCE_MOD := 4.0 ## Max slingshot force multiplier
 var force_mod := 1.0 ## Increased when pressing slingshot
 var slingshotting := false ## True after pressing slingshot input, until inactive
 @onready var _last_pos : Vector2 = position
+var showing_dash_spike := false
+var stabbed_into_wall := false
+var stab_position: Vector2
 
 # Sun buff
 var _has_sun_buff := false
@@ -87,6 +90,7 @@ var lightning_buff_tween : Tween
 var wind_tween : Tween
 var wind_particles_tween : Tween
 var slingshot_tween : Tween
+var dash_tween: Tween
 
 
 # Onready references to other nodes
@@ -105,6 +109,11 @@ var slingshot_tween : Tween
 @onready var storm_light : PointLight2D = $StormLight
 @onready var spiked_hitbox: CollisionPolygon2D = $SpikedHitbox
 @onready var occluders : Node2D = $Occluders/Node2D
+@onready var dash_spike_sprite: Polygon2D = $DashSpikeSprite
+@onready var dash_spike_trigger_area: Area2D = $DashSpikeTriggerArea
+@onready var dash_spike_collider: CollisionPolygon2D = $DashSpikeCollider
+
+
 
 # Particle system variables
 @onready var sun_particles : GPUParticles2D = %Sparkles
@@ -290,8 +299,9 @@ func _teleport_if_stuck():
 	if not should_check_if_stuck: return
 	
 	if _state == State.INACTIVE:
-		stuck = not can_extend and _pot.linear_velocity.length() < 100.0
-		if stuck:
+		stuck = (not can_extend and _pot.linear_velocity.length() < 100.0) or  \
+					any_segs_too_far_apart()
+		if stuck and stuck_timer.is_stopped():
 			stuck_timer.start() # Help the player after a delay
 		else:
 			if not waiting_to_check:
@@ -391,6 +401,7 @@ func begin_extending():
 		_pot.angular_damp = 10.0
 		_pot.mass = 0.25
 		
+		gravity_scale = 1.0
 		linear_damp = 0.0
 		mass = 0.1
 		
@@ -411,6 +422,8 @@ func begin_inactive():
 	_sprite.frame = 0
 	_sprite.play()
 	disable_spiked_hitbox()
+	
+	hide_dash_spike()
 	
 	# Remove the gap in the neck
 	fixing_gap = true
@@ -440,6 +453,7 @@ func begin_inactive():
 	can_dash = true
 	dash_charge_amount = 0.0
 	
+	stabbed_into_wall = false
 	
 	physics_material_override.friction = 0.0
 	lock_rotation = false
@@ -479,6 +493,10 @@ func begin_retracting():
 	
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
 	
+	if not stabbed_into_wall:
+		hide_dash_spike()
+		disable_dash_spike()
+	
 	physics_material_override.friction = 2.5
 	_pot.gravity_scale = 0.43
 	_pot.mass = 0.28
@@ -510,6 +528,47 @@ func disable_spiked_hitbox():
 	spiked_hitbox_tween = create_tween()
 	spiked_hitbox_tween.tween_property(spiked_hitbox, "scale", Vector2.ONE * 0.4, 0.5).set_trans(Tween.TRANS_CUBIC)
 	spiked_hitbox_tween.tween_property(spiked_hitbox, "disabled", true, 0)
+
+func enable_dash_spike():
+	print("enabled dash spike")
+	dash_spike_collider.disabled = false
+	dash_spike_trigger_area.monitoring = true
+
+func disable_dash_spike():
+	print("disabled dash spike")
+	dash_spike_collider.set_deferred("disabled", true)
+	dash_spike_trigger_area.set_deferred("monitoring", false)
+
+func show_dash_spike():
+	showing_dash_spike = true
+	var tween = create_tween()
+	tween.tween_property(dash_spike_sprite, "scale", Vector2.ONE, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.parallel().tween_property(dash_spike_sprite, "modulate", Color.WHITE * 5, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(dash_spike_sprite, "modulate", Color.WHITE, 0.5).set_trans(Tween.TRANS_BOUNCE)
+	dash_spike_sprite.show()
+
+func hide_dash_spike():
+	showing_dash_spike = false
+	var tween = create_tween()
+	tween.tween_property(dash_spike_sprite, "scale", Vector2.ZERO, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.parallel().tween_property(dash_spike_sprite, "modulate", Color.WHITE, 0.5).set_trans(Tween.TRANS_BOUNCE)
+	tween.tween_callback(dash_spike_sprite.hide)
+
+func stab_dash_spike_into_wall():
+	stabbed_into_wall = true
+	is_dashing = false
+	dash_charge_amount = 0.0
+	#set_deferred("freeze", true)
+	dash_overlay.hide()
+	disable_dash_spike()
+	if dash_tween:
+		dash_tween.kill()
+	dash_tween = create_tween()
+	# Move a bit towards wall, like you're stabbing into it
+	const STAB_DIST = 8.0
+	stab_position = position + (Vector2.RIGHT * STAB_DIST).rotated(rotation - PI / 2)
+	dash_tween.tween_property(self, "position", stab_position, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	begin_retracting()
 
 # Enables wind particles with a fade-in.
 func enable_wind_particles():
@@ -644,7 +703,7 @@ func _integrate_forces(state):
 				const WIND_ACTIVE_BEAM_STRENGTH = 45.0
 				lin_vel += wind_direction * WIND_ACTIVE_BEAM_STRENGTH * active_wind_beam_strength_mod
 			
-			state.linear_velocity = lin_vel
+			state.linear_velocity = lin_vel # lerp(state.linear_velocity, lin_vel, 1.0 * state.step)
 			
 		elif _state == State.RETRACTING:
 			# Do slingshot
@@ -657,6 +716,9 @@ func _integrate_forces(state):
 				slingshot_tween.tween_property(self, "force_mod", MAX_FORCE_MOD, 2.0)
 				get_tree().set_group("vine", "linear_damp", 0.0)
 				get_tree().set_group("vine", "angular_damp", 2.0)
+			
+			if stabbed_into_wall:
+				state.transform = Transform2D(state.transform.get_rotation(), stab_position)
 			
 			# Rotate steadily towards mouse
 			if rotation_while_retracting_enabled:
@@ -735,7 +797,8 @@ func _physics_process(delta):
 	if not _animating:
 		# Player can extend if the pot is still
 		can_extend = _pot.touching and _pot.linear_velocity.length_squared() < 2.0 or _state == State.EXTENDING or (_state == State.RETRACTING and _extended_len > 0)
-		if can_extend:
+		var stable = _pot.touching and _pot.linear_velocity.length_squared() < 2.0 and is_inactive()
+		if stable:
 			last_stable_pot_position = _pot.position
 		var pos = position
 		
@@ -1039,7 +1102,7 @@ func _on_sunrays_hit():
 func unstuck():
 	_pot.position = last_stable_pot_position
 	position = _pot.position
-	get_tree().set_group("vine", "global_position", _pot.global_position - Vector2(0, 10))
+	get_tree().set_group("vine", "global_position", _pot.global_position)
 
 #region Dash methods
 
@@ -1076,7 +1139,10 @@ func process_dash_logic(delta: float):
 ## increases dash charge amount and updates dash charge visuals.
 ## Triggers a dash on release of right click. 
 func charge_dash_on_input(delta : float):
-	if can_dash and is_inactive() and can_extend and Input.is_action_pressed("dash"):
+	# Show spike if hidden
+	if can_dash and is_inactive() and dash_charge_amount > 0 and not showing_dash_spike:
+		show_dash_spike()
+	if can_dash and is_inactive() and can_extend and _pot.touching and Input.is_action_pressed("dash"):
 		const DASH_CHARGE_DURATION = 1.0
 		const DASH_CHARGE_MULTIPLIER = 1.0 / DASH_CHARGE_DURATION
 		dash_charge_amount += delta * DASH_CHARGE_MULTIPLIER
@@ -1130,6 +1196,7 @@ func dash() -> void:
 		is_dashing = true
 		can_dash = false
 		dash_angle = get_mouse_angle()
+		enable_dash_spike()
 		# Set head angle to dash angle
 		_set_transform = Transform2D(dash_angle, get_transform().get_origin())
 		
@@ -1147,20 +1214,21 @@ func dash() -> void:
 		dash_turn_strength = initial_dash_turn_strength
 		
 		var dash_duration = dash_charge_amount * 0.6 + 0.4
-		
-		var tween := create_tween()
+		if dash_tween:
+			dash_tween.kill()
+		dash_tween = create_tween()
 		
 		const SLOWDOWN_DUR = 0.2
 		
-		tween.tween_property(self, "dash_turn_strength", 1.0, dash_duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-		tween.parallel().tween_property(self, "dash_charge_amount", 0.0, dash_duration - 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-		tween.parallel().tween_property(self, "dash_force_strength", MIN_DASH_FORCE_STRENGTH * 0.75, dash_duration - SLOWDOWN_DUR).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-		tween.chain().tween_property(self, "dash_force_strength", 0.0, SLOWDOWN_DUR).set_trans(Tween.TRANS_CUBIC)
+		dash_tween.tween_property(self, "dash_turn_strength", 1.0, dash_duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		dash_tween.parallel().tween_property(self, "dash_charge_amount", 0.0, dash_duration - 0.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		dash_tween.parallel().tween_property(self, "dash_force_strength", MIN_DASH_FORCE_STRENGTH * 0.75, dash_duration - SLOWDOWN_DUR).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		dash_tween.chain().tween_property(self, "dash_force_strength", 0.0, SLOWDOWN_DUR).set_trans(Tween.TRANS_CUBIC)
 		
 		
-		tween.tween_property(self, "is_dashing", false, 0.0)
-		tween.tween_callback(begin_retracting)
-		tween.tween_callback(dash_overlay.hide)
+		dash_tween.tween_property(self, "is_dashing", false, 0.0)
+		dash_tween.tween_callback(begin_retracting)
+		dash_tween.tween_callback(dash_overlay.hide)
 	elif is_retracting(): # Second wind dash
 		# Second wind dash ignores limit because it's only for a short duration
 		ignore_extension_limit = true
@@ -1211,13 +1279,8 @@ func _process_camera_offset(delta: float):
 		#print(dist_from_pot)
 		if abs(dist_from_pot) < 55: 
 			dist_from_pot *= 0.0
-		#elif abs(dist_from_pot) < 150:
-			#dist_from_pot *= 0.5
 		else:
-			if is_extending():
-				dist_from_pot *= 0.25
-			else:
-				dist_from_pot *= -0.25
+			dist_from_pot *= -0.25
 		const MAX_CAMERA_Y_OFFSET = 40.0
 		target_y_offset = clamp(dist_from_pot, -MAX_CAMERA_Y_OFFSET, MAX_CAMERA_Y_OFFSET)
 		var offset = camera_2d.offset.y
@@ -1242,6 +1305,21 @@ func is_retracting() -> bool:
 func get_mouse_angle() -> float:
 	return global_position.angle_to_point(get_global_mouse_position()) + PI/2
 	
+
+func any_segs_too_far_apart() -> bool:
+	var vine_seg : Vine = _root_seg
+	while (vine_seg):
+		var prev_seg := vine_seg as Vine
+		var next_seg = vine_seg.get_child_seg()
+		if next_seg is Vine:
+			if prev_seg.position.distance_squared_to(next_seg.position) > 128.0:
+				return true
+		elif next_seg is Pot: 
+			if prev_seg.position.distance_squared_to(next_seg.position) > 128.0:
+				return true
+			break
+		vine_seg = next_seg
+	return false
 #endregion Convenience helpers
 
 # Ensures that spiked and idle forms remain that way after playing once.
@@ -1259,3 +1337,7 @@ func _on_stuck_timer_timeout():
 # Fixes being "dead".
 func _on_dead_timer_timeout():
 	unstuck()
+
+func _on_dash_spike_trigger_area_body_entered(body: Node2D) -> void:
+	if is_dashing and body.is_in_group("tower_hitbox"):
+		stab_dash_spike_into_wall()

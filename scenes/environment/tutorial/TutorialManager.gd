@@ -40,7 +40,7 @@ func _pos_within_radius(actual_pos : Vector2, target_pos : Vector2, radius : flo
 	return actual_pos.distance_squared_to(target_pos) <= radius * radius
 
 func _check_if_inscription_satisfied():
-	const VALID_RADIUS = 8.0
+	const VALID_RADIUS = 16.0
 	match curr_inscription:
 		InscriptionType.LEFT_CLICK:
 			# left clicked at all, and held left click long enough

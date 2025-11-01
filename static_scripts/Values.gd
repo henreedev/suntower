@@ -14,7 +14,7 @@ const SAVE_PATH = "user://user-data.cfg"
 static var initialized = false
 
 # User setting variables 
-static var skip_cutscene = true # FIXME
+static var skip_cutscene = false
 static var speedrun_mode = false
 
 # User stats

@@ -10,6 +10,10 @@ class_name IndicatorArrow
 
 ## Decide which arrows to show. 
 func show_arrows_on_state() -> void:
+	if head._animating:
+		base_arrow.hide()
+		dash_arrow.hide()
+		return
 	# Possible states:
 	# 1. Inactive and charging dash. Show only dash arrow and lighten it based on charge amount. 
 	# 2. Inactive and not charging dash. Show both

@@ -17,6 +17,7 @@ const BASE_SPRITE_SCALE := Vector2(1.0, 0.5)
 @onready var light : PointLight2D = $StormLight
 @onready var last_pos : Vector2 = position
 @onready var fake_light : Sprite2D = $FakeLight
+@onready var pin_joint_2d: PinJoint2D = $PinJoint2D
 var this_scene : PackedScene = preload("res://scenes/character/Vine.tscn")
 var _rotation_match_node
 var frame = 0
@@ -76,7 +77,7 @@ func get_child_seg_vine(iterations := 0) -> Vine:
 func get_child_seg(iterations := 0):
 	var child : Node 
 	if detached_child: child = detached_child
-	else: child = get_node($PinJoint2D.node_b) if not _set_child else _set_child
+	else: child = get_node(pin_joint_2d.node_b) if not _set_child else _set_child
 	if iterations > 0:
 		return child.get_child_seg(iterations - 1)
 	else: return child
