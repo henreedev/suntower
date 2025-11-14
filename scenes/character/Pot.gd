@@ -192,3 +192,19 @@ func _on_body_entered(body):
 func _on_body_exited(body):
 	if body.is_in_group("tower_hitbox"):
 		touching = false
+
+static var in_foreground := false
+
+func _on_tower_foreground_area_body_entered(body: Node2D) -> void:
+	var foreground = body as TowerForeground
+	assert(foreground)
+	in_foreground = true
+	foreground.hide_foreground()
+
+
+func _on_tower_foreground_area_body_exited(body: Node2D) -> void:
+	var foreground = body as TowerForeground
+	assert(foreground)
+	in_foreground = false
+	if not Head.in_foreground:
+		foreground.show_foreground()

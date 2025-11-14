@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=34 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" uid="uid://dxdv6f7qq1f66" path="res://scenes/character/Pot.gd" id="1_u6jn4"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/character/Pot.png" id="2_dk0m0"]
@@ -144,6 +144,9 @@ collision_mode = 1
 collision_friction = 0.3
 collision_bounce = 0.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kmbfl"]
+size = Vector2(8, 8)
+
 [node name="Pot" type="RigidBody2D" groups=["pot"]]
 collision_mask = 9
 mass = 0.25
@@ -216,5 +219,14 @@ explosiveness = 1.0
 trail_lifetime = 0.2
 process_material = SubResource("ParticleProcessMaterial_5uudk")
 
+[node name="TowerForegroundArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 512
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TowerForegroundArea"]
+shape = SubResource("RectangleShape2D_kmbfl")
+
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]
+[connection signal="body_entered" from="TowerForegroundArea" to="." method="_on_tower_foreground_area_body_entered"]
+[connection signal="body_exited" from="TowerForegroundArea" to="." method="_on_tower_foreground_area_body_exited"]

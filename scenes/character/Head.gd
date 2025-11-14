@@ -1140,8 +1140,8 @@ func process_dash_logic(delta: float):
 ## Triggers a dash on release of right click. 
 func charge_dash_on_input(delta : float):
 	# Show spike if hidden
-	if can_dash and is_inactive() and dash_charge_amount > 0 and not showing_dash_spike:
-		show_dash_spike()
+	#if can_dash and is_inactive() and dash_charge_amount > 0 and not showing_dash_spike:
+		#show_dash_spike()
 	if can_dash and is_inactive() and can_extend and _pot.touching and Input.is_action_pressed("dash"):
 		const DASH_CHARGE_DURATION = 1.0
 		const DASH_CHARGE_MULTIPLIER = 1.0 / DASH_CHARGE_DURATION
@@ -1196,7 +1196,8 @@ func dash() -> void:
 		is_dashing = true
 		can_dash = false
 		dash_angle = get_mouse_angle()
-		enable_dash_spike()
+		#enable_dash_spike()
+		
 		# Set head angle to dash angle
 		_set_transform = Transform2D(dash_angle, get_transform().get_origin())
 		
@@ -1341,3 +1342,19 @@ func _on_dead_timer_timeout():
 func _on_dash_spike_trigger_area_body_entered(body: Node2D) -> void:
 	if is_dashing and body.is_in_group("tower_hitbox"):
 		stab_dash_spike_into_wall()
+
+static var in_foreground := false
+
+func _on_tower_foreground_area_body_entered(body: Node2D) -> void:
+	var foreground = body as TowerForeground
+	assert(foreground)
+	in_foreground = true
+	foreground.hide_foreground()
+
+
+func _on_tower_foreground_area_body_exited(body: Node2D) -> void:
+	var foreground = body as TowerForeground
+	assert(foreground)
+	in_foreground = false
+	if not Pot.in_foreground:
+		foreground.show_foreground()

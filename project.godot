@@ -138,6 +138,7 @@ dash={
 2d_physics/layer_5="Head"
 2d_physics/layer_6="Hats"
 2d_physics/layer_7="Props"
+2d_physics/layer_10="TowerForeground"
 
 [physics]
 
