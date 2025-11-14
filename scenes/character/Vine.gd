@@ -18,6 +18,9 @@ const BASE_SPRITE_SCALE := Vector2(1.0, 0.5)
 @onready var last_pos : Vector2 = position
 @onready var fake_light : Sprite2D = $FakeLight
 @onready var pin_joint_2d: PinJoint2D = $PinJoint2D
+@onready var head: Head = get_tree().get_first_node_in_group("flowerhead")
+@onready var tower: Tower = get_tree().get_first_node_in_group("tower")
+@onready var force_averager: Node = $ForceAverager
 var this_scene : PackedScene = preload("res://scenes/character/Vine.tscn")
 var _rotation_match_node
 var frame = 0
@@ -32,6 +35,8 @@ const MAX_SUNLIGHT_VFX_INTENSITY := 6.0
 
 ## How many pixels per second at which the sunlight vfx propagate along vine segments.
 const BASE_SUNLIGHT_VFX_PROPAGATE_SPEED = 80.0
+
+var is_in_wind_tunnel := false
 
 func _process(delta):
 	frame += 1
@@ -66,9 +71,6 @@ func set_child (child : RigidBody2D):
 		index = child.index + 1
 		child.parent_vine = self
 
-func set_grav(grav : float):
-	gravity_scale = grav
-
 ## Only returns if it's a vine. If it's a pot, returns self
 func get_child_seg_vine(iterations := 0) -> Vine:
 	var child = get_child_seg(iterations)
@@ -81,6 +83,26 @@ func get_child_seg(iterations := 0):
 	if iterations > 0:
 		return child.get_child_seg(iterations - 1)
 	else: return child
+
+func set_is_in_wind_tunnel(to: bool):
+	is_in_wind_tunnel = to
+
+func set_physics_variables(state: Head.State):
+	match state:
+		Head.State.INACTIVE:
+			gravity_scale = -0.03
+			linear_damp = 1.0
+			angular_damp = 20.0
+		Head.State.EXTENDING:
+			if is_in_wind_tunnel:
+				gravity_scale = 0.0
+			else:
+				gravity_scale = 0.1
+		Head.State.RETRACTING:
+			if head._segs > 60 and tower.weather == Tower.Weather.STORMY:
+				gravity_scale = 0.0 # Avoid issues with too many segments being heavy
+			else:
+				gravity_scale = 0.3
 
 func make_self_exception():
 	get_tree().call_group("vine", "add_collision_exception_with", self)

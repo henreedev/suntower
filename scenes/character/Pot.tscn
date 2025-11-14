@@ -1,8 +1,9 @@
-[gd_scene load_steps=34 format=3 uid="uid://deoc0hgj85t7q"]
+[gd_scene load_steps=35 format=3 uid="uid://deoc0hgj85t7q"]
 
 [ext_resource type="Script" uid="uid://dxdv6f7qq1f66" path="res://scenes/character/Pot.gd" id="1_u6jn4"]
 [ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/character/Pot.png" id="2_dk0m0"]
 [ext_resource type="Texture2D" uid="uid://dtw0lgoge1iy1" path="res://assets/image/character/PotShadow.png" id="4_0jlhp"]
+[ext_resource type="PackedScene" uid="uid://ci5536gxus5b8" path="res://scenes/character/ForceAverager.tscn" id="4_mpjip"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4ed4y"]
 friction = 12.75
@@ -225,6 +226,8 @@ collision_mask = 512
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TowerForegroundArea"]
 shape = SubResource("RectangleShape2D_kmbfl")
+
+[node name="ForceAverager" parent="." instance=ExtResource("4_mpjip")]
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

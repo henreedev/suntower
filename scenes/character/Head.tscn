@@ -1,4 +1,4 @@
-[gd_scene load_steps=177 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene load_steps=183 format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" uid="uid://dwvxrj22ijjs5" path="res://scenes/character/Head.gd" id="1_8f5vi"]
 [ext_resource type="Script" uid="uid://bhncjmxag1wgd" path="res://scenes/character/VineLine.gd" id="3_0cjmd"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://bacl30qys35qp" path="res://assets/image/character/FlowerHeadExtendSpritesheet.png" id="7_s0rxb"]
 [ext_resource type="Script" uid="uid://beqcsybl3im8b" path="res://scenes/character/FollowHead.gd" id="8_isoiy"]
 [ext_resource type="Texture2D" uid="uid://d2hoycvv7ngsl" path="res://assets/image/environment/ParticleWindGust.png" id="9_i8fql"]
+[ext_resource type="PackedScene" uid="uid://ci5536gxus5b8" path="res://scenes/character/ForceAverager.tscn" id="10_yqrqs"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plfvk"]
 friction = 0.0
@@ -697,6 +698,31 @@ polygon = PackedVector2Array(-198, -424, -198, -385, 192, -382, 195, -419)
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_g7b60"]
 polygon = PackedVector2Array(-188, 264, -190, 298, 194, 300, 194, 267)
 
+[sub_resource type="Gradient" id="Gradient_yqrqs"]
+colors = PackedColorArray(0.601223, 0.601223, 0.60122293, 1, 0.7373294, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_x6ayb"]
+gradient = SubResource("Gradient_yqrqs")
+
+[sub_resource type="Curve" id="Curve_c78o8"]
+_limits = [0.0, 100.0, 0.0, 1.0]
+_data = [Vector2(0, 100), 0.0, 0.0, 0, 0]
+point_count = 1
+
+[sub_resource type="CurveTexture" id="CurveTexture_f2tql"]
+curve = SubResource("Curve_c78o8")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_p0b5a"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(10, 10, 1)
+inherit_velocity_ratio = -1.0
+radial_velocity_min = 9.009977
+radial_velocity_max = 9.009977
+velocity_limit_curve = SubResource("CurveTexture_f2tql")
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_x6ayb")
+
 [sub_resource type="Curve" id="Curve_ib0o0"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1e-05, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
@@ -1081,10 +1107,6 @@ can_sleep = false
 freeze_mode = 1
 angular_damp = 2.0
 script = ExtResource("1_8f5vi")
-max_extended_len = null
-dev_mode = null
-skip_game = null
-should_check_if_stuck = null
 
 [node name="Vines" type="Node" parent="."]
 
@@ -1192,6 +1214,13 @@ occluder = SubResource("OccluderPolygon2D_g7b60")
 [node name="Node" type="Node" parent="."]
 physics_interpolation_mode = 2
 
+[node name="WindTunnelExtensionParticles" type="GPUParticles2D" parent="Node"]
+unique_name_in_owner = true
+amount = 40
+process_material = SubResource("ParticleProcessMaterial_p0b5a")
+script = ExtResource("8_isoiy")
+follow_x = true
+
 [node name="Sparkles" type="GPUParticles2D" parent="Node"]
 unique_name_in_owner = true
 physics_interpolation_mode = 2
@@ -1278,6 +1307,8 @@ collision_mask = 512
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TowerForegroundArea"]
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_yqrqs")
+
+[node name="ForceAverager" parent="." instance=ExtResource("10_yqrqs")]
 
 [connection signal="animation_finished" from="Sprite2D" to="." method="_on_sprite_2d_animation_finished"]
 [connection signal="animation_looped" from="Sprite2D" to="." method="_on_sprite_2d_animation_looped"]

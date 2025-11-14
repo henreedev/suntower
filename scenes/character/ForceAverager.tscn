@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ci5536gxus5b8"]
+
+[ext_resource type="Script" uid="uid://c8rypu4ylopq7" path="res://scenes/character/force_averager.gd" id="1_t41u5"]
+
+[node name="ForceAverager" type="Node"]
+script = ExtResource("1_t41u5")

@@ -32,6 +32,10 @@ var air_time := 0.0
 # The offset from the center that the center of mass will always have.
 const CENTER_OF_MASS_OFFSET = Vector2(0, 3)
 
+# Wind tunnel boolean
+var is_in_wind_tunnel := false
+
+
 # Audio variables
 var stream : AudioStreamPolyphonic
 var playback : AudioStreamPlaybackPolyphonic
@@ -43,6 +47,7 @@ var playback : AudioStreamPlaybackPolyphonic
 @onready var shadow : Sprite2D = $Pot/Shadow
 @onready var sparks : GPUParticles2D = $Sparks
 @onready var dirt : GPUParticles2D = $Dirt
+@onready var force_averager: Node = $ForceAverager
 
 # Called when the node enters the scene tree for the first time.
 # Stores the audio stream to play SFX in.
@@ -68,6 +73,36 @@ func _display_shadow():
 func _enter_tree():
 	await Timing.create_timer(self, 0.05, true)
 	playback = sound_effect_player.get_stream_playback()
+
+func set_is_in_wind_tunnel(to: bool):
+	is_in_wind_tunnel = to
+
+func set_physics_variables(state: Head.State):
+	match state:
+		Head.State.INACTIVE:
+			mass = 1.0
+			linear_damp = 1.01
+			angular_damp = 3.0
+			if is_in_wind_tunnel:
+				gravity_scale = 0.0
+			else:
+				gravity_scale = 1.0
+		Head.State.EXTENDING:
+			if is_in_wind_tunnel or head.is_in_wind_tunnel: # TODO tweak
+				gravity_scale = 0.0
+				linear_damp = 1.01
+				angular_damp = 3.0
+				mass = 0.25
+			else:
+				gravity_scale = 1.0
+				linear_damp = 250.0
+				angular_damp = 10.0
+				mass = 0.25
+		Head.State.RETRACTING:
+			gravity_scale = 0.43
+			mass = 0.28
+			linear_damp = 1.0
+			angular_damp = 2.0
 
 # Called every physics update.
 func _physics_process(delta):

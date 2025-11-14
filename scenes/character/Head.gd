@@ -83,6 +83,9 @@ var wind_dot : float # Used in speed calculation in beam, and for bar modulate
 ## How much total extra length has been added by the wind beam.
 var wind_extra_len := 0.0
 
+# Wind tunnel
+var is_in_wind_tunnel := false
+
 # Tweens
 var spiked_hitbox_tween : Tween
 var sun_buff_tween : Tween
@@ -112,8 +115,7 @@ var dash_tween: Tween
 @onready var dash_spike_sprite: Polygon2D = $DashSpikeSprite
 @onready var dash_spike_trigger_area: Area2D = $DashSpikeTriggerArea
 @onready var dash_spike_collider: CollisionPolygon2D = $DashSpikeCollider
-
-
+@onready var force_averager: Node = $ForceAverager
 
 # Particle system variables
 @onready var sun_particles : GPUParticles2D = %Sparkles
@@ -126,6 +128,7 @@ var dash_tween: Tween
 @onready var beam_particles_mat: ParticleProcessMaterial = beam_particles.process_material
 @onready var dash_charge_sparkles: GPUParticles2D = %DashChargeSparkles
 @onready var dash_charge_sparkles_mat: ParticleProcessMaterial = dash_charge_sparkles.process_material
+@onready var wind_tunnel_extension_particles: GPUParticles2D = %WindTunnelExtensionParticles
 
 
 # Dev tools
@@ -299,7 +302,8 @@ func _teleport_if_stuck():
 	if not should_check_if_stuck: return
 	
 	if _state == State.INACTIVE:
-		stuck = (not can_extend and _pot.linear_velocity.length() < 100.0) or  \
+		stuck = \
+		#(not can_extend and _pot.linear_velocity.length() < 100.0) or  \
 					any_segs_too_far_apart()
 		if stuck and stuck_timer.is_stopped():
 			stuck_timer.start() # Help the player after a delay
@@ -381,6 +385,10 @@ func begin_extending():
 	 can_extend and not _animating:
 		_state = State.EXTENDING
 		
+		set_physics_variables(_state)
+		_pot.set_physics_variables(_state)
+		get_tree().call_group("vine", "set_physics_variables", _state)
+		
 		# Show spikes
 		_sprite.animation = "spiked"
 		_sprite.play()
@@ -391,23 +399,14 @@ func begin_extending():
 			sun_particles.emitting = true
 			sun_particles.amount = 5
 		
+		
 		lock_rotation = false
 		collision_mask = 1 + 4 + 8
-		
-		get_tree().call_group("vine", "set_grav", 0.1)
-		
-		_pot.gravity_scale = 1.0
-		_pot.linear_damp = 250.0
-		_pot.angular_damp = 10.0
-		_pot.mass = 0.25
-		
-		gravity_scale = 1.0
-		linear_damp = 0.0
-		mass = 0.1
 		
 		# Dash if charged
 		if can_dash and dash_charge_amount > 0.0:
 			dash()
+		
 		
 		stuck_timer.stop()
 		dead_timer.stop()
@@ -416,6 +415,10 @@ func begin_extending():
 # Overall, the head floats upwards and aims at the mouse, while the pot and vine have normal mass and gravity.  
 func begin_inactive():
 	_state = State.INACTIVE
+	
+	set_physics_variables(_state)
+	_pot.set_physics_variables(_state)
+	get_tree().call_group("vine", "set_physics_variables", _state)
 	
 	# Show retraction
 	_sprite.animation = "retract"
@@ -455,41 +458,24 @@ func begin_inactive():
 	
 	stabbed_into_wall = false
 	
-	physics_material_override.friction = 0.0
-	lock_rotation = false
-
-	mass = 0.01
-	linear_damp = 0.0
-	gravity_scale = HEAD_GRAVITY
-
-	_pot.mass = 1.0
-	if not slingshotting: # Let the pot move more quickly if slingshotting
-		_pot.linear_damp = 1.01
-	_pot.angular_damp = 3.0
-	_pot.gravity_scale = 1.0
-	
 	# Reset slingshot variables
 	slingshotting = false
 	if slingshot_tween: slingshot_tween.kill()
 	force_mod = 1.0
 	
-	get_tree().call_group("vine", "set_grav", -0.03)
-	get_tree().set_group("vine", "linear_damp", 1.0)
-	get_tree().set_group("vine", "angular_damp", 20.0)
-	
-	
 	stuck_timer.stop()
 	dead_timer.stop()
+	
+	wind_tunnel_extension_particles.emitting = false
 
 # Sets physical variables related to being inactive.
 # Overall, the head moves towards the vines with drag, and the the pot has normal mass and no drag.
 func begin_retracting():
 	_state = State.RETRACTING
 	
-	if _segs > 60 and tower.weather == Tower.Weather.STORMY:
-		get_tree().call_group("vine", "set_grav", 0.0) # Avoid issues with too many segments being heavy
-	else:
-		get_tree().call_group("vine", "set_grav", 0.3)
+	set_physics_variables(_state)
+	_pot.set_physics_variables(_state)
+	get_tree().call_group("vine", "set_physics_variables", _state)
 	
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
 	
@@ -497,19 +483,42 @@ func begin_retracting():
 		hide_dash_spike()
 		disable_dash_spike()
 	
-	physics_material_override.friction = 2.5
-	_pot.gravity_scale = 0.43
-	_pot.mass = 0.28
-	_pot.linear_damp = 1.0
-	_pot.angular_damp = 2.0
-	linear_damp = 10.0
-	linear_velocity = Vector2(0, 0)
-	gravity_scale = 0.3
-	
 	_extending_dist_travelled = 0
 	#_extended_len = 0
 	
+	wind_tunnel_extension_particles.emitting = false
+	
 	stuck_timer.stop()
+
+func set_is_in_wind_tunnel(to: bool):
+	is_in_wind_tunnel = to
+	do_wind_tunnel_effects()
+
+func do_wind_tunnel_effects():
+	wind_tunnel_extension_particles.emitting = is_extending()
+
+func set_physics_variables(state: State):
+	match state:
+		State.INACTIVE:
+			physics_material_override.friction = 0.0
+			lock_rotation = false
+			mass = 0.01
+			linear_damp = 0.0
+			gravity_scale = HEAD_GRAVITY
+		State.EXTENDING:
+			if is_in_wind_tunnel: # TODO tweak
+				gravity_scale = HEAD_GRAVITY
+				linear_damp = 0.0
+				mass = 0.1
+			else:
+				gravity_scale = HEAD_GRAVITY
+				linear_damp = 0.0
+				mass = 0.1
+		State.RETRACTING:
+			physics_material_override.friction = 2.5
+			linear_damp = 10.0
+			linear_velocity = Vector2(0, 0)
+			gravity_scale = 0.3
 
 # Enables the spikes on the flower's head.
 func enable_spiked_hitbox():
@@ -737,8 +746,8 @@ func _integrate_forces(state):
 			var new_angle = lerp_angle(rotation, mouse_angle, TURN_STRENGTH * state.step)
 			state.transform = Transform2D(new_angle, state.transform.get_origin())
 			# Allow A/D movement if not touching
-			if not _pot.touching:
-				_do_pot_movement()
+			#if not _pot.touching: # FIXME
+			_do_pot_movement()
 			if can_extend:
 				const MOVE_STRENGTH = 20.0
 				var force_toward_mouse = Vector2.UP.rotated(mouse_angle) * MOVE_STRENGTH
@@ -772,7 +781,8 @@ func _do_pot_movement():
 			dir += -Vector2.from_angle(_pot.rotation) * STR
 		dir = dir.normalized()
 		
-		var MOVE_STRENGTH = 220.0 + (110.0 if _state == State.RETRACTING else 0.0)
+		var MOVE_STRENGTH = 220.0 + (110.0 if _state == State.RETRACTING else 0.0)\
+								  + (180.0 if is_in_wind_tunnel else 0.0)
 		_pot.apply_central_force(dir * MOVE_STRENGTH * _pot.mass)
 
 # Displays the sun buff, tinting the head and spawning more particles
@@ -811,7 +821,10 @@ func _physics_process(delta):
 					_sun_buff_applied = true
 					_display_sun_buff()
 				
+				
 				var dist_travelled = _last_pos.distance_to(pos)
+				if is_in_wind_tunnel:
+					dist_travelled = 0.0
 				_extending_dist_travelled += dist_travelled
 				
 				# Add length if extending along wind beam

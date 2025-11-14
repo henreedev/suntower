@@ -1,0 +1,65 @@
+[gd_scene load_steps=9 format=3 uid="uid://b75rw0nimhspi"]
+
+[ext_resource type="Script" uid="uid://clix8rl1hqw54" path="res://scenes/environment/WindTunnel.gd" id="1_yaapm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ocl2s"]
+size = Vector2(40, 20)
+
+[sub_resource type="Curve" id="Curve_ocl2s"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.4352332, 0.9887641), 0.8132023, 0.8132023, 0, 0, Vector2(0.6891192, 0.516854), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_yaapm"]
+curve = SubResource("Curve_ocl2s")
+
+[sub_resource type="Gradient" id="Gradient_00cnp"]
+colors = PackedColorArray(0.91775256, 1, 1, 1, 0.785777, 0.92898875, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ik65c"]
+gradient = SubResource("Gradient_00cnp")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ocl2s"]
+particle_flag_disable_z = true
+emission_shape_offset = Vector3(-20, 0, 0)
+emission_shape = 3
+emission_box_extents = Vector3(20, 10, 1)
+spread = 0.0
+initial_velocity_min = 22.039999
+initial_velocity_max = 26.84
+angular_velocity_min = -123.87001
+angular_velocity_max = 137.87997
+gravity = Vector3(40, 0, 0)
+radial_accel_min = -0.7500022
+radial_accel_max = 6.549998
+tangential_accel_min = -10.680002
+tangential_accel_max = 2.0799978
+attractor_interaction_enabled = false
+color = Color(0.7509483, 1, 1, 0.17600001)
+color_ramp = SubResource("GradientTexture1D_ik65c")
+alpha_curve = SubResource("CurveTexture_yaapm")
+
+[sub_resource type="Gradient" id="Gradient_184cd"]
+offsets = PackedFloat32Array(0, 0.5753425, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.40069774, 0.40069774, 0.40069768, 1, 1, 1, 1, 1)
+
+[node name="WindTunnel" type="Area2D"]
+collision_layer = 0
+collision_mask = 7
+script = ExtResource("1_yaapm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ocl2s")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+amount = 100
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_ocl2s")
+
+[node name="Outline" type="Line2D" parent="."]
+points = PackedVector2Array(20, -10, 20, 10, -20, 10, -20, -10)
+closed = true
+width = 1.0
+gradient = SubResource("Gradient_184cd")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
