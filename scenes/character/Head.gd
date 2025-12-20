@@ -97,39 +97,22 @@ var dash_tween: Tween
 
 
 # Onready references to other nodes
+@onready var head_visual: HeadVisual = $HeadVisual
 @onready var vine_creator : Vine = VINE_SCENE.instantiate()
 @onready var stuck_timer : Timer = $StuckTimer
 @onready var dead_timer : Timer = $DeadTimer
 @onready var game : Game = get_tree().get_first_node_in_group("game")
 @onready var _pot : Pot = get_tree().get_first_node_in_group("pot")
 @onready var _bar : TextureProgressBar = get_tree().get_first_node_in_group("hud")
-@onready var _sprite : AnimatedSprite2D = %Sprite2D
-@onready var dash_overlay: AnimatedSprite2D = $Sprite2D/DashOverlay
 @onready var tower : Tower = get_tree().get_first_node_in_group("tower")
 @onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 @onready var vine_line : Line2D = $Vines/Line2D
 @onready var camera_2d = $Camera2D
-@onready var storm_light : PointLight2D = $StormLight
 @onready var spiked_hitbox: CollisionPolygon2D = $SpikedHitbox
 @onready var occluders : Node2D = $Occluders/Node2D
-@onready var dash_spike_sprite: Polygon2D = $DashSpikeSprite
 @onready var dash_spike_trigger_area: Area2D = $DashSpikeTriggerArea
 @onready var dash_spike_collider: CollisionPolygon2D = $DashSpikeCollider
-@onready var force_averager: Node = $ForceAverager
-
-# Particle system variables
-@onready var sun_particles : GPUParticles2D = %Sparkles
-@onready var lightning_particles : GPUParticles2D = %Lightning
-@onready var wind_particles: GPUParticles2D = %WindParticles
-@onready var wind_gust_particles: GPUParticles2D = %WindGustParticles
-@onready var wind_particles_mat: ParticleProcessMaterial = wind_particles.process_material
-@onready var wind_gust_particles_mat: ParticleProcessMaterial = wind_gust_particles.process_material
-@onready var beam_particles: GPUParticles2D = %BeamParticles
-@onready var beam_particles_mat: ParticleProcessMaterial = beam_particles.process_material
-@onready var dash_charge_sparkles: GPUParticles2D = %DashChargeSparkles
-@onready var dash_charge_sparkles_mat: ParticleProcessMaterial = dash_charge_sparkles.process_material
-@onready var wind_tunnel_extension_particles: GPUParticles2D = %WindTunnelExtensionParticles
-
+@onready var force_averager: ForceAverager = %WindForceAverager
 
 # Dev tools
 @export var dev_mode := false # Enable to teleport with right click
@@ -143,7 +126,7 @@ func _ready():
 	
 	_spawn_vine()
 	
-	_wiggle_dash_overlay()
+	head_visual.wiggle_dash_overlay()
 	
 	camera_2d.limit_top = tower.cam_max_marker.global_position.y
 	add_collision_exception_with(_pot)
@@ -167,7 +150,7 @@ func play_spawn_animation():
 	get_tree().set_group("vine", "modulate", Color(1.0, 1.0, 1.0, 0.0))
 	get_tree().set_group("vine", "linear_damp", 100.0)
 	$Vines/Line2D.modulate = Color(1.0,1.0,1.0,0.0)
-	_sprite.self_modulate = Color(1.0,1.0,1.0,0.0)
+	head_visual.set_sprite_modulate_invis()
 	camera_2d.offset = Vector2(0, 4)
 	camera_2d.zoom = Vector2(15, 15)
 	create_tween().tween_property(camera_2d,"zoom", Vector2(5.95, 5.95), 2.0).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
@@ -201,9 +184,7 @@ func play_spawn_animation():
 		tween.tween_property(vine, "sprite_scale", Vine.BASE_SPRITE_SCALE, 0.5).from(Vector2(1.0, 0.0)).set_ease(Tween.EASE_IN_OUT)
 	
 	create_tween().tween_property($Vines/Line2D, "modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
-	create_tween().tween_property(_sprite, "scale", Vector2(1.0, 1.0), 0.4).from(Vector2(0.5, 0.5)).set_trans(Tween.TRANS_SINE)
-	create_tween().tween_property(_sprite, "offset", Vector2(0.0, 0.0), 0.4).from(Vector2(0, 5)).set_trans(Tween.TRANS_SINE)
-	create_tween().tween_property(_sprite, "self_modulate", Color(1.0,1.0,1.0,1.0), 0.75).from(Color(10, 10, 10, 0.0))
+	head_visual.play_spawn_sprite_tweens()
 	#get_tree().set_group("vine", "sprite_scale", Vector2(1.0, 0.5))
 	
 	# Reset camera
@@ -389,15 +370,10 @@ func begin_extending():
 		_pot.set_physics_variables(_state)
 		get_tree().call_group("vine", "set_physics_variables", _state)
 		
-		# Show spikes
-		_sprite.animation = "spiked"
-		_sprite.play()
-		enable_spiked_hitbox()
-		
-		# Sparkles during extension
-		if tower.weather == Tower.Weather.SUNNY:
-			sun_particles.emitting = true
-			sun_particles.amount = 5
+	head_visual.set_sprite_animation("spiked")
+	enable_spiked_hitbox()   # keep hitbox logic in Head (non-visual)
+	if tower.weather == Tower.Weather.SUNNY:
+		head_visual.set_sun_particles(true, 5)
 		
 		
 		lock_rotation = false
@@ -421,23 +397,21 @@ func begin_inactive():
 	get_tree().call_group("vine", "set_physics_variables", _state)
 	
 	# Show retraction
-	_sprite.animation = "retract"
-	_sprite.frame = 0
-	_sprite.play()
+	head_visual.set_sprite_animation("retract", true, 0)
 	disable_spiked_hitbox()
-	
-	hide_dash_spike()
+	head_visual.hide_dash_spike()
 	
 	# Remove the gap in the neck
 	fixing_gap = true
 	
 	_has_sun_buff = false
 	_sun_buff_applied = false
-	sun_particles.emitting = false
+	head_visual.set_sun_particles(false)
 	if sun_buff_tween:
 		sun_buff_tween.kill()
+	# If you still want to tween sprite modulate from Head, call:
 	sun_buff_tween = create_tween()
-	sun_buff_tween.tween_property(_sprite, "modulate", Color(1.0, 1.0, 1.0), 0.6)
+	sun_buff_tween.tween_method(head_visual.tween_sprite_modulate, head_visual.sprite.modulate, Color(1.0, 1.0, 1.0), 0.6)
 	
 	# Don't collide with Props
 	#collision_mask = 13
@@ -466,7 +440,7 @@ func begin_inactive():
 	stuck_timer.stop()
 	dead_timer.stop()
 	
-	wind_tunnel_extension_particles.emitting = false
+	head_visual.set_wind_tunnel_emitting(false)
 
 # Sets physical variables related to being inactive.
 # Overall, the head moves towards the vines with drag, and the the pot has normal mass and no drag.
@@ -480,13 +454,13 @@ func begin_retracting():
 	create_tween().tween_property($RootVinePin, "position", Vector2(0, 0), 0.5)
 	
 	if not stabbed_into_wall:
-		hide_dash_spike()
+		head_visual.hide_dash_spike()
 		disable_dash_spike()
 	
 	_extending_dist_travelled = 0
 	#_extended_len = 0
 	
-	wind_tunnel_extension_particles.emitting = false
+	head_visual.set_wind_tunnel_emitting(false)
 	
 	stuck_timer.stop()
 
@@ -495,7 +469,8 @@ func set_is_in_wind_tunnel(to: bool):
 	do_wind_tunnel_effects()
 
 func do_wind_tunnel_effects():
-	wind_tunnel_extension_particles.emitting = is_extending()
+	head_visual.set_wind_tunnel_emitting(is_extending())
+
 
 func set_physics_variables(state: State):
 	match state:
@@ -548,27 +523,12 @@ func disable_dash_spike():
 	dash_spike_collider.set_deferred("disabled", true)
 	dash_spike_trigger_area.set_deferred("monitoring", false)
 
-func show_dash_spike():
-	showing_dash_spike = true
-	var tween = create_tween()
-	tween.tween_property(dash_spike_sprite, "scale", Vector2.ONE, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tween.parallel().tween_property(dash_spike_sprite, "modulate", Color.WHITE * 5, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tween.tween_property(dash_spike_sprite, "modulate", Color.WHITE, 0.5).set_trans(Tween.TRANS_BOUNCE)
-	dash_spike_sprite.show()
-
-func hide_dash_spike():
-	showing_dash_spike = false
-	var tween = create_tween()
-	tween.tween_property(dash_spike_sprite, "scale", Vector2.ZERO, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	tween.parallel().tween_property(dash_spike_sprite, "modulate", Color.WHITE, 0.5).set_trans(Tween.TRANS_BOUNCE)
-	tween.tween_callback(dash_spike_sprite.hide)
-
 func stab_dash_spike_into_wall():
 	stabbed_into_wall = true
 	is_dashing = false
 	dash_charge_amount = 0.0
 	#set_deferred("freeze", true)
-	dash_overlay.hide()
+	head_visual.hide_dash_overlay()
 	disable_dash_spike()
 	if dash_tween:
 		dash_tween.kill()
@@ -581,78 +541,20 @@ func stab_dash_spike_into_wall():
 
 # Enables wind particles with a fade-in.
 func enable_wind_particles():
-	const DUR = 1.0
-	wind_particles.emitting = true
-	wind_particles.visible = true
-	wind_gust_particles.emitting = true
-	wind_gust_particles.visible = true
-	beam_particles.visible = true
-	if wind_particles_tween: wind_particles_tween.kill()
-	wind_particles_tween = create_tween().set_parallel()
-	wind_particles_tween.tween_property(wind_particles, "modulate:a", 1.0, DUR).set_trans(Tween.TRANS_CUBIC).from(0.0)
-	wind_particles_tween.tween_property(wind_gust_particles, "modulate:a", 1.0, DUR).set_trans(Tween.TRANS_CUBIC).from(0.0)
-	wind_particles_tween.tween_property(beam_particles, "modulate:a", 1.0, DUR).set_trans(Tween.TRANS_CUBIC).from(0.0)
+	head_visual.enable_wind_particles()
+
 
 # Disables wind particles with a fade-out.
 func disable_wind_particles():
-	const DUR = 1.0
-	wind_particles.emitting = true
-	wind_particles.visible = true
-	wind_gust_particles.emitting = true
-	wind_gust_particles.visible = true
-	beam_particles.visible = true
-	if wind_particles_tween: wind_particles_tween.kill()
-	wind_particles_tween = create_tween().set_parallel()
-	wind_particles_tween.tween_property(wind_particles, "modulate:a", 0.0, DUR).set_trans(Tween.TRANS_CUBIC)
-	wind_particles_tween.tween_property(wind_gust_particles, "modulate:a", 0.0, DUR).set_trans(Tween.TRANS_CUBIC)
-	wind_particles_tween.tween_property(beam_particles, "modulate:a", 0.0, DUR).set_trans(Tween.TRANS_CUBIC)
-	
-	wind_particles_tween.tween_property(wind_particles, "emitting", false, 0.0).set_delay(DUR)
-	wind_particles_tween.tween_property(wind_gust_particles, "emitting", false, 0.0).set_delay(DUR)
-	wind_particles_tween.tween_property(wind_particles, "visible", false, 0.0).set_delay(DUR)
-	wind_particles_tween.tween_property(wind_gust_particles, "visible", false, 0.0).set_delay(DUR)
-	wind_particles_tween.tween_property(beam_particles, "visible", false, 0.0).set_delay(DUR)
+	head_visual.disable_wind_particles()
 
 # Spawns wind particles flying in the direction of the wind beam.
 func show_active_wind_particles():
-	_spawn_wind_particle(randi_range(5, 20), wind_direction)
-
-# Spawns a wind particle somewhere along the wind beam near the flower head, moving in wind direction.
-func _spawn_wind_particle(amount : int, dir : Vector2):
-	var SPEED = 100.0
-	for i in range(amount):
-		var origin = global_position + Vector2(randf_range(-5, 5), randf_range(-20, 20)).rotated(dir.angle() + PI / 2)
-		var rand_vel := (dir * SPEED * randf_range(0.8, 1.2)).rotated(0)
-		beam_particles.emit_particle(Transform2D(0, Vector2.ONE, 0, origin),
-			rand_vel, Color.WHITE, Color.WHITE, 5)
+	head_visual.spawn_wind_particle(randi_range(5, 20), wind_direction)
 
 # Updates wind particle system variables to show the wind direction and strength.
 func update_wind_particles(new_dir : Vector2i, new_strength : float, color_mod := Color.WHITE):
-	const MOD = 2.0
-	const GRAVITY_MOD = MOD / 2.0 # reduce the accel, just show wind's "velocity"
-	var dir = Vector3(new_dir.x, 0, 0)
-	wind_particles.modulate = color_mod
-	wind_particles_mat.gravity = dir * new_strength * MOD
-	wind_particles_mat.direction = dir
-	wind_particles_mat.initial_velocity_min = new_strength
-	wind_particles_mat.initial_velocity_min = new_strength
-	wind_particles_mat.linear_accel_min = new_strength * MOD
-	wind_particles_mat.linear_accel_max = new_strength * MOD
-	
-	beam_particles.modulate = color_mod
-	beam_particles_mat.gravity = dir * new_strength * MOD
-	beam_particles_mat.direction = dir
-	beam_particles_mat.initial_velocity_min = new_strength
-	beam_particles_mat.initial_velocity_min = new_strength
-	beam_particles_mat.linear_accel_min = new_strength * MOD
-	beam_particles_mat.linear_accel_max = new_strength * MOD
-	
-	wind_gust_particles_mat.gravity = dir * new_strength * MOD * 0.8
-	wind_gust_particles_mat.direction = dir
-	wind_gust_particles_mat.initial_velocity_min = new_strength
-	wind_gust_particles_mat.initial_velocity_min = new_strength
-	wind_gust_particles_mat.linear_accel_min = new_strength * MOD * 0.5
-	wind_gust_particles_mat.linear_accel_max = new_strength * MOD
+	head_visual.update_wind_particles(new_dir, new_strength, color_mod)
 
 # Enables occluders. These block light far above and below the Head's position.
 #  TileMaps don't occlude light if they're too far off screen, so this fixes that issue
@@ -789,14 +691,15 @@ func _do_pot_movement():
 func _display_sun_buff():
 	if sun_buff_tween:
 		sun_buff_tween.kill()
-	sun_buff_tween = create_tween()
+
+	# visual-only work
+	head_visual.display_sun_buff()
+
+	# UI stays here
 	var tween_2 = create_tween()
-	sun_buff_tween.tween_property(_sprite, "modulate", Color(4, 4, 4), 0.5)
 	tween_2.tween_property(_bar, "tint_progress", Color(2, 2, 2), 0.5)
-	sun_buff_tween.tween_property(_sprite, "modulate", Color(2.0, 2.0, 2.0), 1.5)
-	tween_2.tween_property(_bar, "tint_progress", Color(1., 1., 1.), 0.5)
-	sun_particles.emitting = true
-	sun_particles.amount = 125
+	tween_2.tween_property(_bar, "tint_progress", Color(1, 1, 1), 0.5)
+
 
 # Returns the head's height relative to the bottom of the tower.
 func get_height():
@@ -998,22 +901,13 @@ func _add_seg():
 func _get_lightning_buff():
 	if not _has_lightning_buff:
 		_has_lightning_buff = true
-		lightning_particles.emitting = true
-		lightning_particles.amount = 20
-		lightning_buff_amount = MAX_LIGHTNING_BUFF
-		lightning_buff_display = MAX_LIGHTNING_BUFF
+		head_visual.apply_lightning_buff_visuals()
 		lightning_speed_mod = LIGHTNING_SPEED
 		
-		# Don't emit both particles
-		sun_particles.emitting = false
 		
-		# Tween the light attached to the head to grow, and tween electricity shader values
 		if lightning_buff_tween:
 			lightning_buff_tween.kill()
 		lightning_buff_tween = create_tween().set_parallel()
-		lightning_buff_tween.tween_property(storm_light, "texture_scale", 0.85, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		lightning_buff_tween.tween_property(storm_light, "color", base, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		lightning_buff_tween.tween_property(storm_light, "energy", 2.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		lightning_buff_tween.tween_method(_set_electricity, 1.5, 2.5, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 	else:
 		# Reapply the buff values
@@ -1031,11 +925,8 @@ func _update_lightning_buff(delta):
 			var goal_scale = 0.15 + buff_ratio * 0.3 if not _state == State.EXTENDING else 0.5 + 0.5 * buff_ratio
 			var goal_color = base if not _state == State.EXTENDING else base
 			var goal_energy = 0.5 * buff_ratio + 0.25 if not _state == State.EXTENDING else 0.75 + 0.25 * buff_ratio
-			const STR = 1.0
-			storm_light.texture_scale = lerp(storm_light.texture_scale, goal_scale, delta * STR)
-			storm_light.color = lerp(storm_light.color, goal_color, delta * STR)
-			storm_light.energy = lerp(storm_light.energy, goal_energy, delta * STR)
-			lightning_speed_mod = lerp(1.5, LIGHTNING_SPEED, buff_ratio)
+			head_visual.lerp_storm_light(goal_scale, goal_color, goal_energy, delta)
+			lightning_speed_mod = lerp(1.5, LIGHTNING_SPEED, buff_ratio)  # keep this in Head
 			_set_electricity(lerp(1.5, 2.5, buff_ratio))
 
 # Removes lightning buff, dimming the light and removing electricity shader and particles
@@ -1046,20 +937,12 @@ func _remove_lightning_buff():
 		lightning_buff_display = 0.0
 		lightning_speed_mod = 1.0
 		
-		if lightning_buff_tween:
-			lightning_buff_tween.kill()
-		lightning_buff_tween = create_tween().set_parallel()
-		lightning_buff_tween.tween_property(storm_light, "texture_scale", 0.15, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		lightning_buff_tween.tween_property(storm_light, "color", Color(1, 1, 1, 1), 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		lightning_buff_tween.tween_property(storm_light, "energy", 0.15, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		lightning_buff_tween.tween_method(_set_electricity, 1.5, 0.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		
-		await Timing.create_timer(self, 0.5)
-		lightning_particles.emitting = false
+		head_visual.remove_lightning_buff_visuals()
+
 
 # Sets the value of the electricity shader.
 func _set_electricity(val):
-	_sprite.material.set_shader_parameter("electricity", max(val, 0.0))
+	head_visual.set_electricity(val)
 	get_tree().call_group("vine", "_set_electricity", val)
 	vine_line.material.set_shader_parameter("electricity", max(val, 0.0))
 
@@ -1166,12 +1049,12 @@ func charge_dash_on_input(delta : float):
 
 func update_dash_overlay():
 	if dash_charge_amount > 0.0:
-		dash_overlay.visible = true
+		head_visual.set_dash_overlay_visible(true)
 		
 		# Emit a particle if frame changes
-		var current_dash_overlay_frame = dash_overlay.frame
+		var current_dash_overlay_frame = head_visual.dash_overlay.frame
 		set_dash_overlay_anim_and_frame()
-		var new_dash_overlay_frame = dash_overlay.frame
+		var new_dash_overlay_frame = head_visual.dash_overlay.frame
 		if current_dash_overlay_frame != new_dash_overlay_frame:
 			emit_dash_charge_particle(new_dash_overlay_frame)
 
@@ -1186,17 +1069,7 @@ func emit_dash_charge_particle(frame: int):
 	var amount = BASE_AMOUNT + randi_range(0, 8)
 	for i in range(amount):
 		var rand_vel = particle_direction.rotated(randf_range(-PI / 8, PI / 8)) * BASE_SPEED * randf_range(0.8, 1.2)
-		dash_charge_sparkles.emit_particle(Transform2D.IDENTITY, 
-			rand_vel, Color.WHITE, Color.WHITE, GPUParticles2D.EmitFlags.EMIT_FLAG_VELOCITY)
-
-
-
-func _wiggle_dash_overlay():
-	var tween = create_tween().set_loops()
-	const DUR = 0.33
-	const OFFSET = Vector2(-0.25, -0.25)
-	tween.tween_property(dash_overlay, "offset", OFFSET, DUR).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_IN)
-	tween.tween_property(dash_overlay, "offset", Vector2.ZERO, DUR).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_OUT)
+		head_visual.emit_dash_charge_particle(rand_vel, GPUParticles2D.EmitFlags.EMIT_FLAG_VELOCITY)
 
 
 ## Executes a dash, with varying behavior for charged and second wind dashes.
@@ -1242,7 +1115,7 @@ func dash() -> void:
 		
 		dash_tween.tween_property(self, "is_dashing", false, 0.0)
 		dash_tween.tween_callback(begin_retracting)
-		dash_tween.tween_callback(dash_overlay.hide)
+		dash_tween.tween_callback(head_visual.hide_dash_overlay)
 	elif is_retracting(): # Second wind dash
 		# Second wind dash ignores limit because it's only for a short duration
 		ignore_extension_limit = true
@@ -1270,16 +1143,16 @@ func dash() -> void:
 		tween.tween_callback(begin_retracting)
 
 func set_dash_overlay_anim_and_frame():
-	var head_anim: String = _sprite.animation
-	var head_frame: String = str(_sprite.frame)
+	var head_anim: String = head_visual.sprite.animation
+	var head_frame: String = str(head_visual.sprite.frame)
 	var dash_overlay_anim = "normal"
 	if head_anim != "normal":
 		dash_overlay_anim = head_anim + head_frame
 	
 	var dash_overlay_frame = int(dash_charge_amount * 7)
 	
-	dash_overlay.animation = dash_overlay_anim
-	dash_overlay.frame = dash_overlay_frame
+	head_visual.set_dash_overlay_animation(dash_overlay_anim)
+	head_visual.set_dash_overlay_frame(dash_overlay_frame)
 
 #endregion Dash methods
 
@@ -1336,13 +1209,7 @@ func any_segs_too_far_apart() -> bool:
 	return false
 #endregion Convenience helpers
 
-# Ensures that spiked and idle forms remain that way after playing once.
-func _on_sprite_2d_animation_looped():
-	if _sprite.animation == "spiked":
-		_sprite.frame = 3
-		_sprite.pause()
-	elif _sprite.animation == "retract":
-		_sprite.animation = "normal"
+
 
 # Fixes being stuck.
 func _on_stuck_timer_timeout():

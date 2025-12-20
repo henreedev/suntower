@@ -1,5 +1,7 @@
 extends Node
 
+class_name ForceAverager
+
 var total_force := Vector2.ZERO
 var force_count := 0
 
