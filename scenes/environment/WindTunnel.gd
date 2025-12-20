@@ -31,7 +31,7 @@ func _physics_process(delta: float) -> void:
 		var body_forward_speed := body.linear_velocity.dot(forward_dir)
 		var forward_force_ratio = inverse_lerp(100, -100, body_forward_speed)
 		forward_force_ratio = clampf(forward_force_ratio, 0.5, 1.5)
-		const BASE_FORWARD_FORCE_STRENGTH = 250.0
+		const BASE_FORWARD_FORCE_STRENGTH = 350.0
 		var forward_force = forward_dir * BASE_FORWARD_FORCE_STRENGTH * forward_force_ratio
 		
 		## Push vines less

@@ -37,6 +37,9 @@ attractor_interaction_enabled = false
 color = Color(0.7509483, 1, 1, 0.17600001)
 color_ramp = SubResource("GradientTexture1D_ik65c")
 alpha_curve = SubResource("CurveTexture_yaapm")
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.0
 
 [sub_resource type="Gradient" id="Gradient_184cd"]
 offsets = PackedFloat32Array(0, 0.5753425, 1)
