@@ -575,6 +575,10 @@ func _integrate_forces(state):
 			state.transform = _set_transform
 			_set_transform = null
 		
+		# Flush position offsets
+		state.transform = state.transform.translated(position_offset_to_integrate)
+		clear_position_offset()
+		
 		if _state == State.EXTENDING:
 			# Slow movement and rotation speeds when little length is left
 			var slow_multiplier = 1.0
@@ -982,6 +986,16 @@ func _remove_wind_buff():
 		active_wind_beam_strength_mod = 0
 		game.set_vine_windiness(0.0)
 
+#region Slippery wind offset application
+var position_offset_to_integrate: Vector2
+func apply_position_offset(offset: Vector2) -> void:
+	position_offset_to_integrate += offset
+
+func clear_position_offset() -> void:
+	position_offset_to_integrate = Vector2.ZERO
+#endregion
+
+
 # Applies buffs based on weather.
 func _on_sunrays_hit():
 	match tower.weather:
@@ -1207,6 +1221,7 @@ func any_segs_too_far_apart() -> bool:
 			break
 		vine_seg = next_seg
 	return false
+
 #endregion Convenience helpers
 
 

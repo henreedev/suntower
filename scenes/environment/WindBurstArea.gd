@@ -26,7 +26,7 @@ func _disable_for_duration():
 func _on_body_entered(body: Node2D) -> void:
 	if can_burst and body is Pot:
 		can_burst = false
-		Tower.instance.do_wind_burst(burst_direction_vec, burst_strength, burst_overall_duration)
+		#Tower.instance.do_wind_burst(burst_direction_vec, burst_strength, burst_overall_duration)
 
 
 

@@ -110,6 +110,7 @@ func _ready():
 	await game.initialized
 	time_trackers = game.time_trackers
 	_begin_tracking(Weather.SUNNY)
+	do_wind_burst(Vector2i.RIGHT)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -430,12 +431,12 @@ func _set_lights_rotation_to_goal():
 func _update_wind_strength():
 	var str = clampf(wind_strength, 1.0, 10.0) # strength of the color of wind particles
 	_player.update_wind_particles(wind_direction, wind_strength * BASE_WIND_STRENGTH, Color(str, str, str, 1.0))
-	var normalized_dist = get_pot_dist_from_anchor() / WIND_ANCHOR_FALLOFF_DIST
-	var new_str := lerpf(1.0, 0.0, normalized_dist)
-	new_str = clampf(new_str, 0, 1)
-	if new_str < WIND_STRENGTH_HIGH_PASS:
-		new_str = 0.0
-	wind_strength = clampf(new_str, 0, 1)
+	#var normalized_dist = get_pot_dist_from_anchor() / WIND_ANCHOR_FALLOFF_DIST
+	#var new_str := lerpf(1.0, 0.0, normalized_dist)
+	#new_str = clampf(new_str, 0, 1)
+	#if new_str < WIND_STRENGTH_HIGH_PASS:
+		#new_str = 0.0
+	#wind_strength = clampf(new_str, 0, 1)
 
 # Performs certain actions on tick based on weather. 
 func _act_on_weather_state():
@@ -459,28 +460,27 @@ func _act_on_weather_state():
 # Applies passive horizontal wind every physics update.
 func _physics_process(delta: float) -> void:
 	if in_wind and weather == Weather.WINDY:
-		_apply_passive_wind()
+		_apply_passive_wind(delta)
 
 # Applies horizontal gravity to all objects currently in the wind. 
 #  Less wind is applied to head and vines, so that the player can still aim the head.
-func _apply_passive_wind():
+func _apply_passive_wind(delta: float):
 	var wind_force = wind_direction * wind_strength * BASE_WIND_STRENGTH
 	for body : RigidBody2D in bodies_in_wind:
 		if body is Head:
-			const MOD = 0.15;
-			body.apply_central_force(wind_force * MOD)
+			const MOD = 0.05;
+			body.apply_position_offset(wind_force * MOD * delta)
 		elif body is Pot:
-			const MOD = 1.0;
-			body.apply_central_force(wind_force * MOD)
-		elif body is Vine: # must be a Vine
 			const MOD = 0.25;
-			body.apply_central_force(wind_force * MOD)
+			body.apply_position_offset(wind_force * MOD * delta)
+		elif body is Vine: # must be a Vine
+			const MOD = 0.1;
+			body.apply_position_offset(wind_force * MOD * delta)
 
 # Initiates a wind burst, which surges wind strength higher in a direction for a duration.
 #  Sets the wind anchor to the current pot position.
 func do_wind_burst(dir : Vector2i, strength := 2.0, duration := 1.5):
 	wind_direction = dir
-	reset_wind_anchor()
 	
 	# Animate clouds with wind direction
 	const CLOUD_SPEED = 3.0
@@ -491,9 +491,15 @@ func do_wind_burst(dir : Vector2i, strength := 2.0, duration := 1.5):
 	if wind_burst_tween:
 		wind_burst_tween.kill()
 	wind_burst_tween = create_tween()
-
-	wind_burst_tween.tween_property(self, "wind_strength", strength, duration * 0.33).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	wind_burst_tween.tween_property(self, "wind_strength", 1.0, duration * 0.67).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	# V2: Tween up with attack, tween down to sustain, then near end tween to 0. 
+	const ATTACK_DUR_RATIO = 0.5
+	const RELEASE_DUR_RATIO = 0.3
+	const SUSTAIN = 0.4
+	const DECAY_DUR_RATIO = 1.0 - ATTACK_DUR_RATIO - RELEASE_DUR_RATIO
+	wind_burst_tween.tween_property(self, "wind_strength", strength, duration * ATTACK_DUR_RATIO).set_trans(Tween.TRANS_CUBIC)
+	wind_burst_tween.tween_property(self, "wind_strength", strength * SUSTAIN, duration * DECAY_DUR_RATIO).set_trans(Tween.TRANS_CUBIC)
+	wind_burst_tween.tween_property(self, "wind_strength", 0.0, duration * RELEASE_DUR_RATIO).set_trans(Tween.TRANS_CUBIC)
+	wind_burst_tween.tween_callback(do_wind_burst.bind(-dir, randf_range(0.8, 1.2) * 1.5, randf_range(0.75, 1.25) * 7.0))
 
 # Returns absolute pot distance relative to the wind anchor.
 func get_pot_dist_from_anchor():

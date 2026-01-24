@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://daw748hmk244l"]
+
+[ext_resource type="Texture2D" uid="uid://lsutk58s613k" path="res://assets/image/character/Pot.png" id="1_plyqm"]
+[ext_resource type="Texture2D" uid="uid://dtw0lgoge1iy1" path="res://assets/image/character/PotShadow.png" id="2_n4bma"]
+
+[node name="PotVisual" type="Node2D"]
+
+[node name="Pot" type="Sprite2D" parent="."]
+texture = ExtResource("1_plyqm")
+offset = Vector2(0, -27)
+
+[node name="Shadow" type="Sprite2D" parent="Pot"]
+position = Vector2(0, 5.5)
+texture = ExtResource("2_n4bma")

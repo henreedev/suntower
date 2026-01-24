@@ -42,9 +42,8 @@ var playback : AudioStreamPlaybackPolyphonic
 
 # References to useful nodes
 @onready var head : Head = get_tree().get_first_node_in_group("flowerhead")
-@onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 @onready var sound_effect_player : AudioStreamPlayer2D = %SoundEffectPlayer
-@onready var shadow : Sprite2D = $Pot/Shadow
+@onready var shadow : Sprite2D = $PotVisual/Pot/Shadow
 @onready var sparks : GPUParticles2D = $Sparks
 @onready var dirt : GPUParticles2D = $Dirt
 @onready var force_averager: Node = $ForceAverager
@@ -217,6 +216,20 @@ func _emit_dirt(amount : int, dir : Vector2, both_sides = false):
 		dirt.emit_particle(Transform2D(0, Vector2.ONE, 0, spark_origin), 
 			rand_vel, Color.WHITE, Color.WHITE, 5)
 
+#region Slippery wind offset application
+var position_offset_to_integrate: Vector2
+func apply_position_offset(offset: Vector2) -> void:
+	position_offset_to_integrate += offset
+
+func clear_position_offset() -> void:
+	position_offset_to_integrate = Vector2.ZERO
+
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	# Flush position offsets
+	if position_offset_to_integrate != Vector2.ZERO:
+		state.transform = state.transform.translated(position_offset_to_integrate)
+		clear_position_offset()
+#endregion
 
 func _on_body_entered(body):
 	if body.is_in_group("tower_hitbox"):

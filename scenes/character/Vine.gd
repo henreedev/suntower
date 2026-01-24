@@ -119,8 +119,17 @@ func _set_electricity(val):
 		fake_light.visible = false
 		sprite.material.set_shader_parameter("electricity", 0)
 
+var position_offset_to_integrate: Vector2
+func apply_position_offset(offset: Vector2) -> void:
+	position_offset_to_integrate += offset
+
+func clear_position_offset() -> void:
+	position_offset_to_integrate = Vector2.ZERO
 
 func _integrate_forces(state):
+	# Flush position offsets
+	state.transform = state.transform.translated(position_offset_to_integrate)
+	clear_position_offset()
 	if _set_pos:
 		state.transform = Transform2D(state.transform.get_rotation(), _set_pos)
 		last_pos = _set_pos
