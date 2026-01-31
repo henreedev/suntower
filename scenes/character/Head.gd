@@ -40,6 +40,8 @@ var rotation_while_retracting_enabled := false
 
 # Camera variables
 var target_y_offset := 0.0
+const BASE_CAMERA_ZOOM := Vector2(3.0, 3.0)
+const CHECKPOINT_ZOOM_MOD := .9166666666666
 
 # Extension/retraction variables
 @export var max_extended_len := 125.0
@@ -108,7 +110,7 @@ var dash_tween: Tween
 @onready var tower : Tower = get_tree().get_first_node_in_group("tower")
 @onready var scene_manager : SceneManager = get_tree().get_first_node_in_group("scenemanager")
 @onready var vine_line : Line2D = $Vines/Line2D
-@onready var camera_2d = $Camera2D
+@onready var camera_2d: Camera2D = $Camera2D
 @onready var spiked_hitbox: CollisionPolygon2D = $SpikedHitbox
 @onready var occluders : Node2D = $Occluders/Node2D
 @onready var dash_spike_trigger_area: Area2D = $DashSpikeTriggerArea
@@ -189,7 +191,7 @@ func play_spawn_animation():
 	#get_tree().set_group("vine", "sprite_scale", Vector2(1.0, 0.5))
 	
 	# Reset camera
-	create_tween().tween_property(camera_2d,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+	create_tween().tween_property(camera_2d,"zoom", BASE_CAMERA_ZOOM, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property(camera_2d, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
 	await Timing.create_timer(self, 0.5)
 	
@@ -204,7 +206,7 @@ func play_spawn_animation():
 
 # No cutscene should be played; do basic setup. If speedrunning, do a little animation.
 func no_cutscene_setup():
-	create_tween().tween_property(camera_2d,"zoom", Vector2(3.0, 3.0), 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+	create_tween().tween_property(camera_2d,"zoom", BASE_CAMERA_ZOOM, 1.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	create_tween().tween_property(camera_2d, "offset", Vector2(0, 0), 0.5).set_trans(Tween.TRANS_CUBIC)
 	
 	# Avoid accessing Values before it's loaded from save 
@@ -1179,7 +1181,7 @@ func set_dash_overlay_anim_and_frame():
 
 #endregion Dash methods
 
-#region Camera offset
+#region Camera
 
 ## Offsets the camera vertically in the direction of movement.
 func _process_camera_offset(delta: float):
@@ -1198,7 +1200,25 @@ func _process_camera_offset(delta: float):
 				lerpf(offset, target_y_offset, delta * 1.5) * 0.7 
 		camera_2d.offset.y = offset
 
-#endregion Camera offset
+## Zooms to base zoom * .916666666... 
+## Shrinks horizontal camera limits into the tower walls, excluding the outside background
+const BASE_LEFT_CAMERA_LIMIT = -192
+const BASE_RIGHT_CAMERA_LIMIT = 192
+const BASE_LEFT_CAMERA_LIMIT_CHECKPOINT = -176
+const BASE_RIGHT_CAMERA_LIMIT_CHECKPOINT = 176
+func zoom_camera_to_checkpoint_pov():
+	var tween := create_tween().set_parallel()
+	tween.tween_property(camera_2d, "limit_left", BASE_LEFT_CAMERA_LIMIT_CHECKPOINT, Game.CHECKPOINT_TRANSITION_DUR).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(camera_2d, "limit_right", BASE_RIGHT_CAMERA_LIMIT_CHECKPOINT, Game.CHECKPOINT_TRANSITION_DUR).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(camera_2d, "zoom", BASE_CAMERA_ZOOM * CHECKPOINT_ZOOM_MOD, Game.CHECKPOINT_TRANSITION_DUR).set_trans(Tween.TRANS_CUBIC)
+
+func zoom_camera_to_default_pov():
+	var tween := create_tween().set_parallel()
+	tween.tween_property(camera_2d, "limit_left", BASE_LEFT_CAMERA_LIMIT, Game.CHECKPOINT_TRANSITION_DUR).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(camera_2d, "limit_right", BASE_RIGHT_CAMERA_LIMIT, Game.CHECKPOINT_TRANSITION_DUR).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(camera_2d, "zoom", BASE_CAMERA_ZOOM, Game.CHECKPOINT_TRANSITION_DUR).set_trans(Tween.TRANS_CUBIC)
+
+#endregion Camera
 
 
 #region Convenience helpers
@@ -1232,7 +1252,6 @@ func any_segs_too_far_apart() -> bool:
 	return false
 
 #endregion Convenience helpers
-
 
 
 # Fixes being stuck.

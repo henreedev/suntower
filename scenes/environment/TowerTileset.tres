@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=119 format=3 uid="uid://r7paxto5gyud"]
+[gd_resource type="TileSet" format=3 uid="uid://r7paxto5gyud"]
 
 [ext_resource type="Shader" uid="uid://djbqk6vdpxgjf" path="res://shaders/CrackScrollingNoise.gdshader" id="1_0j8fu"]
 [ext_resource type="Material" uid="uid://vkmspnckgl5m" path="res://scenes/environment/UnshadedMat.tres" id="2_2yok3"]

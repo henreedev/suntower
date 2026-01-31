@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://cjl7hh0kgvrb8"]
+[gd_scene format=3 uid="uid://cjl7hh0kgvrb8"]
 
 [ext_resource type="Script" uid="uid://j57y2kwg33a3" path="res://scenes/main_scenes/Game.gd" id="1_7xsfy"]
 [ext_resource type="PackedScene" uid="uid://dmtd1mxporvjw" path="res://scenes/environment/Tower.tscn" id="2_dc8uo"]
@@ -26,7 +26,7 @@
 background_mode = 3
 reflected_light_source = 1
 glow_enabled = true
-glow_intensity = 8.0
+glow_intensity = 0.35
 glow_strength = 1.12
 glow_bloom = 0.25
 glow_hdr_threshold = 0.75
@@ -60,29 +60,29 @@ font_color = Color(0.85, 1, 1, 1)
 font_size = 96
 font_color = Color(1, 0.921569, 0.882353, 1)
 
-[node name="Game" type="Node2D" groups=["game"]]
+[node name="Game" type="Node2D" unique_id=1937980110 groups=["game"]]
 process_mode = 1
 script = ExtResource("1_7xsfy")
 
-[node name="Lighting" type="WorldEnvironment" parent="."]
+[node name="Lighting" type="WorldEnvironment" parent="." unique_id=1928459861]
 environment = SubResource("Environment_4vhcu")
 
-[node name="Tower" parent="." instance=ExtResource("2_dc8uo")]
+[node name="Tower" parent="." unique_id=1788017770 instance=ExtResource("2_dc8uo")]
 
-[node name="Pot" parent="." instance=ExtResource("3_k12lq")]
+[node name="Pot" parent="." unique_id=665844285 instance=ExtResource("3_k12lq")]
 position = Vector2(0, 599)
 
-[node name="Head" parent="." instance=ExtResource("3_84kx1")]
+[node name="Head" parent="." unique_id=369890531 instance=ExtResource("3_84kx1")]
 position = Vector2(0, 549)
 
-[node name="IndicatorArrow" parent="." instance=ExtResource("5_rgmfe")]
+[node name="IndicatorArrow" parent="." unique_id=2044143433 instance=ExtResource("5_rgmfe")]
 z_index = 2
 follow_rotation = false
 follow_mouse_rotation = true
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." groups=["ui"]]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=646175254 groups=["ui"]]
 
-[node name="WindBar" type="TextureProgressBar" parent="CanvasLayer"]
+[node name="WindBar" type="TextureProgressBar" parent="CanvasLayer" unique_id=1250323234]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -97,7 +97,7 @@ texture_under = ExtResource("11_dw3tv")
 texture_over = ExtResource("12_fsejr")
 texture_progress = ExtResource("13_c3ak3")
 
-[node name="LightningBar" type="TextureProgressBar" parent="CanvasLayer"]
+[node name="LightningBar" type="TextureProgressBar" parent="CanvasLayer" unique_id=1538001032]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -112,7 +112,7 @@ texture_under = ExtResource("7_8lc2f")
 texture_over = ExtResource("9_kkmna")
 texture_progress = ExtResource("10_iut7u")
 
-[node name="SunBar" type="TextureProgressBar" parent="CanvasLayer"]
+[node name="SunBar" type="TextureProgressBar" parent="CanvasLayer" unique_id=2123362489]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -127,7 +127,7 @@ texture_under = ExtResource("7_8lc2f")
 texture_over = ExtResource("8_al0vm")
 texture_progress = ExtResource("9_xggyo")
 
-[node name="VinesBar" type="TextureProgressBar" parent="CanvasLayer" groups=["hud"]]
+[node name="VinesBar" type="TextureProgressBar" parent="CanvasLayer" unique_id=1504784332 groups=["hud"]]
 material = SubResource("ShaderMaterial_fx6ct")
 anchors_preset = 5
 anchor_left = 0.5
@@ -141,7 +141,7 @@ scale = Vector2(3, 3)
 value = 100.0
 texture_progress = ExtResource("6_vlg86")
 
-[node name="Label" type="Label" parent="CanvasLayer"]
+[node name="Label" type="Label" parent="CanvasLayer" unique_id=1185275666]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -155,7 +155,7 @@ grow_horizontal = 2
 grow_vertical = 2
 label_settings = SubResource("LabelSettings_ul41i")
 
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=713242303]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -164,12 +164,12 @@ grow_vertical = 2
 color = Color(1, 0.932373, 0.70975083, 0)
 metadata/_edit_lock_ = true
 
-[node name="SpeedrunTimers" type="Node2D" parent="CanvasLayer"]
+[node name="SpeedrunTimers" type="Node2D" parent="CanvasLayer" unique_id=946731605]
 visible = false
 position = Vector2(840.66, -22.33)
 script = ExtResource("17_3irkt")
 
-[node name="SunTime" type="Label" parent="CanvasLayer/SpeedrunTimers"]
+[node name="SunTime" type="Label" parent="CanvasLayer/SpeedrunTimers" unique_id=77469112]
 unique_name_in_owner = true
 anchors_preset = 8
 anchor_left = 0.5
@@ -190,7 +190,7 @@ horizontal_alignment = 1
 script = ExtResource("18_ticvr")
 section_type = null
 
-[node name="StormTime" type="Label" parent="CanvasLayer/SpeedrunTimers"]
+[node name="StormTime" type="Label" parent="CanvasLayer/SpeedrunTimers" unique_id=184058053]
 unique_name_in_owner = true
 anchors_preset = 8
 anchor_left = 0.5
@@ -211,7 +211,7 @@ horizontal_alignment = 1
 script = ExtResource("18_ticvr")
 section_type = 1
 
-[node name="WindTime" type="Label" parent="CanvasLayer/SpeedrunTimers"]
+[node name="WindTime" type="Label" parent="CanvasLayer/SpeedrunTimers" unique_id=275720103]
 unique_name_in_owner = true
 anchors_preset = 8
 anchor_left = 0.5
@@ -232,7 +232,7 @@ horizontal_alignment = 1
 script = ExtResource("18_ticvr")
 section_type = 2
 
-[node name="PeacefulTime" type="Label" parent="CanvasLayer/SpeedrunTimers"]
+[node name="PeacefulTime" type="Label" parent="CanvasLayer/SpeedrunTimers" unique_id=1927517264]
 unique_name_in_owner = true
 anchors_preset = 8
 anchor_left = 0.5
@@ -253,7 +253,7 @@ horizontal_alignment = 1
 script = ExtResource("18_ticvr")
 section_type = 3
 
-[node name="FadeToBlackRect" type="ColorRect" parent="CanvasLayer"]
+[node name="FadeToBlackRect" type="ColorRect" parent="CanvasLayer" unique_id=400106546]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -262,8 +262,8 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0)
 metadata/_edit_lock_ = true
 
-[node name="PauseMenu" parent="." instance=ExtResource("11_swgty")]
+[node name="PauseMenu" parent="." unique_id=1242978995 instance=ExtResource("11_swgty")]
 layer = 3
 
-[node name="StatsUpdater" type="Node" parent="."]
+[node name="StatsUpdater" type="Node" parent="." unique_id=928681496]
 script = ExtResource("19_4a02y")

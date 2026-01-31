@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dktse0vckd1qr"]
+[gd_scene format=3 uid="uid://dktse0vckd1qr"]
 
 [ext_resource type="Script" uid="uid://dwvxrj22ijjs5" path="res://scenes/character/Head.gd" id="1_8f5vi"]
 [ext_resource type="PackedScene" uid="uid://bux1iqrvrw4vc" path="res://scenes/character/HeadVisual.tscn" id="2_ratw6"]
@@ -42,7 +42,7 @@ shader_parameter/noise = SubResource("NoiseTexture2D_7c66q")
 [sub_resource type="Gradient" id="Gradient_0cjmd"]
 colors = PackedColorArray(0.20014, 0.451195, 0.0228207, 1, 0.227213, 0.505454, 0.0282418, 1)
 
-[node name="Head" type="RigidBody2D" groups=["flowerhead"]]
+[node name="Head" type="RigidBody2D" unique_id=1953203829 groups=["flowerhead"]]
 physics_interpolation_mode = 1
 z_index = 2
 disable_mode = 1
@@ -57,9 +57,9 @@ freeze_mode = 1
 angular_damp = 2.0
 script = ExtResource("1_8f5vi")
 
-[node name="HeadVisual" parent="." instance=ExtResource("2_ratw6")]
+[node name="HeadVisual" parent="." unique_id=853458180 instance=ExtResource("2_ratw6")]
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=625572836]
 physics_interpolation_mode = 1
 zoom = Vector2(3, 3)
 limit_left = -192
@@ -72,66 +72,66 @@ drag_vertical_enabled = true
 drag_top_margin = 0.1
 drag_bottom_margin = 0.1
 
-[node name="SpriteHolder" type="Node" parent="."]
+[node name="SpriteHolder" type="Node" parent="." unique_id=1447389843]
 physics_interpolation_mode = 1
 
-[node name="SpikedHitbox" type="CollisionPolygon2D" parent="."]
+[node name="SpikedHitbox" type="CollisionPolygon2D" parent="." unique_id=886497217]
 show_behind_parent = true
 polygon = PackedVector2Array(8, 5, 8, 11, 7, 11, 4, 6, 0, 6, -4, 6, -7, 11, -8, 11, -8, 5, -6, 3, 6, 3)
 
-[node name="DashSpikeCollider" type="CollisionPolygon2D" parent="."]
+[node name="DashSpikeCollider" type="CollisionPolygon2D" parent="." unique_id=1849872802]
 show_behind_parent = true
 polygon = PackedVector2Array(-2, -7, -1, -23, 1, -23, 2, -7)
 
-[node name="DashSpikeTriggerArea" type="Area2D" parent="."]
+[node name="DashSpikeTriggerArea" type="Area2D" parent="." unique_id=866928309]
 collision_layer = 20
 collision_mask = 5
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DashSpikeTriggerArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DashSpikeTriggerArea" unique_id=1332869839]
 position = Vector2(0, -23)
 scale = Vector2(0.5, 0.5)
 shape = SubResource("RectangleShape2D_7c66q")
 
-[node name="NormalHitbox" type="CollisionShape2D" parent="."]
+[node name="NormalHitbox" type="CollisionShape2D" parent="." unique_id=1775746527]
 show_behind_parent = true
 shape = SubResource("CircleShape2D_jnh0x")
 
-[node name="RootVinePin" type="PinJoint2D" parent="."]
+[node name="RootVinePin" type="PinJoint2D" parent="." unique_id=269626677]
 show_behind_parent = true
 position = Vector2(0, 5)
 node_a = NodePath("..")
 
-[node name="StuckTimer" type="Timer" parent="."]
+[node name="StuckTimer" type="Timer" parent="." unique_id=1190362664]
 wait_time = 1.5
 
-[node name="DeadTimer" type="Timer" parent="."]
+[node name="DeadTimer" type="Timer" parent="." unique_id=1328523422]
 wait_time = 4.0
 
-[node name="Occluders" type="Node" parent="."]
+[node name="Occluders" type="Node" parent="." unique_id=371622652]
 
-[node name="Node2D" type="Node2D" parent="Occluders"]
+[node name="Node2D" type="Node2D" parent="Occluders" unique_id=116066337]
 script = ExtResource("8_isoiy")
 
-[node name="LightOccluder2D" type="LightOccluder2D" parent="Occluders/Node2D"]
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Occluders/Node2D" unique_id=1445653454]
 occluder = SubResource("OccluderPolygon2D_a4mkl")
 
-[node name="LightOccluder2D2" type="LightOccluder2D" parent="Occluders/Node2D"]
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="Occluders/Node2D" unique_id=969205356]
 occluder = SubResource("OccluderPolygon2D_g7b60")
 
-[node name="TowerForegroundArea" type="Area2D" parent="."]
+[node name="TowerForegroundArea" type="Area2D" parent="." unique_id=518396334]
 collision_layer = 0
 collision_mask = 512
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TowerForegroundArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TowerForegroundArea" unique_id=1135358520]
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_yqrqs")
 
-[node name="WindForceAverager" parent="." instance=ExtResource("10_yqrqs")]
+[node name="WindForceAverager" parent="." unique_id=733001243 instance=ExtResource("10_yqrqs")]
 unique_name_in_owner = true
 
-[node name="Vines" type="Node" parent="."]
+[node name="Vines" type="Node" parent="." unique_id=2138305873]
 
-[node name="Line2D" type="Line2D" parent="Vines"]
+[node name="Line2D" type="Line2D" parent="Vines" unique_id=1153149327]
 process_thread_group = 1
 process_thread_group_order = 0
 process_thread_messages = 0

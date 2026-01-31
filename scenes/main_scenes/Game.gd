@@ -172,14 +172,15 @@ func get_random_offset():
 		randf_range(-shake_strength, shake_strength)
 	)
 
+const CHECKPOINT_TRANSITION_DUR := 0.5
 var fade_to_black_tween: Tween
 func fade_screen(to_black: bool):
 	fade_to_black_tween = create_tween()
 	if to_black:
 		fade_to_black_rect.visible = true
-		fade_to_black_tween.tween_property(fade_to_black_rect, "color", Color.BLACK, 0.5)
+		fade_to_black_tween.tween_property(fade_to_black_rect, "color", Color.BLACK, CHECKPOINT_TRANSITION_DUR)
 	else:
-		fade_to_black_tween.tween_property(fade_to_black_rect, "color", Color.TRANSPARENT, 0.5)
+		fade_to_black_tween.tween_property(fade_to_black_rect, "color", Color.TRANSPARENT, CHECKPOINT_TRANSITION_DUR)
 		fade_to_black_tween.tween_callback(fade_to_black_rect.hide)
 		
 		#fade_to_black_tween.tween_property(fade_to_black_rect, "color", Color.BLACK, 0.5)
