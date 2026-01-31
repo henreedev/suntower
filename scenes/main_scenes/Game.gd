@@ -32,6 +32,7 @@ var switch_bars_tween : Tween
 
 # Screen-wide rectangle for fade transition upon victory
 @onready var color_rect : ColorRect = $CanvasLayer/ColorRect
+@onready var fade_to_black_rect: ColorRect = $CanvasLayer/FadeToBlackRect
 
 # Speedrun timing variables
 @onready var time_trackers : Array[TimeTracker] = [%SunTime, %StormTime, %WindTime, %PeacefulTime]
@@ -170,3 +171,15 @@ func get_random_offset():
 		randf_range(-shake_strength, shake_strength),
 		randf_range(-shake_strength, shake_strength)
 	)
+
+var fade_to_black_tween: Tween
+func fade_screen(to_black: bool):
+	fade_to_black_tween = create_tween()
+	if to_black:
+		fade_to_black_rect.visible = true
+		fade_to_black_tween.tween_property(fade_to_black_rect, "color", Color.BLACK, 0.5)
+	else:
+		fade_to_black_tween.tween_property(fade_to_black_rect, "color", Color.TRANSPARENT, 0.5)
+		fade_to_black_tween.tween_callback(fade_to_black_rect.hide)
+		
+		#fade_to_black_tween.tween_property(fade_to_black_rect, "color", Color.BLACK, 0.5)

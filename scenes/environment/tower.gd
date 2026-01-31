@@ -496,7 +496,7 @@ func do_wind_burst(dir : Vector2i, strength := 2.0, duration := 1.5):
 	const RELEASE_DUR_RATIO = 0.3
 	const SUSTAIN = 0.4
 	const DECAY_DUR_RATIO = 1.0 - ATTACK_DUR_RATIO - RELEASE_DUR_RATIO
-	wind_burst_tween.tween_property(self, "wind_strength", strength, duration * ATTACK_DUR_RATIO).set_trans(Tween.TRANS_CUBIC)
+	wind_burst_tween.tween_property(self, "wind_strength", strength, duration * ATTACK_DUR_RATIO).set_trans(Tween.TRANS_CUBIC)	
 	wind_burst_tween.tween_property(self, "wind_strength", strength * SUSTAIN, duration * DECAY_DUR_RATIO).set_trans(Tween.TRANS_CUBIC)
 	wind_burst_tween.tween_property(self, "wind_strength", 0.0, duration * RELEASE_DUR_RATIO).set_trans(Tween.TRANS_CUBIC)
 	wind_burst_tween.tween_callback(do_wind_burst.bind(-dir, randf_range(0.8, 1.2) * 1.5, randf_range(0.75, 1.25) * 7.0))

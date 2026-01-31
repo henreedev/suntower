@@ -35,6 +35,7 @@ var can_extend := true
 var ignore_extension_limit := false
 var _can_nudge = false
 var should_teleport := false
+var should_teleport_pos: Vector2
 var rotation_while_retracting_enabled := false
 
 # Camera variables
@@ -258,6 +259,7 @@ func _input(event):
 		rotation_while_retracting_enabled = not rotation_while_retracting_enabled
 	if dev_mode and event.is_action_pressed("dev_teleport"):
 		should_teleport = true
+		should_teleport_pos = get_global_mouse_position()
 		Values.cheated = true
 
 # Draws a line connecting the vine segments.
@@ -842,12 +844,19 @@ func _physics_process(delta):
 		# Do dev right-click teleport
 		if dev_mode and should_teleport:
 			should_teleport = false
-			_pot.global_position = get_global_mouse_position()
-			position = _pot.global_position
-			_pot.rotation = 0
-			get_tree().set_group("vine", "global_position", _pot.global_position - Vector2(0, 10))
+			_teleport()
 		
 		_last_pos = pos
+
+func queue_teleport(to_pos: Vector2):
+	should_teleport = true
+	should_teleport_pos = to_pos
+
+func _teleport():
+	_pot.global_position = should_teleport_pos
+	position = _pot.global_position
+	_pot.rotation = 0
+	get_tree().set_group("vine", "global_position", _pot.global_position - Vector2(0, 10))
 
 # Sometimes after extension or retraction there's an extra gap between the root seg (always fixed) 
 # and the root seg's child (changes through retraction and extension).
